@@ -3212,6 +3212,14 @@
       const deliverySection = document.getElementById('delivery');
       if (!video || !deliverySection) return;
 
+      /* On touch/mobile, just autoplay the video normally */
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        video.autoplay = true;
+        video.loop = true;
+        video.play().catch(() => {});
+        return;
+      }
+
       video.pause();
       video.preload = 'auto';
       video.muted   = true;
