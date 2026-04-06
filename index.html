@@ -57,6 +57,17 @@
     ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Prevent text appearing editable when tapped */
+    h1, h2, h3, h4, h5, h6,
+    .btn, .nav-logo, .nav-links, .nav-cta,
+    .hero-eyebrow, .hero-title, .hero-sub,
+    .section-label, .section-heading,
+    .footer-col h4, .footer-bottom,
+    .strip-track, .pillar, .product-photo-card {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
     html {
       scroll-behavior: smooth;
       font-size: 16px;
@@ -471,16 +482,17 @@
     @media (max-width: 768px) {
       .hero-sticky {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: 1fr;
+        align-content: center;
       }
       .hero-content {
-        padding: 2rem 1.5rem 0;
+        padding: 5rem 1.5rem 3rem;
         text-align: center;
         align-items: center;
       }
       .hero-content .btn { width: 100%; justify-content: center; }
       .hero-video-wrap {
-        height: 45%;
+        display: none !important;
       }
     }
 
@@ -624,12 +636,12 @@
 
     .btn-outline {
       background: transparent;
-      color: var(--color-white);
-      border: 1.5px solid rgba(255,255,255,0.6);
+      color: var(--color-fg);
+      border: 1.5px solid rgba(0,0,0,0.35);
     }
     .btn-outline:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: var(--color-white);
+      background: rgba(0,0,0,0.06);
+      border-color: rgba(0,0,0,0.55);
     }
 
     .btn-accent {
@@ -1829,9 +1841,8 @@
       height: 52px;
       width: auto;
       object-fit: contain;
-      /* Logo is likely dark — invert to show on black footer */
-      filter: brightness(0) invert(1);
-      opacity: 0.9;
+      mix-blend-mode: lighten;
+      opacity: 0.95;
     }
 
     .footer-brand p {
@@ -1929,7 +1940,14 @@
        MOBILE OPTIMISATIONS
     ============================================================ */
 
-    /* Touch targets */
+    /* Touch targets & global mobile text centering */
+    @media (max-width: 900px) {
+      .hero-video-wrap { display: none !important; }
+      .delivery-video-wrap { display: none !important; }
+      .hero-sticky { grid-template-columns: 1fr; }
+      .hero-content { text-align: center; align-items: center; padding: 2rem 1.5rem; }
+    }
+
     @media (max-width: 680px) {
       .btn { min-height: 48px; width: 100%; justify-content: center; font-size: 0.95rem; }
       .nav-drawer a { min-height: 52px; font-size: 1.1rem; }
@@ -1940,23 +1958,43 @@
         padding-bottom: clamp(3rem, 8vw, 5rem);
       }
 
-      /* About */
-      .about-content { gap: 1rem; }
+      /* Centre all section labels, headings, leads */
+      .section-label, .section-heading, .section-lead { text-align: center; }
 
-      /* Mission cards stack */
-      .mission-card { padding: 1.5rem; }
+      /* About */
+      .about-content { gap: 1rem; align-items: center; text-align: center; }
+      .about-content p { text-align: center; }
+      .about-pillars { justify-items: center; }
+      .pillar { text-align: center; align-items: center; }
+
+      /* Delivery */
+      .delivery-text { text-align: center; align-items: center; }
+      .delivery-points li { justify-content: center; }
+
+      /* Mission */
+      .mission-card { padding: 1.5rem; text-align: center; }
+      .mission-card-label { text-align: center; }
+      .mission-list { text-align: left; }
 
       /* Fresho */
-      .fresho-inner { gap: 2rem; }
+      .fresho-inner { gap: 2rem; text-align: center; }
+      .fresho-text { text-align: center; align-items: center; display: flex; flex-direction: column; }
       .fresho-text h2 { font-size: 1.6rem; }
+
+      /* Environment */
+      .env-header { text-align: center; }
+      .env-card { text-align: center; }
 
       /* Contact form */
       .contact-grid { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      .contact-info { text-align: center; }
+      .contact-info-item { justify-content: center; }
 
       /* Footer */
-      .footer-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; text-align: center; }
       .footer-bottom { flex-direction: column; text-align: center; gap: 0.75rem; }
+      .footer-links { justify-content: center; }
 
       /* Commitment strip */
       .strip-track { animation-duration: 20s; }
@@ -1964,6 +2002,7 @@
       /* Products */
       .product-photo-grid { grid-template-columns: repeat(2, 1fr); }
       .tab-btn { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+      .products-header { text-align: center; }
     }
 
     @media (max-width: 400px) {
@@ -3079,6 +3118,7 @@
           <li>Privacy Policy</li>
           <li>Terms of Service</li>
         </ul>
+        <p style="font-size:0.78rem; color:rgba(255,255,255,0.35);">Designed by <a href="https://shiftwebdesigns.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.45); text-decoration:none; transition:color 200ms ease-out;" onmouseover="this.style.color='rgba(255,255,255,0.75)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'">Shift Web Designs</a></p>
       </div>
 
     </div>
@@ -3149,11 +3189,22 @@
       if (e.key === 'Escape' && drawerOpen) closeDrawer();
     });
 
+    /* ── Completely disable videos on mobile to prevent loading ── */
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      document.querySelectorAll('.hero-video-wrap video, .delivery-video-wrap video').forEach(function (v) {
+        v.querySelectorAll('source').forEach(function (s) { s.removeAttribute('src'); });
+        v.src = '';
+        v.load();
+      });
+    }
+
     /* ── Hero: seek-gated video scrub + text slides left on scroll ── */
     (function () {
       const video       = document.getElementById('heroVideo');
       const heroSection = document.getElementById('home');
       const heroContent = document.getElementById('heroContent');
+
+      if (window.matchMedia('(max-width: 900px)').matches) return;
 
       let targetTime = 0;
       let isSeeking  = false;
@@ -3212,13 +3263,8 @@
       const deliverySection = document.getElementById('delivery');
       if (!video || !deliverySection) return;
 
-      /* On touch/mobile, just autoplay the video normally */
-      if (window.matchMedia('(max-width: 900px)').matches) {
-        video.autoplay = true;
-        video.loop = true;
-        video.play().catch(() => {});
-        return;
-      }
+      /* On mobile, skip scrubbing entirely */
+      if (window.matchMedia('(max-width: 900px)').matches) return;
 
       video.pause();
       video.preload = 'auto';
