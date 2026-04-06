@@ -2,9 +2,19 @@ import type { Metadata } from 'next'
 import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
 import config from '../../../../payload.config'
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata({ config })
+type Args = {
+  params: Promise<{
+    segments: string[]
+  }>
+  searchParams: Promise<{
+    [key: string]: string | string[]
+  }>
 }
 
-const Page = RootPage({ config })
-export default Page
+export async function generateMetadata({ params, searchParams }: Args): Promise<Metadata> {
+  return generatePageMetadata({ config, params, searchParams })
+}
+
+export default async function Page({ params, searchParams }: Args) {
+  return RootPage({ config, params, searchParams })
+}
