@@ -5,9 +5,15 @@ import { importMap } from '../importMap.js'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata({ config })
+type Args = {
+  params: Promise<{ segments: string[] }>
+  searchParams: Promise<{ [key: string]: string | string[] }>
 }
 
-const Page = RootPage({ config, importMap })
-export default Page
+export async function generateMetadata({ params, searchParams }: Args): Promise<Metadata> {
+  return generatePageMetadata({ config, params, searchParams })
+}
+
+export default async function Page({ params, searchParams }: Args) {
+  return RootPage({ config, importMap, params, searchParams })
+}
