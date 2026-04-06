@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "generate:types": "payload generate:types",
-    "build:site": "tsx src/scripts/build-site.ts"
+    "seed": "tsx src/seed.ts"
   },
   "dependencies": {
     "next": "~15.4.11",

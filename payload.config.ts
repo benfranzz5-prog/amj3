@@ -1,26 +1,29 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { Hero }         from './src/collections/Hero'
-import { Navigation }   from './src/collections/Navigation'
-import { About }        from './src/collections/About'
-import { Fresho }       from './src/collections/Fresho'
-import { Delivery }     from './src/collections/Delivery'
-import { Mission }      from './src/collections/Mission'
-import { Testimonials } from './src/collections/Testimonials'
-import { Environment }  from './src/collections/Environment'
-import { Commitment }   from './src/collections/Commitment'
-import { Contact }      from './src/collections/Contact'
-import { Footer }       from './src/collections/Footer'
-import { githubTokenBeforeLogin } from './src/hooks/githubTokenAuth'
+import { MetaGlobal }         from './src/globals/Meta'
+import { NavigationGlobal }   from './src/globals/Navigation'
+import { HeroGlobal }         from './src/globals/Hero'
+import { AboutGlobal }        from './src/globals/About'
+import { FreshoGlobal }       from './src/globals/Fresho'
+import { DeliveryGlobal }     from './src/globals/Delivery'
+import { MissionGlobal }      from './src/globals/Mission'
+import { EnvironmentGlobal }  from './src/globals/Environment'
+import { CommitmentGlobal }   from './src/globals/Commitment'
+import { ContactGlobal }      from './src/globals/Contact'
+import { FooterGlobal }       from './src/globals/Footer'
+import { Testimonials }       from './src/collections/Testimonials'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname  = path.dirname(__filename)
 
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || 'fallback-secret-change-in-env',
+  secret: process.env.PAYLOAD_SECRET || 'fallback-secret-change-in-production',
+
+  editor: lexicalEditor({}),
 
   db: postgresAdapter({
     pool: {
@@ -35,40 +38,31 @@ export default buildConfig({
     },
   },
 
-  collections: [
-    // ── Site content ──────────────────────────────────────────────
-    Hero,
-    Navigation,
-    About,
-    Fresho,
-    Delivery,
-    Mission,
-    Testimonials,
-    Environment,
-    Commitment,
-    Contact,
-    Footer,
+  // ── Globals (single-instance editable sections) ──────────────────
+  globals: [
+    MetaGlobal,
+    NavigationGlobal,
+    HeroGlobal,
+    AboutGlobal,
+    FreshoGlobal,
+    DeliveryGlobal,
+    MissionGlobal,
+    EnvironmentGlobal,
+    CommitmentGlobal,
+    ContactGlobal,
+    FooterGlobal,
+  ],
 
-    // ── Admin users (password + GitHub token auth) ────────────────
+  // ── Collections ──────────────────────────────────────────────────
+  collections: [
+    Testimonials,
+
+    // Admin users — email + password only, no GitHub token
     {
       slug: 'users',
       auth: true,
       admin: { useAsTitle: 'email' },
-      hooks: {
-        beforeLogin: [githubTokenBeforeLogin],
-      },
-      fields: [
-        {
-          name: 'githubToken',
-          type: 'text',
-          required: true,
-          label: 'GitHub Personal Access Token',
-          admin: {
-            description:
-              'A valid GitHub PAT is required for every login. Revoking the token on GitHub immediately blocks access to this CMS.',
-          },
-        },
-      ],
+      fields: [],
     },
   ],
 

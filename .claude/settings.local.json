@@ -3,7 +3,9 @@
     "allow": [
       "Bash(gh api:*)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.amjproduce.com.au)"
+      "WebFetch(domain:www.amjproduce.com.au)",
+      "Bash(node make-template.mjs)",
+      "Bash(node -e ':*)"
     ]
   }
 }

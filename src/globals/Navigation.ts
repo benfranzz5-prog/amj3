@@ -1,8 +1,9 @@
-import type { CollectionConfig } from 'payload'
+import type { GlobalConfig } from 'payload'
 
-export const Navigation: CollectionConfig = {
+export const NavigationGlobal: GlobalConfig = {
   slug: 'navigation',
-  admin: { useAsTitle: 'wholesaleLabel', description: 'Navigation bar link labels.' },
+  label: 'Navigation',
+  admin: { description: 'Navigation bar link labels.' },
   fields: [
     { name: 'wholesaleLabel',    type: 'text', defaultValue: 'Wholesale' },
     { name: 'aboutLabel',        type: 'text', defaultValue: 'About AMJ' },
