@@ -21,13 +21,13 @@ export function clearSessionCookie() {
 }
 
 export function verifyRequest(req) {
-  // Cookie
-  const cookieHeader = req.headers.get('cookie') || ''
+  // Node.js req.headers is a plain object (lowercase keys)
+  const cookieHeader = req.headers['cookie'] || ''
   const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${COOKIE}=([^;]+)`))
   const token = match ? match[1] : null
 
   // Authorization header fallback
-  const authHeader = req.headers.get('authorization') || ''
+  const authHeader = req.headers['authorization'] || ''
   const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
 
   const raw = token || bearerToken

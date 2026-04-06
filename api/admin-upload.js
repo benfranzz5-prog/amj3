@@ -32,48 +32,47 @@ async function githubGet(path) {
 
 export const config = { api: { bodyParser: false } }
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   if (!verifyRequest(req)) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'POST') return res.status(405).end()
 
   const chunks = []
   let size = 0
-  for await (const chunk of req) {
+  req.on('data', chunk => {
     size += chunk.length
-    if (size > MAX_BYTES) return res.status(413).json({ error: 'File too large' })
-    chunks.push(chunk)
-  }
-  const buf = Buffer.concat(chunks)
+    if (size > MAX_BYTES) { res.status(413).json({ error: 'File too large' }); req.destroy() }
+    else chunks.push(chunk)
+  })
+  req.on('end', async () => {
+    const buf = Buffer.concat(chunks)
 
   // Parse multipart
-  const boundary = (req.headers['content-type'] || '').match(/boundary=(.+)/)?.[1]
-  if (!boundary) return res.status(400).json({ error: 'No boundary' })
+    const boundary = (req.headers['content-type'] || '').match(/boundary=(.+)/)?.[1]
+    if (!boundary) return res.status(400).json({ error: 'No boundary' })
 
-  const parts = parseParts(buf, boundary)
-  const filePart = parts.find(p => p.filename)
-  if (!filePart) return res.status(400).json({ error: 'No file' })
+    const parts = parseParts(buf, boundary)
+    const filePart = parts.find(p => p.filename)
+    if (!filePart) return res.status(400).json({ error: 'No file' })
 
-  const mime = filePart.mime || 'application/octet-stream'
-  if (!ALLOWED_MIME.includes(mime)) return res.status(400).json({ error: 'Invalid file type' })
+    const mime = filePart.mime || 'application/octet-stream'
+    if (!ALLOWED_MIME.includes(mime)) return res.status(400).json({ error: 'Invalid file type' })
 
-  const ext = SAFE_EXT[mime]
-  const ts = Date.now()
-  const slug = `${ts}-${Math.random().toString(36).slice(2, 8)}`
-  const imagePath = `public/images/gallery/${slug}.${ext}`
+    const ext = SAFE_EXT[mime]
+    const ts = Date.now()
+    const slug = `${ts}-${Math.random().toString(36).slice(2, 8)}`
+    const imagePath = `public/images/gallery/${slug}.${ext}`
 
-  try {
-    await githubPut(imagePath, filePart.data.toString('base64'), null, `cms: upload gallery image`)
-
-    // Update gallery.json
-    const galFile = await githubGet('public/_data/gallery.json')
-    const gallery = galFile ? JSON.parse(Buffer.from(galFile.content, 'base64').toString()) : []
-    gallery.push({ src: `images/gallery/${slug}.${ext}`, ts })
-    await githubPut('public/_data/gallery.json', JSON.stringify(gallery, null, 2), galFile?.sha || null, 'cms: update gallery')
-
-    res.status(200).json({ ok: true, src: `images/gallery/${slug}.${ext}` })
-  } catch (e) {
-    res.status(500).json({ error: e.message })
-  }
+    try {
+      await githubPut(imagePath, filePart.data.toString('base64'), null, `cms: upload gallery image`)
+      const galFile = await githubGet('public/_data/gallery.json')
+      const gallery = galFile ? JSON.parse(Buffer.from(galFile.content, 'base64').toString()) : []
+      gallery.push({ src: `images/gallery/${slug}.${ext}`, ts })
+      await githubPut('public/_data/gallery.json', JSON.stringify(gallery, null, 2), galFile?.sha || null, 'cms: update gallery')
+      res.status(200).json({ ok: true, src: `images/gallery/${slug}.${ext}` })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  })
 }
 
 function parseParts(buf, boundary) {

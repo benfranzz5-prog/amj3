@@ -33,56 +33,55 @@ async function githubPut(path, b64, sha, message) {
 
 export const config = { api: { bodyParser: false } }
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
   if (!verifyRequest(req)) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'POST') return res.status(405).end()
 
   const chunks = []
   let size = 0
-  for await (const chunk of req) {
+  req.on('data', chunk => {
     size += chunk.length
-    if (size > MAX_BYTES) return res.status(413).json({ error: 'File too large' })
-    chunks.push(chunk)
-  }
-  const buf = Buffer.concat(chunks)
+    if (size > MAX_BYTES) { res.status(413).json({ error: 'File too large' }); req.destroy() }
+    else chunks.push(chunk)
+  })
+  req.on('end', async () => {
+    const buf = Buffer.concat(chunks)
 
-  const boundary = (req.headers['content-type'] || '').match(/boundary=(.+)/)?.[1]
-  if (!boundary) return res.status(400).json({ error: 'No boundary' })
+    const boundary = (req.headers['content-type'] || '').match(/boundary=(.+)/)?.[1]
+    if (!boundary) return res.status(400).json({ error: 'No boundary' })
 
-  const parts = parseParts(buf, boundary)
-  const filePart = parts.find(p => p.filename)
-  const slotPart = parts.find(p => p.name === 'slot')
-  const labelPart = parts.find(p => p.name === 'label')
+    const parts = parseParts(buf, boundary)
+    const filePart = parts.find(p => p.filename)
+    const slotPart = parts.find(p => p.name === 'slot')
+    const labelPart = parts.find(p => p.name === 'label')
 
-  if (!filePart) return res.status(400).json({ error: 'No file' })
-  if (!slotPart) return res.status(400).json({ error: 'No slot' })
+    if (!filePart) return res.status(400).json({ error: 'No file' })
+    if (!slotPart) return res.status(400).json({ error: 'No slot' })
 
-  const slot = slotPart.data.toString().trim()
-  if (!SLOT_RE.test(slot)) return res.status(400).json({ error: 'Invalid slot name' })
+    const slot = slotPart.data.toString().trim()
+    if (!SLOT_RE.test(slot)) return res.status(400).json({ error: 'Invalid slot name' })
 
-  const mime = filePart.mime || 'application/octet-stream'
-  if (!ALLOWED_MIME.includes(mime)) return res.status(400).json({ error: 'Invalid file type' })
+    const mime = filePart.mime || 'application/octet-stream'
+    if (!ALLOWED_MIME.includes(mime)) return res.status(400).json({ error: 'Invalid file type' })
 
-  const ext = SAFE_EXT[mime]
-  const ts = Date.now()
-  const imagePath = `public/images/managed/${ts}-${slot}.${ext}`
+    const ext = SAFE_EXT[mime]
+    const ts = Date.now()
+    const imagePath = `public/images/managed/${ts}-${slot}.${ext}`
 
-  try {
-    await githubPut(imagePath, filePart.data.toString('base64'), null, `cms: replace image slot ${slot}`)
-
-    // Update images.json
-    const imgFile = await githubGet('public/_data/images.json')
-    const images = imgFile ? JSON.parse(Buffer.from(imgFile.content, 'base64').toString()) : {}
-    images[slot] = {
-      src: `images/managed/${ts}-${slot}.${ext}`,
-      label: labelPart ? labelPart.data.toString().trim() : slot,
+    try {
+      await githubPut(imagePath, filePart.data.toString('base64'), null, `cms: replace image slot ${slot}`)
+      const imgFile = await githubGet('public/_data/images.json')
+      const images = imgFile ? JSON.parse(Buffer.from(imgFile.content, 'base64').toString()) : {}
+      images[slot] = {
+        src: `images/managed/${ts}-${slot}.${ext}`,
+        label: labelPart ? labelPart.data.toString().trim() : slot,
+      }
+      await githubPut('public/_data/images.json', JSON.stringify(images, null, 2), imgFile?.sha || null, `cms: update images slot ${slot}`)
+      res.status(200).json({ ok: true, src: `images/managed/${ts}-${slot}.${ext}` })
+    } catch (e) {
+      res.status(500).json({ error: e.message })
     }
-    await githubPut('public/_data/images.json', JSON.stringify(images, null, 2), imgFile?.sha || null, `cms: update images slot ${slot}`)
-
-    res.status(200).json({ ok: true, src: `images/managed/${ts}-${slot}.${ext}` })
-  } catch (e) {
-    res.status(500).json({ error: e.message })
-  }
+  })
 }
 
 function parseParts(buf, boundary) {
