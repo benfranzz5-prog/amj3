@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+
+export const dynamic = 'force-dynamic'
 import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
 import config from '../../../../payload.config'
 import { importMap } from '../importMap.js'

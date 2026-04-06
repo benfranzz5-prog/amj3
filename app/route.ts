@@ -3,8 +3,8 @@ import config from '../payload.config'
 import { readFileSync } from 'fs'
 import path from 'path'
 
-// Cache the page for 60 seconds; Payload afterChange hooks can revalidate sooner
-export const revalidate = 60
+// Always render at request time — no DB connection available at build
+export const dynamic = 'force-dynamic'
 
 function esc(str: string | null | undefined): string {
   if (!str) return ''
