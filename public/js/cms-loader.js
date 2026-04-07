@@ -15,11 +15,14 @@
   // Render product grid if container exists
   const productGrid = document.getElementById('product-photo-grid')
   if (productGrid && Array.isArray(products)) {
-    productGrid.innerHTML = products.map(p => `
+    productGrid.innerHTML = products.map(p => {
+      const imgSrc = p.src.startsWith('http') ? p.src : '/' + p.src
+      return `
       <div class="product-photo-card">
-        <img src="${p.src}" alt="${p.name}" loading="lazy">
+        <img src="${imgSrc}" alt="${p.name}" loading="lazy">
         <div class="product-photo-card-name">${p.name}</div>
-      </div>`).join('')
+      </div>`
+    }).join('')
 
     // Apply tooltips after grid renders
     const tooltipData = window._prodTooltips || {}
