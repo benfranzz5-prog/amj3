@@ -4,35 +4,6 @@ const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_BYTES = 1 * 1024 * 1024 // 1 MB
 const SAFE_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }
 
-async function blobPut(pathname, data, mime) {
-  const token = process.env.BLOB_READ_WRITE_TOKEN
-  if (!token) throw new Error('BLOB_READ_WRITE_TOKEN not configured')
-  const res = await fetch(`https://blob.vercel-storage.com/${pathname}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'x-api-version': '7',
-      'content-type': mime,
-      'x-cache-control-max-age': '31536000',
-    },
-    body: data,
-  })
-  if (!res.ok) throw new Error(`Blob upload failed: ${res.status} ${await res.text()}`)
-  return res.json() // { url, downloadUrl, pathname, contentType }
-}
-
-async function githubGet(path) {
-  const repo = process.env.GITHUB_REPO
-  const branch = process.env.GITHUB_BRANCH || 'main'
-  const token = process.env.GITHUB_TOKEN
-  const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
-    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' },
-  })
-  if (res.status === 404) return null
-  if (!res.ok) throw new Error(`GitHub ${res.status}`)
-  return res.json()
-}
-
 async function githubPut(path, b64, sha, message) {
   const repo = process.env.GITHUB_REPO
   const branch = process.env.GITHUB_BRANCH || 'main'
@@ -44,6 +15,18 @@ async function githubPut(path, b64, sha, message) {
     body: JSON.stringify(body),
   })
   if (!res.ok) throw new Error(`GitHub ${res.status}: ${await res.text()}`)
+  return res.json()
+}
+
+async function githubGet(path) {
+  const repo = process.env.GITHUB_REPO
+  const branch = process.env.GITHUB_BRANCH || 'main'
+  const token = process.env.GITHUB_TOKEN
+  const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`GitHub ${res.status}`)
   return res.json()
 }
 
@@ -63,6 +46,7 @@ export default function handler(req, res) {
   req.on('end', async () => {
     const buf = Buffer.concat(chunks)
 
+  // Parse multipart
     const boundary = (req.headers['content-type'] || '').match(/boundary=(.+)/)?.[1]
     if (!boundary) return res.status(400).json({ error: 'No boundary' })
 
@@ -76,25 +60,15 @@ export default function handler(req, res) {
     const ext = SAFE_EXT[mime]
     const ts = Date.now()
     const slug = `${ts}-${Math.random().toString(36).slice(2, 8)}`
-    const pathname = `gallery/${slug}.${ext}`
+    const imagePath = `public/images/gallery/${slug}.${ext}`
 
     try {
-      // Upload to Vercel Blob
-      const blob = await blobPut(pathname, filePart.data, mime)
-      const blobUrl = blob.url
-
-      // Update gallery.json in GitHub
+      await githubPut(imagePath, filePart.data.toString('base64'), null, `cms: upload gallery image`)
       const galFile = await githubGet('public/_data/gallery.json')
       const gallery = galFile ? JSON.parse(Buffer.from(galFile.content, 'base64').toString()) : []
-      gallery.push({ src: blobUrl, blobUrl, ts })
-      await githubPut(
-        'public/_data/gallery.json',
-        Buffer.from(JSON.stringify(gallery, null, 2)).toString('base64'),
-        galFile?.sha || null,
-        'cms: upload gallery image'
-      )
-
-      res.status(200).json({ ok: true, src: blobUrl })
+      gallery.push({ src: `images/gallery/${slug}.${ext}`, ts })
+      await githubPut('public/_data/gallery.json', JSON.stringify(gallery, null, 2), galFile?.sha || null, 'cms: update gallery')
+      res.status(200).json({ ok: true, src: `images/gallery/${slug}.${ext}` })
     } catch (e) {
       res.status(500).json({ error: e.message })
     }
@@ -109,19 +83,23 @@ function parseParts(buf, boundary) {
     const start = indexOf(buf, sep, pos)
     if (start === -1) break
     pos = start + sep.length
-    if (buf[pos] === 45 && buf[pos + 1] === 45) break
-    if (buf[pos] === 13) pos += 2
+    if (buf[pos] === 45 && buf[pos + 1] === 45) break // --
+    if (buf[pos] === 13) pos += 2 // \r\n
     const headerEnd = indexOf(buf, Buffer.from('\r\n\r\n'), pos)
     if (headerEnd === -1) break
     const headerStr = buf.slice(pos, headerEnd).toString()
     pos = headerEnd + 4
     const nextSep = indexOf(buf, sep, pos)
     const dataEnd = nextSep === -1 ? buf.length : nextSep - 2
+    const data = buf.slice(pos, dataEnd)
+    const nameMatch = headerStr.match(/name="([^"]+)"/)
+    const filenameMatch = headerStr.match(/filename="([^"]+)"/)
+    const mimeMatch = headerStr.match(/Content-Type:\s*(\S+)/i)
     parts.push({
-      name: headerStr.match(/name="([^"]+)"/)?.[1],
-      filename: headerStr.match(/filename="([^"]+)"/)?.[1],
-      mime: headerStr.match(/Content-Type:\s*(\S+)/i)?.[1],
-      data: buf.slice(pos, dataEnd),
+      name: nameMatch?.[1],
+      filename: filenameMatch?.[1],
+      mime: mimeMatch?.[1],
+      data,
     })
     pos = nextSep === -1 ? buf.length : nextSep
   }
