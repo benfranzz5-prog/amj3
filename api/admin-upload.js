@@ -1,7 +1,7 @@
 import { verifyRequest } from './_auth.js'
 
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
+const MAX_BYTES = 1 * 1024 * 1024 // 1 MB
 const SAFE_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }
 
 async function githubPut(path, b64, sha, message) {
@@ -40,7 +40,7 @@ export default function handler(req, res) {
   let size = 0
   req.on('data', chunk => {
     size += chunk.length
-    if (size > MAX_BYTES) { res.status(413).json({ error: 'File too large' }); req.destroy() }
+    if (size > MAX_BYTES) { res.status(413).json({ error: 'Image must be under 1MB' }); req.destroy() }
     else chunks.push(chunk)
   })
   req.on('end', async () => {
