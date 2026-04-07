@@ -879,10 +879,9 @@ async function handleGFiles(files) {
       if (errEl && errMsg) { errMsg.textContent=`"${file.name}" — Image must be under 1MB`; errEl.classList.add('show') }
       continue
     }
-    const blob = await compressImg(file)
-    const fd = new FormData(); fd.append('file',blob,file.name)
+    const {mime,data} = await compressImg(file)
     try {
-      const r = await fetch('/api/admin-upload',{method:'POST',body:fd,credentials:'include'})
+      const r = await fetch('/api/admin-upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mime,data}),credentials:'include'})
       if (r.ok) {
         const {src}=await r.json()
         const grid=document.getElementById('g-grid')
@@ -965,10 +964,9 @@ document.getElementById('slot-inp').onchange = async e => {
     if(errEl&&errMsg){errMsg.textContent=`"${file.name}" — Image must be under 1MB`;errEl.classList.add('show')}
     pendingSlot=null; return
   }
-  const blob=await compressImg(file)
-  const fd=new FormData(); fd.append('file',blob,file.name); fd.append('slot',pendingSlot.slot); fd.append('label',pendingSlot.label)
+  const {mime,data}=await compressImg(file)
   try{
-    const r=await fetch('/api/admin-replace-image',{method:'POST',body:fd,credentials:'include'})
+    const r=await fetch('/api/admin-replace-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mime,data,slot:pendingSlot.slot,label:pendingSlot.label}),credentials:'include'})
     if(r.ok) renderImages()
     else{const j=await r.json().catch(()=>({}));if(errEl&&errMsg){errMsg.textContent=j.error||'Upload failed';errEl.classList.add('show')}}
   }catch(e){if(errEl&&errMsg){errMsg.textContent=e.message;errEl.classList.add('show')}}
@@ -1129,14 +1127,9 @@ document.getElementById('prod-img-inp').onchange = async e => {
   const urlInput = document.getElementById('peu' + i)
   if (urlInput) urlInput.value = 'Uploading…'
 
-  const blob = await compressImg(file)
-  const fd = new FormData()
-  fd.append('file', blob, file.name)
-  fd.append('slot', 'product_' + i)
-  fd.append('label', prodData[i]?.name || 'product')
-
+  const {mime,data} = await compressImg(file)
   try {
-    const r = await fetch('/api/admin-replace-image', { method: 'POST', body: fd, credentials: 'include' })
+    const r = await fetch('/api/admin-replace-image', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({mime,data,slot:'product_'+i,label:prodData[i]?.name||'product'}), credentials: 'include' })
     if (r.ok) {
       const { src } = await r.json()
       if (urlInput) urlInput.value = src
@@ -1176,7 +1169,16 @@ function compressImg(file) {
       if(w>MAX){h=Math.round(h*MAX/w);w=MAX} else if(h>MAX){w=Math.round(w*MAX/h);h=MAX}
       const c=document.createElement('canvas'); c.width=w; c.height=h
       c.getContext('2d').drawImage(img,0,0,w,h)
-      c.toBlob(b=>resolve(b),'image/jpeg',0.85)
+      c.toBlob(blob=>{
+        const reader=new FileReader()
+        reader.onload=()=>{
+          const comma=reader.result.indexOf(',')
+          const mime=reader.result.slice(5,reader.result.indexOf(';'))
+          const data=reader.result.slice(comma+1)
+          resolve({mime,data})
+        }
+        reader.readAsDataURL(blob)
+      },'image/jpeg',0.85)
     }
     img.src=url
   })
