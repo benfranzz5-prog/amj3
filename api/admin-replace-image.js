@@ -50,18 +50,23 @@ export default function handler(req, res) {
 
     const ext = SAFE_EXT[mime]
     const ts = Date.now()
-    const imagePath = `public/images/managed/${ts}-${slot}.${ext}`
+    const isProduct = slot.startsWith('product_')
+    const folder = isProduct ? 'images/products' : 'images/managed'
+    const imagePath = `public/${folder}/${ts}-${slot}.${ext}`
+    const publicSrc = `${folder}/${ts}-${slot}.${ext}`
 
     try {
-      await githubPut(imagePath, data, null, `cms: replace image slot ${slot}`)
-      const imgFile = await githubGet('public/_data/images.json')
-      const images = imgFile ? JSON.parse(Buffer.from(imgFile.content, 'base64').toString()) : {}
-      images[slot] = {
-        src: `images/managed/${ts}-${slot}.${ext}`,
-        label: label || slot,
+      await githubPut(imagePath, data, null, `cms: upload ${slot}`)
+
+      // Only update images.json for non-product slots (products are saved via admin-save)
+      if (!isProduct) {
+        const imgFile = await githubGet('public/_data/images.json')
+        const images = imgFile ? JSON.parse(Buffer.from(imgFile.content, 'base64').toString()) : {}
+        images[slot] = { src: publicSrc, label: label || slot }
+        await githubPut('public/_data/images.json', JSON.stringify(images, null, 2), imgFile?.sha || null, `cms: update images slot ${slot}`)
       }
-      await githubPut('public/_data/images.json', JSON.stringify(images, null, 2), imgFile?.sha || null, `cms: update images slot ${slot}`)
-      res.status(200).json({ ok: true, src: `images/managed/${ts}-${slot}.${ext}` })
+
+      res.status(200).json({ ok: true, src: publicSrc })
     } catch (e) {
       res.status(500).json({ error: e.message })
     }

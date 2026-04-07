@@ -15,19 +15,29 @@
   // ── Product photo grid ──
   const productGrid = document.getElementById('product-photo-grid')
   if (productGrid && Array.isArray(products)) {
+    function safeAttr(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;') }
     productGrid.innerHTML = products.map(p => {
-      // src may be absolute URL or local path with or without leading slash
       const imgSrc = p.src.startsWith('http') ? p.src : (p.src.startsWith('/') ? p.src : '/' + p.src)
       return `
-        <div class="product-photo-card">
-          <img src="${imgSrc}" alt="${p.name}" loading="lazy">
+        <div class="product-photo-card" data-name="${safeAttr(p.name)}" data-desc="${safeAttr(p.description||'')}">
+          <img src="${imgSrc}" alt="${safeAttr(p.name)}" loading="lazy">
           <div class="product-photo-card-name">${p.name}</div>
         </div>`
     }).join('')
 
-    // Apply tooltips after grid renders
+    // Apply tooltips — use description from products.json first, fall back to _prodTooltips
     const tooltipData = window._prodTooltips || {}
     productGrid.querySelectorAll('.product-photo-card').forEach(card => {
+      const name = card.dataset.name
+      const desc = card.dataset.desc
+      if (desc) {
+        const tip = document.createElement('div')
+        tip.className = 'product-tooltip'
+        tip.innerHTML = '<strong>' + name + '</strong>' + desc
+        card.appendChild(tip)
+        return
+      }
+      // Fall back to hardcoded tooltip map (products without CMS description)
       const img = card.querySelector('img')
       if (!img) return
       const filename = img.src.split('/').pop()

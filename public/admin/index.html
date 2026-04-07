@@ -875,8 +875,8 @@ async function handleGFiles(files) {
   const errMsg = document.getElementById('g-err-msg')
   if (errEl) errEl.classList.remove('show')
   for (const file of files) {
-    if (file.size > 1024*1024) {
-      if (errEl && errMsg) { errMsg.textContent=`"${file.name}" — Image must be under 1MB`; errEl.classList.add('show') }
+    if (file.size > 10*1024*1024) {
+      if (errEl && errMsg) { errMsg.textContent=`"${file.name}" — Image must be under 10MB`; errEl.classList.add('show') }
       continue
     }
     const {mime,data} = await compressImg(file)
@@ -960,8 +960,8 @@ document.getElementById('slot-inp').onchange = async e => {
   if(!file||!pendingSlot) return
   const errEl=document.getElementById('s-err'),errMsg=document.getElementById('s-err-msg')
   if(errEl) errEl.classList.remove('show')
-  if(file.size>1024*1024){
-    if(errEl&&errMsg){errMsg.textContent=`"${file.name}" — Image must be under 1MB`;errEl.classList.add('show')}
+  if(file.size>10*1024*1024){
+    if(errEl&&errMsg){errMsg.textContent=`"${file.name}" — Image must be under 10MB`;errEl.classList.add('show')}
     pendingSlot=null; return
   }
   const {mime,data}=await compressImg(file)
@@ -1046,6 +1046,8 @@ function renderProdGrid(list) {
           <input id="peu${realIdx}" value="${escAttr(p.src)}" placeholder="Path or URL" style="flex:1;font-size:.65rem"/>
           <button onclick="triggerProdImg(${realIdx})" style="padding:.3rem .5rem;background:var(--sh-green);border:none;border-radius:4px;color:#fff;font-size:.65rem;cursor:pointer;white-space:nowrap;font-family:inherit">Upload</button>
         </div>
+        <label style="margin-top:.25rem">Description</label>
+        <textarea id="ped${realIdx}" placeholder="Product description (shown as tooltip)" style="width:100%;padding:.3rem .5rem;background:var(--sh-surface3);border:1px solid var(--sh-border);border-radius:4px;color:var(--sh-text);font-size:.65rem;font-family:inherit;resize:vertical;min-height:55px;box-sizing:border-box">${esc(p.description||'')}</textarea>
         <div class="prod-edit-footer">
           <button class="prod-edit-save" onclick="saveProdEdit(${realIdx})">Save</button>
           <button class="prod-edit-cancel" onclick="closeProdEdit(${realIdx})">Cancel</button>
@@ -1076,8 +1078,9 @@ function closeProdEdit(i) { document.getElementById('pe'+i)?.classList.remove('o
 function saveProdEdit(i) {
   const name = document.getElementById('pen'+i)?.value.trim()
   const src = document.getElementById('peu'+i)?.value.trim()
+  const description = document.getElementById('ped'+i)?.value.trim()
   if (!name) return
-  prodData[i] = {name, src: src||''}
+  prodData[i] = {name, src: src||'', description: description||''}
   renderProdGrid(prodData)
   updateProdCount()
 }
@@ -1090,7 +1093,7 @@ function delProd(i) {
 }
 
 function addProd() {
-  prodData.push({name:'New Product',src:''})
+  prodData.push({name:'New Product',src:'',description:''})
   renderProdGrid(prodData)
   updateProdCount()
   const newIdx = prodData.length - 1
@@ -1118,8 +1121,8 @@ document.getElementById('prod-img-inp').onchange = async e => {
   const errMsg = document.getElementById('g-err-msg')
   if (errEl) errEl.classList.remove('show')
 
-  if (file.size > 1024 * 1024) {
-    if (errEl && errMsg) { errMsg.textContent = `"${file.name}" — Image must be under 1MB`; errEl.classList.add('show') }
+  if (file.size > 10 * 1024 * 1024) {
+    if (errEl && errMsg) { errMsg.textContent = `"${file.name}" — Image must be under 10MB`; errEl.classList.add('show') }
     return
   }
 
