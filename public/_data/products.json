@@ -1,7 +1,8 @@
 [
   {
     "name": "Purple Sprouting Broccoli",
-    "src": "/images/products/Broccoli_purple_sprouting_270_200_s_c1.jpg"
+    "src": "https://www.amjproduce.com.au/images/made/assets/Broccoli_purple_sprouting_270_200_s_c1.jpg",
+    "description": ""
   },
   {
     "name": "Salanova Lettuce",
@@ -185,7 +186,8 @@
   },
   {
     "name": "Blush Turnip",
-    "src": "https://specialtyproduce.com/sppics/16793.png"
+    "src": "images/products/1775543321566-product_46.jpg",
+    "description": ""
   },
   {
     "name": "Miniature Cauliflowers",
@@ -337,18 +339,22 @@
   },
   {
     "name": "Little Bunyip",
-    "src": "/images/products/little-bunyip1_270_200_s_c1.jpg"
+    "src": "/images/products/little-bunyip1_270_200_s_c1.jpg",
+    "description": ""
   },
   {
     "name": "Red Currents",
-    "src": "/images/products/IMG_0304_270_200_s_c1.jpg"
+    "src": "/images/products/IMG_0304_270_200_s_c1.jpg",
+    "description": "Quite similar in taste and texture to a lightly sour raspberry, the glistening, shining surface of the tart orb is more comparable to the skin of a tender blueberry."
   },
   {
     "name": "Asparagus",
-    "src": "/images/products/IMG_7857_270_200_s_c1.JPG"
+    "src": "/images/products/IMG_7857_270_200_s_c1.JPG",
+    "description": "The difference between green and white asparagus is that white asparagus is grown underground. As the spears of white asparagus grow, they're completely covered with a thick mound of dirt or black plastic so they're never exposed to the sunlight. White asparagus is mild and slightly bitter."
   },
   {
     "name": "Gooseberries",
-    "src": "/images/products/IMG_2768_270_200_s_c1.jpeg"
+    "src": "/images/products/IMG_2768_270_200_s_c1.jpeg",
+    "description": "Gooseberries are low in calories and fat, yet packed with nutrients. Gooseberries can be golden, greenish or reddish in color, and they really do have a tart grape flavor. Gooseberries are almost savory with a sharpness that may remind you of lemons, though there is a subtle sweetness that comes across like tropical fruit. Mostly, these little berries are zingy, zesty and bright."
   }
 ]
