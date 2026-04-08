@@ -464,14 +464,16 @@
       height: 115%;
       object-fit: contain;
       -webkit-mask-image: radial-gradient(
-        ellipse 80% 85% at 45% 50%,
-        black 30%,
-        transparent 100%
+        ellipse 75% 80% at 48% 50%,
+        black 0%,
+        black 40%,
+        transparent 75%
       );
       mask-image: radial-gradient(
-        ellipse 80% 85% at 45% 50%,
-        black 30%,
-        transparent 100%
+        ellipse 75% 80% at 48% 50%,
+        black 0%,
+        black 40%,
+        transparent 75%
       );
     }
 
@@ -479,10 +481,13 @@
     .hero-overlay { display: none; }
 
     @media (max-width: 768px) {
+      /* Collapse hero to viewport height — video is hidden so no scroll-scrub needed */
+      .hero { height: 100dvh; min-height: 500px; }
       .hero-sticky {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
         align-content: center;
+        min-height: 100dvh;
       }
       .hero-content {
         padding: 5rem 1.5rem 3rem;
@@ -493,11 +498,6 @@
       .hero-video-wrap {
         display: none !important;
       }
-    }
-
-    @media (max-width: 480px) {
-      .hero { height: 160vh; }
-      .hero-sticky { min-height: 100svh; }
     }
 
     .hero-eyebrow {
