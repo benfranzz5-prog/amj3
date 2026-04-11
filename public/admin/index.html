@@ -1,835 +1,1784 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>AMJ CMS Admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AMJ CMS</title>
+<link rel="icon" type="image/png" href="../favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-/* ── ADMIN SHELL ── */
-:root{
-  --sh-bg:#0d1117;--sh-surface:#161b22;--sh-surface2:#21262d;
-  --sh-border:#30363d;--sh-text:#e6edf3;--sh-muted:#7d8590;
-  --sh-green:#9AC92C;--sh-green-dk:#7aaa1a;--sh-green-lt:rgba(154,201,44,.1);
-  --sh-red:#f85149;--sh-radius:8px;
-  /* AMJ Brand (for WYSIWYG preview) */
-  --b-primary:#9AC92C;--b-primary-dk:#7aaa1a;--b-primary-lt:#b8e04c;
-  --b-accent:#28A745;--b-accent-dk:#1e7a33;
-  --b-fg:#000;--b-fg-muted:#333;--b-bg:#fff;--b-bg-soft:#f8f9fa;
-  --b-border:#dee2e6;--b-fhead:'Lobster',Georgia,serif;--b-fbody:'Poppins',system-ui,sans-serif;
+/* ═══════════════════════════════════════════════════════════
+   AMJ CMS — Design System
+   Dark theme. Accent: #9AC92C (AMJ green).
+   Font: Inter.
+═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:         #0d1117;
+  --surface:    #161b22;
+  --surface2:   #21262d;
+  --surface3:   #2d333b;
+  --border:     #30363d;
+  --border2:    #484f58;
+  --text:       #e6edf3;
+  --muted:      #7d8590;
+  --muted2:     #b1bac4;
+  --green:      #9AC92C;
+  --green-dk:   #7aaa1a;
+  --green-lt:   rgba(154,201,44,.12);
+  --green-ring: rgba(154,201,44,.35);
+  --red:        #f85149;
+  --red-lt:     rgba(248,81,73,.12);
+  --yellow:     #e3b341;
+  --blue:       #58a6ff;
+  --radius:     8px;
+  --radius-sm:  5px;
+  --sidebar-w:  240px;
+  --toolbar-h:  56px;
+  --trans:      150ms ease;
 }
 
-body{font-family:'Poppins',system-ui,sans-serif;background:var(--sh-bg);color:var(--sh-text);min-height:100vh;font-size:14px}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── LOGIN ── */
-#login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0d1117 0%,#161b22 60%,#1a2332 100%)}
-.login-card{background:var(--sh-surface);border:1px solid var(--sh-border);border-radius:16px;padding:2.5rem;width:360px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-.login-logo{width:64px;height:64px;background:var(--sh-green-lt);border:1px solid rgba(154,201,44,.3);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.8rem}
-.login-card h1{font-size:1.4rem;font-weight:700;margin-bottom:.3rem}
-.login-card p{color:var(--sh-muted);font-size:.85rem;margin-bottom:1.75rem}
-.login-card input{width:100%;padding:.75rem 1rem;background:var(--sh-surface2);border:1px solid var(--sh-border);border-radius:8px;color:var(--sh-text);font-size:.95rem;margin-bottom:.75rem;font-family:inherit;transition:border-color .2s}
-.login-card input:focus{outline:none;border-color:var(--sh-green)}
-.login-card .btn-login{width:100%;padding:.8rem;background:var(--sh-green);border:none;border-radius:8px;color:#fff;font-size:.95rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
-.login-card .btn-login:hover{background:var(--sh-green-dk)}
-#login-err{color:var(--sh-red);font-size:.82rem;margin-top:.75rem;display:none}
+html, body { height: 100%; overflow: hidden; }
 
-/* ── APP LAYOUT ── */
-#app{display:none;height:100vh;overflow:hidden}
-#sidebar{width:220px;background:var(--sh-surface);border-right:1px solid var(--sh-border);height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:100}
-#main{margin-left:220px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-
-/* ── SIDEBAR ── */
-.sb-head{padding:1.1rem 1rem .875rem;border-bottom:1px solid var(--sh-border);display:flex;align-items:center;gap:.65rem;flex-shrink:0}
-.sb-icon{width:32px;height:32px;background:var(--sh-green-lt);border:1px solid rgba(154,201,44,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
-.sb-title strong{display:block;font-size:.875rem;font-weight:700}
-.sb-title span{font-size:.7rem;color:var(--sh-muted)}
-.sb-nav{flex:1;overflow-y:auto;padding:.4rem .6rem}
-.sb-group{font-size:.64rem;font-weight:700;color:var(--sh-muted);text-transform:uppercase;letter-spacing:.09em;padding:.6rem .5rem .2rem}
-.nav-item{display:flex;align-items:center;gap:.55rem;padding:.5rem .65rem;color:var(--sh-muted);cursor:pointer;border-radius:6px;transition:all .13s;font-size:.82rem;margin-bottom:1px;white-space:nowrap;overflow:hidden}
-.nav-item:hover{color:var(--sh-text);background:var(--sh-surface2)}
-.nav-item.active{color:var(--sh-green);background:rgba(154,201,44,.08);font-weight:600}
-.sb-foot{padding:.75rem 1rem;border-top:1px solid var(--sh-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.sb-foot a{font-size:.72rem;color:var(--sh-muted);text-decoration:none;padding:.2rem .4rem;border-radius:4px;transition:color .13s}
-.sb-foot a:hover{color:var(--sh-text)}
-#logout-btn{font-size:.72rem;color:var(--sh-muted);cursor:pointer;padding:.25rem .5rem;border-radius:4px;transition:all .13s}
-#logout-btn:hover{color:var(--sh-red)}
-
-/* ── TOOLBAR ── */
-#toolbar{background:var(--sh-surface);border-bottom:1px solid var(--sh-border);padding:.75rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;min-height:56px}
-#tb-title{font-size:.9rem;font-weight:600;flex:1;white-space:nowrap}
-#tb-sub{font-size:.72rem;color:var(--sh-muted);margin-top:.1rem}
-#tb-status{font-size:.78rem;white-space:nowrap}
-#tb-status.ok{color:var(--sh-green)}
-#tb-status.err{color:var(--sh-red)}
-.btn-preview-site{padding:.5rem .9rem;background:transparent;border:1px solid var(--sh-border);border-radius:6px;color:var(--sh-muted);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .13s;white-space:nowrap}
-.btn-preview-site:hover{border-color:var(--sh-text);color:var(--sh-text)}
-#save-btn{padding:.55rem 1.2rem;background:var(--sh-green);border:none;border-radius:6px;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.4rem;transition:background .13s;white-space:nowrap;flex-shrink:0}
-#save-btn:hover{background:var(--sh-green-dk)}
-#save-btn:disabled{background:var(--sh-border);color:var(--sh-muted);cursor:not-allowed}
-
-/* ── SCROLL AREA ── */
-#preview-wrap{flex:1;overflow-y:auto;background:#edf0f2}
-
-/* ── WYSIWYG CONTAINER ── */
-.ww{background:var(--b-bg);font-family:var(--b-fbody);color:var(--b-fg)}
-
-/* ── CONTENTEDITABLE HIGHLIGHTS ── */
-[contenteditable]{outline:none;cursor:text;border-radius:3px;transition:background .15s,box-shadow .15s;display:inline}
-[contenteditable]:hover{background:rgba(154,201,44,.1)}
-[contenteditable]:focus{background:rgba(154,201,44,.15);box-shadow:0 0 0 2px rgba(154,201,44,.45);border-radius:3px}
-[contenteditable].block{display:block}
-[contenteditable]:empty::after{content:attr(placeholder);color:#bbb;font-style:italic;pointer-events:none}
-/* Edit hint on hover */
-[contenteditable]:hover::after{
-  content:' ✎';font-size:.7em;color:var(--sh-green);font-style:normal;
-  vertical-align:super;pointer-events:none;font-family:system-ui
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
 }
-[contenteditable]:focus::after{content:'' !important}
 
-/* ── META PANEL (dark, for URL/hidden fields) ── */
-.meta-panel{background:var(--sh-surface);border-top:3px solid var(--sh-green);padding:1.25rem 1.5rem}
-.meta-panel h4{font-size:.7rem;font-weight:700;color:var(--sh-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem}
-.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-.meta-grid.col1{grid-template-columns:1fr}
-.meta-field{display:flex;flex-direction:column;gap:.25rem}
-.meta-field label{font-size:.68rem;font-weight:600;color:var(--sh-muted);text-transform:uppercase;letter-spacing:.05em}
-.meta-field input,.meta-field textarea{padding:.5rem .7rem;background:var(--sh-surface2);border:1px solid var(--sh-border);border-radius:6px;color:var(--sh-text);font-size:.8rem;font-family:monospace;transition:border-color .15s}
-.meta-field input:focus,.meta-field textarea:focus{outline:none;border-color:var(--sh-green)}
-.meta-field textarea{resize:vertical;font-family:inherit;font-size:.82rem;min-height:60px}
+/* ─── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
 
-/* ── SECTION PREVIEW SHARED ── */
-.p-sec{padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,3rem)}
-.p-label{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--b-primary);margin-bottom:.875rem}
-.p-label::before{content:'';width:20px;height:2px;background:var(--b-primary);display:inline-block;flex-shrink:0}
-.p-h2{font-family:var(--b-fhead);font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:700;color:var(--b-fg);margin-bottom:.875rem;line-height:1.15}
-.p-lead{font-size:.95rem;color:var(--b-fg-muted);line-height:1.7;margin-bottom:.875rem;max-width:680px}
-.p-body{font-size:.875rem;color:var(--b-fg-muted);line-height:1.7;margin-bottom:.625rem}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
-.img-placeholder{border-radius:10px;display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:.8rem;font-weight:500;color:var(--b-primary);min-height:260px}
+/* ─── FOCUS ───────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
-/* ── HERO ── */
-.p-hero{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;padding:4rem clamp(1.5rem,5vw,4rem);background:var(--b-bg-soft);min-height:400px}
-.p-hero-eyebrow{display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--b-accent-dk);background:rgba(154,201,44,.12);border:1px solid rgba(154,201,44,.3);padding:.35rem 1rem;border-radius:4px;margin-bottom:1.1rem}
-.p-hero-title{font-family:var(--b-fhead);font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.08;color:var(--b-fg);margin-bottom:.875rem}
-.p-hero-title em{font-style:normal;color:var(--b-primary)}
-.p-hero-sub{font-size:.925rem;color:var(--b-fg-muted);margin-bottom:1.5rem;line-height:1.65;max-width:400px}
-.p-hero-actions{display:flex;gap:.875rem;flex-wrap:wrap}
-.p-btn{display:inline-flex;align-items:center;font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.7rem 1.6rem;border-radius:4px;border:none;cursor:default;font-family:var(--b-fbody);pointer-events:none}
-.p-btn-primary{background:var(--b-primary);color:#000}
-.p-btn-outline{background:transparent;color:var(--b-fg);border:1.5px solid rgba(0,0,0,.3)}
-.p-hero-video{background:linear-gradient(135deg,#f0f9e8,#e0f0c8);border-radius:12px;display:flex;align-items:center;justify-content:center;min-height:280px;color:var(--b-primary);font-size:.85rem;font-weight:500;gap:.5rem}
+/* ═══════════════════════════════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════════════════════════════ */
+#login {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 30% 30%, #0d2a0d 0%, var(--bg) 60%);
+  z-index: 9999;
+}
+#login.hidden { display: none; }
 
-/* ── NAV ── */
-.p-nav-bar{display:flex;align-items:center;gap:.5rem;padding:1rem 2rem;background:#fff;border:1px solid var(--b-border);border-radius:8px;flex-wrap:wrap}
-.p-nav-item{font-size:.8rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;padding:.4rem .75rem;border-radius:4px;background:rgba(154,201,44,.08);color:var(--b-fg)}
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem 2.25rem;
+  width: 360px;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04) inset;
+}
+.login-logo {
+  width: 56px; height: 56px;
+  background: var(--green-lt);
+  border: 1px solid var(--green-ring);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; margin: 0 auto 1.25rem;
+}
+.login-card h1 { font-size: 1.35rem; font-weight: 700; text-align: center; margin-bottom: .3rem; }
+.login-card p  { font-size: .82rem; color: var(--muted); text-align: center; margin-bottom: 1.75rem; }
+.login-field   { position: relative; margin-bottom: .875rem; }
+.login-field input {
+  width: 100%; padding: .75rem 1rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-size: .9rem; font-family: inherit;
+  transition: border-color var(--trans);
+}
+.login-field input:focus { outline: none; border-color: var(--green); }
+.btn-login {
+  width: 100%; padding: .8rem;
+  background: var(--green); border: none; border-radius: var(--radius-sm);
+  color: #fff; font-size: .9rem; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  transition: background var(--trans), transform 80ms;
+}
+.btn-login:hover { background: var(--green-dk); }
+.btn-login:active { transform: scale(.98); }
+.login-error {
+  margin-top: .75rem; padding: .6rem .875rem;
+  background: var(--red-lt); border: 1px solid rgba(248,81,73,.3);
+  border-radius: var(--radius-sm); color: var(--red);
+  font-size: .8rem; text-align: center; display: none;
+}
 
-/* ── ABOUT ── */
-.p-awards{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.625rem}
-.p-award{font-size:.68rem;font-weight:600;padding:.3rem .75rem;background:rgba(154,201,44,.1);border:1px solid rgba(154,201,44,.28);border-radius:4px;color:var(--b-accent-dk)}
-.p-pillars{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-top:1.25rem}
-.p-pillar{background:var(--b-bg-soft);border:1px solid var(--b-border);border-radius:8px;padding:.875rem}
-.p-pillar-title{font-size:.82rem;font-weight:700;color:var(--b-primary);margin-bottom:.3rem}
-.p-pillar-body{font-size:.75rem;color:var(--b-fg-muted);line-height:1.6}
+/* ═══════════════════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════════════════ */
+#app { display: none; height: 100vh; }
+#app.visible { display: flex; }
 
-/* ── FRESHO ── */
-.p-fresho-bg{background:#1a9e3f;padding:3.5rem clamp(1.5rem,5vw,3rem)}
-.p-fresho-bg .p-label{color:rgba(255,255,255,.7)}
-.p-fresho-bg .p-label::before{background:rgba(255,255,255,.7)}
-.p-fresho-bg .p-h2{color:#fff}
-.p-fresho-bg .p-body{color:rgba(255,255,255,.85)}
-.p-fresho-inner{display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
-.p-fresho-logo{width:160px;height:72px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);font-size:.78rem;flex-shrink:0}
-.p-btn-fresho{display:inline-flex;font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.65rem 1.4rem;border-radius:4px;border:none;background:#fff;color:#1a9e3f;margin-top:.875rem;cursor:default;font-family:var(--b-fbody);pointer-events:none}
+/* ─── SIDEBAR ─────────────────────────────────────────── */
+#sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow: hidden;
+}
+.sb-head {
+  padding: 1rem .875rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .65rem; flex-shrink: 0;
+}
+.sb-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  background: var(--green-lt); border: 1px solid var(--green-ring);
+  border-radius: 9px; display: flex; align-items: center;
+  justify-content: center; font-size: 1rem;
+}
+.sb-title strong { display: block; font-size: .82rem; font-weight: 700; }
+.sb-title span   { font-size: .68rem; color: var(--muted); }
 
-/* ── DELIVERY ── */
-.p-bullets{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.875rem}
-.p-bullet{display:flex;align-items:flex-start;gap:.65rem;font-size:.875rem;color:var(--b-fg-muted)}
-.p-bullet::before{content:'✓';color:var(--b-primary);font-weight:700;flex-shrink:0;margin-top:1px}
+.sb-nav { flex: 1; overflow-y: auto; padding: .5rem .5rem; }
 
-/* ── MISSION ── */
-.p-mission-list{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.625rem}
-.p-mission-item{display:flex;align-items:flex-start;gap:.6rem;font-size:.85rem;color:var(--b-fg-muted)}
-.p-mission-item::before{content:'→';color:var(--b-primary);font-weight:700;flex-shrink:0}
-.p-principles{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.875rem}
-.p-principle{font-size:.68rem;font-weight:600;padding:.3rem .7rem;background:rgba(154,201,44,.1);border:1px solid rgba(154,201,44,.22);border-radius:20px;color:var(--b-accent-dk)}
+.sb-group {
+  font-size: .6rem; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: .875rem .5rem .3rem;
+}
+.nav-item {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .45rem .65rem;
+  color: var(--muted); cursor: pointer;
+  border-radius: 6px; font-size: .8rem;
+  transition: color var(--trans), background var(--trans);
+  margin-bottom: 1px; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-item .nav-icon { font-size: .9rem; flex-shrink: 0; width: 18px; text-align: center; }
+.nav-item:hover { color: var(--text); background: var(--surface2); }
+.nav-item.active {
+  color: var(--green); background: var(--green-lt);
+  font-weight: 600;
+}
 
-/* ── TESTIMONIALS ── */
-.p-t-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem;margin-top:1.5rem}
-.p-t-card{background:var(--b-bg-soft);border:1px solid var(--b-border);border-radius:10px;padding:1.25rem;position:relative}
-.p-t-stars{display:flex;gap:.2rem;margin-bottom:.625rem}
-.p-t-star{font-size:.95rem;cursor:pointer;color:#d1d5db;transition:color .1s;user-select:none}
-.p-t-star.on{color:#f59e0b}
-.p-t-quote{font-size:.85rem;color:var(--b-fg-muted);line-height:1.65;font-style:italic;margin-bottom:.625rem}
-.p-t-author{font-size:.78rem;font-weight:600;color:var(--b-fg)}
-.p-t-del{position:absolute;top:.75rem;right:.75rem;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:4px;color:#dc2626;font-size:.68rem;padding:.2rem .5rem;cursor:pointer;font-family:inherit}
-.p-t-del:hover{background:rgba(248,113,113,.18)}
-.btn-add-t{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.1rem;background:var(--b-bg-soft);border:2px dashed var(--b-border);border-radius:8px;color:var(--b-fg-muted);font-size:.8rem;cursor:pointer;font-family:var(--b-fbody);margin-top:1rem;transition:all .15s;font-weight:500}
-.btn-add-t:hover{border-color:var(--b-primary);color:var(--b-primary)}
+.sb-foot {
+  padding: .75rem .875rem; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.sb-foot a {
+  font-size: .72rem; color: var(--muted); text-decoration: none;
+  padding: .3rem .5rem; border-radius: 4px;
+  transition: color var(--trans), background var(--trans);
+}
+.sb-foot a:hover { color: var(--text); background: var(--surface2); }
+#logout-btn {
+  font-size: .72rem; color: var(--muted); cursor: pointer;
+  padding: .3rem .5rem; border-radius: 4px;
+  transition: color var(--trans), background var(--trans);
+}
+#logout-btn:hover { color: var(--red); background: var(--red-lt); }
 
-/* ── ENVIRONMENT ── */
-.p-env-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;margin-top:1.25rem}
-.p-env-card{background:var(--b-bg-soft);border:1px solid var(--b-border);border-radius:8px;padding:1rem}
-.p-env-title{font-size:.82rem;font-weight:700;color:var(--b-primary);margin-bottom:.35rem}
-.p-env-body{font-size:.75rem;color:var(--b-fg-muted);line-height:1.6}
-.p-env-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;margin-top:1.25rem}
-.p-env-stat{background:var(--b-primary);border-radius:8px;padding:1.1rem;text-align:center}
-.p-env-stat-num{font-family:var(--b-fhead);font-size:1.7rem;font-weight:700;color:#fff;display:block}
-.p-env-stat-label{font-size:.7rem;color:rgba(255,255,255,.88);margin-top:.2rem;display:block}
+/* ─── MAIN AREA ───────────────────────────────────────── */
+#main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
 
-/* ── PRODUCTS ── */
-.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.875rem;margin-top:1rem}
-.prod-card{background:var(--sh-surface2);border:1px solid var(--sh-border);border-radius:8px;overflow:hidden;position:relative}
-.prod-thumb{aspect-ratio:4/3;overflow:hidden;position:relative;background:var(--sh-bg)}
-.prod-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.prod-thumb-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--sh-muted)}
-.prod-body{padding:.625rem .75rem}
-.prod-name{font-size:.78rem;font-weight:600;margin-bottom:.3rem;color:var(--sh-text)}
-.prod-url{font-size:.65rem;color:var(--sh-muted);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.5rem}
-.prod-actions{display:flex;gap:.4rem}
-.prod-edit-btn{flex:1;padding:.35rem .5rem;background:var(--sh-surface);border:1px solid var(--sh-border);border-radius:5px;color:var(--sh-text);font-size:.7rem;cursor:pointer;font-family:inherit;transition:all .13s}
-.prod-edit-btn:hover{border-color:var(--sh-green);color:var(--sh-green)}
-.prod-del-btn{padding:.35rem .5rem;background:transparent;border:1px solid rgba(248,81,73,.2);border-radius:5px;color:var(--sh-red);font-size:.7rem;cursor:pointer;font-family:inherit;transition:all .13s}
-.prod-del-btn:hover{background:rgba(248,81,73,.08)}
-.prod-edit-panel{display:none;position:absolute;inset:0;background:var(--sh-surface);border:1px solid var(--sh-green);border-radius:8px;padding:.625rem;z-index:10;flex-direction:column;gap:.35rem}
-.prod-edit-panel.open{display:flex}
-.prod-edit-panel label{font-size:.62rem;font-weight:700;text-transform:uppercase;color:var(--sh-muted)}
-.prod-edit-panel input{padding:.35rem .5rem;background:var(--sh-surface2);border:1px solid var(--sh-border);border-radius:5px;color:var(--sh-text);font-size:.72rem;font-family:inherit;width:100%}
-.prod-edit-panel input:focus{outline:none;border-color:var(--sh-green)}
-.prod-edit-footer{display:flex;gap:.35rem;margin-top:auto}
-.prod-edit-save{flex:1;padding:.35rem;background:var(--sh-green);border:none;border-radius:5px;color:#fff;font-size:.7rem;font-weight:600;cursor:pointer;font-family:inherit}
-.prod-edit-cancel{padding:.35rem .6rem;background:transparent;border:1px solid var(--sh-border);border-radius:5px;color:var(--sh-muted);font-size:.7rem;cursor:pointer;font-family:inherit}
-.prod-add-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;border:2px dashed var(--sh-border);border-radius:8px;aspect-ratio:4/3;cursor:pointer;color:var(--sh-muted);font-size:.8rem;transition:all .15s;background:transparent}
-.prod-add-btn:hover{border-color:var(--sh-green);color:var(--sh-green)}
+/* ─── TOOLBAR ─────────────────────────────────────────── */
+#toolbar {
+  height: var(--toolbar-h); flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 1.5rem; gap: 1rem;
+}
+#tb-breadcrumb { flex: 1; min-width: 0; }
+#tb-title { font-size: .88rem; font-weight: 600; white-space: nowrap; }
+#tb-sub   { font-size: .7rem; color: var(--muted); margin-top: .1rem; }
+#tb-status { font-size: .75rem; white-space: nowrap; }
+#tb-status.ok  { color: var(--green); }
+#tb-status.err { color: var(--red); }
 
-/* ── COMMITMENT ── */
-.p-values{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
-.p-value{font-size:.75rem;font-weight:600;padding:.35rem .9rem;background:rgba(154,201,44,.1);border:1px solid rgba(154,201,44,.28);border-radius:20px;color:var(--b-accent-dk)}
+.btn-toolbar {
+  padding: .45rem .875rem;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: transparent; color: var(--muted2);
+  font-size: .78rem; font-family: inherit; cursor: pointer;
+  transition: all var(--trans); white-space: nowrap;
+  display: flex; align-items: center; gap: .4rem;
+}
+.btn-toolbar:hover { border-color: var(--text); color: var(--text); }
+.btn-toolbar.primary {
+  background: var(--green); border-color: var(--green);
+  color: #fff; font-weight: 600;
+}
+.btn-toolbar.primary:hover { background: var(--green-dk); border-color: var(--green-dk); }
+.btn-toolbar:disabled {
+  background: var(--surface2); border-color: var(--border);
+  color: var(--muted); cursor: not-allowed;
+}
 
-/* ── CONTACT ── */
-.p-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem}
-.p-contact-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--b-primary);margin-bottom:.25rem}
-.p-contact-value{font-size:.875rem;color:var(--b-fg-muted);line-height:1.6}
+/* ─── CONTENT AREA ───────────────────────────────────── */
+#content { flex: 1; overflow-y: auto; background: #edf0f2; }
 
-/* ── FOOTER ── */
-.p-footer-bg{background:#111;color:#fff;padding:3rem clamp(1.5rem,5vw,3rem)}
-.p-footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
-.p-footer-brand{font-family:var(--b-fhead);font-size:1.3rem;color:var(--b-primary);margin-bottom:.2rem}
-.p-footer-sub{font-size:.72rem;color:rgba(255,255,255,.55);margin-bottom:.625rem}
-.p-footer-text{font-size:.78rem;color:rgba(255,255,255,.7);line-height:1.7}
-.p-footer-col-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:.625rem}
-.p-footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.1rem;display:flex;justify-content:space-between;font-size:.7rem;color:rgba(255,255,255,.35)}
+/* ═══════════════════════════════════════════════════════
+   SECTION EDITOR PANELS
+═══════════════════════════════════════════════════════ */
+.editor-wrap {
+  max-width: 820px; margin: 2rem auto; padding: 0 1.5rem 3rem;
+}
+.editor-card {
+  background: #fff; border: 1px solid #dde3e9;
+  border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem;
+}
+.editor-card-head {
+  padding: .875rem 1.25rem;
+  border-bottom: 1px solid #dde3e9;
+  display: flex; align-items: center; gap: .6rem;
+  background: #f7f9fb;
+}
+.editor-card-head h3 { font-size: .82rem; font-weight: 700; color: #1a1f2e; }
+.editor-card-head .badge {
+  font-size: .62rem; font-weight: 700; padding: .2rem .55rem;
+  border-radius: 20px; background: rgba(154,201,44,.12);
+  color: #4a7a0a; letter-spacing: .03em;
+}
+.editor-card-body { padding: 1.25rem; }
 
-/* ── GALLERY & IMAGES SHELL ── */
-.media-shell{padding:1.5rem;background:var(--sh-bg);min-height:100%}
-.media-card{background:var(--sh-surface);border:1px solid var(--sh-border);border-radius:10px;overflow:hidden;margin-bottom:1.25rem}
-.media-card-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--sh-border);display:flex;align-items:center;gap:.6rem}
-.media-card-head h3{font-size:.875rem;font-weight:600}
-.chip{font-size:.65rem;padding:.2rem .55rem;border-radius:20px;background:rgba(154,201,44,.1);color:var(--sh-green);font-weight:600}
-.media-card-body{padding:1.25rem}
-.upload-zone{border:2px dashed var(--sh-border);border-radius:10px;padding:2rem;text-align:center;color:var(--sh-muted);cursor:pointer;transition:all .2s}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--sh-green);color:var(--sh-text);background:var(--sh-green-lt)}
-.upload-zone-icon{font-size:2rem;margin-bottom:.5rem}
-.upload-zone strong{display:block;font-size:.875rem;color:var(--sh-text);margin-bottom:.25rem}
-.upload-zone-note{font-size:.75rem}
-.err-banner{display:none;align-items:center;gap:.5rem;padding:.5rem .875rem;background:rgba(248,81,73,.07);border:1px solid rgba(248,81,73,.2);border-radius:6px;color:var(--sh-red);font-size:.8rem;margin-bottom:.875rem}
-.err-banner.show{display:flex}
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.875rem}
-.g-item{position:relative;border-radius:8px;overflow:hidden;background:var(--sh-surface2);border:1px solid var(--sh-border);aspect-ratio:4/3}
-.g-item img{width:100%;height:100%;object-fit:cover;display:block}
-.g-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.8);border:none;border-radius:5px;color:#fff;width:26px;height:26px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
-.g-item:hover .g-del{opacity:1}
-.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
-.slot-card{background:var(--sh-surface2);border:1px solid var(--sh-border);border-radius:8px;overflow:hidden}
-.slot-thumb{height:150px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--sh-bg);position:relative;cursor:pointer}
-.slot-thumb img{width:100%;height:100%;object-fit:cover}
-.slot-thumb-empty{color:var(--sh-muted);font-size:.8rem;text-align:center;pointer-events:none}
-.slot-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);opacity:0;transition:opacity .2s}
-.slot-thumb:hover .slot-overlay{opacity:1}
-.slot-overlay span{background:var(--sh-green);color:#fff;padding:.35rem .85rem;border-radius:6px;font-size:.75rem;font-weight:600}
-.slot-info{padding:.875rem}
-.slot-name{font-size:.875rem;font-weight:600;margin-bottom:.15rem}
-.slot-key{font-size:.68rem;color:var(--sh-muted);font-family:monospace;margin-bottom:.625rem}
-.slot-btn{width:100%;padding:.45rem;background:var(--sh-surface);border:1px solid var(--sh-border);border-radius:5px;color:var(--sh-text);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .13s}
-.slot-btn:hover{border-color:var(--sh-green);color:var(--sh-green)}
+/* Field groups */
+.field-group { margin-bottom: 1rem; }
+.field-group:last-child { margin-bottom: 0; }
+.field-label {
+  display: block; font-size: .68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: #6b7280; margin-bottom: .35rem;
+}
+.field-hint { font-size: .7rem; color: #9ca3af; margin-top: .25rem; }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--sh-border);border-radius:3px}
+/* Editable inline spans */
+.ce-field {
+  display: inline; outline: none; cursor: text;
+  border-radius: 3px; transition: background var(--trans), box-shadow var(--trans);
+}
+.ce-field:hover { background: rgba(154,201,44,.1); }
+.ce-field:focus {
+  background: rgba(154,201,44,.14);
+  box-shadow: 0 0 0 2px rgba(154,201,44,.4);
+}
+.ce-field:empty::before {
+  content: attr(placeholder); color: #d1d5db; font-style: italic; pointer-events: none;
+}
+
+/* Editable block divs */
+.ce-block {
+  display: block; outline: none; cursor: text;
+  border-radius: 4px; padding: .5rem .6rem;
+  border: 1.5px solid transparent;
+  transition: border-color var(--trans), background var(--trans);
+  font-size: .88rem; color: #374151; line-height: 1.65;
+  background: #fafafa; min-height: 60px;
+}
+.ce-block:hover { border-color: #d1d5db; background: #fff; }
+.ce-block:focus { border-color: #9AC92C; background: #fff; box-shadow: 0 0 0 3px rgba(154,201,44,.15); }
+.ce-block:empty::before {
+  content: attr(placeholder); color: #d1d5db; font-style: italic; pointer-events: none;
+}
+
+/* Standard input / textarea in editor */
+.field-input {
+  width: 100%; padding: .55rem .75rem;
+  background: #fafafa; border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-sm); color: #1a1f2e;
+  font-size: .88rem; font-family: inherit;
+  transition: border-color var(--trans), box-shadow var(--trans);
+}
+.field-input:focus { outline: none; border-color: #9AC92C; box-shadow: 0 0 0 3px rgba(154,201,44,.15); background: #fff; }
+textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* Two-column grid */
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; }
+.field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .875rem; }
+
+/* Section label preview style (for hero eyebrow etc.) */
+.preview-eyebrow {
+  display: inline-block; font-size: .7rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: #3d6b0a; background: rgba(154,201,44,.12);
+  border: 1px solid rgba(154,201,44,.25);
+  border-radius: 4px; padding: .3rem .875rem; margin-bottom: .5rem;
+}
+.preview-h1 {
+  font-size: clamp(1.5rem, 3.5vw, 2.6rem); font-weight: 800;
+  line-height: 1.1; color: #111; margin-bottom: .5rem;
+}
+.preview-h1 em { font-style: normal; color: #9AC92C; }
+.preview-sub { font-size: .9rem; color: #555; line-height: 1.65; max-width: 520px; }
+
+/* Pillar / card grids */
+.pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: .75rem; }
+.pillar-item {
+  background: #f7f9fb; border: 1px solid #e5e7eb;
+  border-radius: 8px; padding: .875rem;
+}
+.pillar-item .field-label { margin-bottom: .5rem; }
+
+/* ═══════════════════════════════════════════════════════
+   PRODUCTS MANAGER
+═══════════════════════════════════════════════════════ */
+.prod-shell { padding: 1.5rem 2rem 3rem; }
+
+.prod-toolbar {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.25rem; flex-wrap: wrap;
+}
+.prod-toolbar h2 { font-size: 1rem; font-weight: 700; flex: 1; color: var(--text); }
+.prod-search {
+  padding: .5rem .875rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-size: .82rem; font-family: inherit; width: 220px;
+  transition: border-color var(--trans);
+}
+.prod-search:focus { outline: none; border-color: var(--green); }
+.prod-search::placeholder { color: var(--muted); }
+
+/* Product table */
+.prod-table { width: 100%; border-collapse: collapse; }
+.prod-table th {
+  font-size: .65rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--muted); padding: .625rem .75rem;
+  border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+}
+.prod-table td {
+  padding: .625rem .75rem; border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.prod-table tr:last-child td { border-bottom: none; }
+.prod-table tr:hover td { background: rgba(255,255,255,.02); }
+
+.prod-thumb-cell { width: 52px; }
+.prod-thumb-img {
+  width: 46px; height: 36px; object-fit: cover;
+  border-radius: 4px; background: var(--surface3);
+  display: block;
+}
+.prod-thumb-empty {
+  width: 46px; height: 36px; border-radius: 4px;
+  background: var(--surface3); display: flex;
+  align-items: center; justify-content: center;
+  font-size: .65rem; color: var(--muted);
+}
+.prod-name-cell { font-size: .82rem; font-weight: 600; color: var(--text); }
+.prod-cat-cell  { font-size: .78rem; color: var(--muted); }
+.prod-desc-cell {
+  font-size: .75rem; color: var(--muted);
+  max-width: 240px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.prod-actions-cell { white-space: nowrap; }
+
+.btn-row {
+  padding: .3rem .65rem; border-radius: 5px;
+  font-size: .72rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; border: 1px solid var(--border);
+  transition: all var(--trans); background: transparent;
+  color: var(--muted2);
+}
+.btn-row:hover { border-color: var(--green); color: var(--green); background: var(--green-lt); }
+.btn-row.danger { color: var(--red); border-color: rgba(248,81,73,.25); }
+.btn-row.danger:hover { background: var(--red-lt); border-color: var(--red); }
+
+.prod-empty {
+  text-align: center; padding: 3rem 1rem;
+  color: var(--muted); font-size: .85rem;
+}
+.prod-count-badge {
+  font-size: .7rem; padding: .2rem .55rem;
+  background: var(--green-lt); color: var(--green);
+  border-radius: 20px; font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════
+   GALLERY & SITE IMAGES (MEDIA)
+═══════════════════════════════════════════════════════ */
+.media-shell { padding: 1.5rem 2rem 3rem; }
+.media-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem;
+}
+.media-card-head {
+  padding: .875rem 1.25rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .6rem;
+}
+.media-card-head h3 { font-size: .875rem; font-weight: 600; flex: 1; }
+.chip {
+  font-size: .65rem; padding: .2rem .55rem; border-radius: 20px;
+  background: var(--green-lt); color: var(--green); font-weight: 600;
+}
+.media-card-body { padding: 1.25rem; }
+
+/* Upload zone */
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 10px;
+  padding: 2rem 1.5rem; text-align: center; cursor: pointer;
+  color: var(--muted); transition: all .2s;
+}
+.upload-zone:hover, .upload-zone.drag {
+  border-color: var(--green); color: var(--text);
+  background: var(--green-lt);
+}
+.upload-zone-icon { font-size: 2rem; margin-bottom: .5rem; }
+.upload-zone strong { display: block; color: var(--text); margin-bottom: .35rem; font-size: .875rem; }
+.upload-zone-note { font-size: .75rem; }
+
+/* Error banner */
+.err-banner {
+  display: none; align-items: center; gap: .5rem;
+  padding: .55rem .875rem;
+  background: var(--red-lt); border: 1px solid rgba(248,81,73,.25);
+  border-radius: 6px; color: var(--red); font-size: .8rem; margin-bottom: .875rem;
+}
+.err-banner.show { display: flex; }
+
+/* Gallery grid */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .875rem; }
+.g-item { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 4/3; background: var(--surface2); }
+.g-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.g-del {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(0,0,0,.8); border: none; border-radius: 5px;
+  color: #fff; width: 26px; height: 26px; cursor: pointer;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity var(--trans);
+}
+.g-item:hover .g-del { opacity: 1; }
+
+/* Slot grid */
+.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.slot-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.slot-thumb {
+  height: 140px; overflow: hidden; background: var(--bg);
+  cursor: pointer; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.slot-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slot-thumb-empty { color: var(--muted); font-size: .8rem; text-align: center; }
+.slot-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55); opacity: 0; transition: opacity .2s;
+}
+.slot-thumb:hover .slot-overlay { opacity: 1; }
+.slot-overlay span {
+  background: var(--green); color: #fff;
+  padding: .35rem .875rem; border-radius: 6px; font-size: .75rem; font-weight: 600;
+}
+.slot-info { padding: .875rem; }
+.slot-name { font-size: .875rem; font-weight: 600; margin-bottom: .15rem; }
+.slot-key  { font-size: .65rem; color: var(--muted); font-family: monospace; margin-bottom: .625rem; }
+.slot-btn {
+  width: 100%; padding: .45rem; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 5px;
+  color: var(--text); font-size: .78rem; cursor: pointer;
+  font-family: inherit; transition: all var(--trans);
+}
+.slot-btn:hover { border-color: var(--green); color: var(--green); }
+
+/* ═══════════════════════════════════════════════════════
+   MODAL SYSTEM
+═══════════════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.65);
+  display: none; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 40px 100px rgba(0,0,0,.7);
+  animation: modal-in .18s ease;
+}
+@keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(.97); } }
+
+.modal-head {
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.modal-head h2 { font-size: .95rem; font-weight: 700; flex: 1; }
+.modal-close {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 1.2rem; line-height: 1;
+  padding: .1rem .3rem; border-radius: 4px;
+  transition: color var(--trans), background var(--trans);
+  flex-shrink: 0;
+}
+.modal-close:hover { color: var(--text); background: var(--surface2); }
+
+.modal-body  { padding: 1.25rem 1.5rem; }
+.modal-foot  {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: flex-end; gap: .75rem;
+}
+
+/* Modal fields share same style as editor fields */
+.modal .field-label {
+  font-size: .65rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--muted); display: block; margin-bottom: .35rem;
+}
+.modal .field-input {
+  width: 100%; padding: .55rem .75rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-size: .88rem; font-family: inherit;
+  transition: border-color var(--trans), box-shadow var(--trans);
+}
+.modal .field-input:focus {
+  outline: none; border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(154,201,44,.2);
+}
+.modal textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
+.modal .field-group { margin-bottom: 1rem; }
+.modal .field-group:last-child { margin-bottom: 0; }
+
+/* Confirm modal */
+.confirm-modal { max-width: 420px; }
+.confirm-modal .modal-body { padding: 1.5rem; }
+.confirm-modal p { font-size: .88rem; color: var(--muted2); line-height: 1.6; }
+.confirm-modal .highlight { color: var(--text); font-weight: 600; }
+
+.btn-cancel {
+  padding: .55rem 1.1rem; background: transparent;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--muted2); font-size: .82rem; font-family: inherit;
+  cursor: pointer; transition: all var(--trans);
+}
+.btn-cancel:hover { border-color: var(--text); color: var(--text); }
+.btn-confirm-delete {
+  padding: .55rem 1.1rem; background: var(--red);
+  border: none; border-radius: var(--radius-sm);
+  color: #fff; font-size: .82rem; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: background var(--trans);
+}
+.btn-confirm-delete:hover { background: #d1302a; }
+.btn-save {
+  padding: .55rem 1.25rem; background: var(--green);
+  border: none; border-radius: var(--radius-sm);
+  color: #fff; font-size: .82rem; font-weight: 600;
+  font-family: inherit; cursor: pointer;
+  transition: background var(--trans);
+  display: flex; align-items: center; gap: .4rem;
+}
+.btn-save:hover { background: var(--green-dk); }
+.btn-save:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+/* ─── PRODUCT FORM MODAL image upload ────────────────── */
+.img-upload-zone {
+  border: 2px dashed var(--border); border-radius: 8px;
+  padding: 1.5rem; text-align: center; cursor: pointer;
+  color: var(--muted); transition: all .2s;
+  position: relative; min-height: 120px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .5rem;
+}
+.img-upload-zone:hover, .img-upload-zone.drag {
+  border-color: var(--green); color: var(--text); background: var(--green-lt);
+}
+.img-upload-zone .upload-icon { font-size: 1.75rem; }
+.img-upload-zone strong { font-size: .82rem; color: var(--text); }
+.img-upload-zone span  { font-size: .72rem; }
+.img-preview-wrap { position: relative; }
+.img-preview {
+  width: 100%; height: 160px; object-fit: cover;
+  border-radius: 6px; display: block; background: var(--surface3);
+}
+.img-preview-remove {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(0,0,0,.75); border: none; border-radius: 5px;
+  color: #fff; padding: .25rem .5rem; cursor: pointer; font-size: .75rem;
+  font-family: inherit; transition: background var(--trans);
+}
+.img-preview-remove:hover { background: var(--red); }
+.modal-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; }
+
+/* ═══════════════════════════════════════════════════════
+   TOAST NOTIFICATIONS
+═══════════════════════════════════════════════════════ */
+#toast-container {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 9998; display: flex; flex-direction: column;
+  gap: .5rem; pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .75rem 1rem .75rem .875rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; min-width: 240px; max-width: 340px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  animation: toast-in .2s ease; pointer-events: all;
+}
+.toast.removing { animation: toast-out .2s ease forwards; }
+@keyframes toast-in  { from { opacity: 0; transform: translateX(16px); } }
+@keyframes toast-out { to   { opacity: 0; transform: translateX(16px); } }
+.toast-icon { font-size: 1rem; flex-shrink: 0; }
+.toast-msg  { font-size: .82rem; flex: 1; line-height: 1.4; }
+.toast.success .toast-icon { color: var(--green); }
+.toast.error   .toast-icon { color: var(--red); }
+.toast.warning .toast-icon { color: var(--yellow); }
+.toast.info    .toast-icon { color: var(--blue); }
+
+/* ═══════════════════════════════════════════════════════
+   LOADING SPINNER
+═══════════════════════════════════════════════════════ */
+.spinner-wrap {
+  display: flex; align-items: center; justify-content: center;
+  padding: 4rem 2rem; color: var(--muted); gap: .75rem;
+  font-size: .85rem;
+}
+.spinner {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--green);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════════════════════════ */
+.t-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1rem; }
+.t-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.1rem; position: relative;
+}
+.t-del {
+  position: absolute; top: .75rem; right: .75rem;
+  background: transparent; border: 1px solid rgba(248,81,73,.2);
+  border-radius: 4px; color: var(--red); font-size: .68rem; padding: .2rem .5rem;
+  cursor: pointer; font-family: inherit; transition: all var(--trans);
+}
+.t-del:hover { background: var(--red-lt); }
+.t-stars { display: flex; gap: .2rem; margin-bottom: .625rem; }
+.t-star  { font-size: 1rem; cursor: pointer; color: var(--border); transition: color var(--trans); }
+.t-star.on { color: #e3b341; }
+.t-quote {
+  font-size: .85rem; color: var(--muted2); font-style: italic;
+  line-height: 1.65; margin-bottom: .5rem;
+  min-height: 40px; outline: none; cursor: text; border-radius: 3px;
+  padding: .2rem .3rem; transition: background var(--trans);
+}
+.t-quote:focus { background: rgba(255,255,255,.04); }
+.t-author {
+  font-size: .78rem; font-weight: 600; color: var(--text);
+  outline: none; cursor: text; border-radius: 3px;
+  padding: .1rem .3rem; transition: background var(--trans);
+}
+.t-author:focus { background: rgba(255,255,255,.04); }
+.btn-add-t {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .75rem 1.1rem; margin-top: 1rem;
+  background: transparent; border: 2px dashed var(--border);
+  border-radius: 8px; color: var(--muted); font-size: .8rem;
+  cursor: pointer; font-family: inherit; transition: all var(--trans); font-weight: 500;
+}
+.btn-add-t:hover { border-color: var(--green); color: var(--green); }
+
+/* ═══════════════════════════════════════════════════════
+   ENVIRONMENT / COMMITMENT cards
+═══════════════════════════════════════════════════════ */
+.env-card-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .875rem; }
+.env-stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .875rem; margin-top: .875rem; }
+
+/* ═══════════════════════════════════════════════════════
+   NAV EDITOR
+═══════════════════════════════════════════════════════ */
+.nav-pills { display: flex; flex-wrap: wrap; gap: .5rem; }
+.nav-pill {
+  background: var(--green-lt); border: 1px solid rgba(154,201,44,.25);
+  border-radius: 6px; padding: .45rem .875rem;
+  font-size: .82rem; font-weight: 500; color: #1a1a1a;
+}
+
+/* ─── FRESHO dark preview ─────────────────────────────── */
+.fresho-preview {
+  background: #1a9e3f; border-radius: 8px; padding: 1.5rem;
+  color: #fff; margin-bottom: 1rem;
+}
+.fresho-preview .preview-sub { color: rgba(255,255,255,.85); max-width: 100%; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ════════════════════════════════════
+     LOGIN
+════════════════════════════════════ -->
 <div id="login">
   <div class="login-card">
     <div class="login-logo">🌿</div>
     <h1>AMJ CMS</h1>
-    <p>Sign in to manage your website content</p>
-    <input type="password" id="pw" placeholder="Admin password" autocomplete="current-password"/>
+    <p>Sign in to manage your website</p>
+    <div class="login-field">
+      <input type="password" id="pw" placeholder="Admin password" autocomplete="current-password" />
+    </div>
     <button class="btn-login" id="login-btn">Sign In</button>
-    <div id="login-err">Incorrect password. Please try again.</div>
+    <div class="login-error" id="login-err">Incorrect password. Please try again.</div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ════════════════════════════════════
+     APP
+════════════════════════════════════ -->
 <div id="app">
+
+  <!-- SIDEBAR -->
   <div id="sidebar">
     <div class="sb-head">
       <div class="sb-icon">🌿</div>
       <div class="sb-title"><strong>AMJ CMS</strong><span>Content Manager</span></div>
     </div>
     <div class="sb-nav">
-      <div class="sb-group">Website Content</div>
-      <div class="nav-item active" data-section="hero">🏠 Hero</div>
-      <div class="nav-item" data-section="nav">☰ Navigation</div>
-      <div class="nav-item" data-section="about">👥 About</div>
-      <div class="nav-item" data-section="fresho">🛒 Fresho / Ordering</div>
-      <div class="nav-item" data-section="delivery">🚚 Delivery</div>
-      <div class="nav-item" data-section="mission">🎯 Mission & Vision</div>
-      <div class="nav-item" data-section="testimonials">⭐ Testimonials</div>
-      <div class="nav-item" data-section="environment">🌱 Environment</div>
-      <div class="nav-item" data-section="commitment">🤝 Commitment</div>
-      <div class="nav-item" data-section="contact">📞 Contact</div>
-      <div class="nav-item" data-section="footer">📄 Footer</div>
-      <div class="nav-item" data-section="products">🥦 Products</div>
+
+      <div class="sb-group">Text Content</div>
+      <div class="nav-item active" data-section="hero">
+        <span class="nav-icon">🏠</span> Hero
+      </div>
+      <div class="nav-item" data-section="nav">
+        <span class="nav-icon">☰</span> Navigation
+      </div>
+      <div class="nav-item" data-section="about">
+        <span class="nav-icon">👥</span> About
+      </div>
+      <div class="nav-item" data-section="fresho">
+        <span class="nav-icon">🛒</span> Fresho / Ordering
+      </div>
+      <div class="nav-item" data-section="delivery">
+        <span class="nav-icon">🚚</span> Delivery
+      </div>
+      <div class="nav-item" data-section="mission">
+        <span class="nav-icon">🎯</span> Mission &amp; Vision
+      </div>
+      <div class="nav-item" data-section="testimonials">
+        <span class="nav-icon">⭐</span> Testimonials
+      </div>
+      <div class="nav-item" data-section="environment">
+        <span class="nav-icon">🌱</span> Environment
+      </div>
+      <div class="nav-item" data-section="commitment">
+        <span class="nav-icon">🤝</span> Commitment
+      </div>
+      <div class="nav-item" data-section="contact">
+        <span class="nav-icon">📞</span> Contact
+      </div>
+      <div class="nav-item" data-section="footer">
+        <span class="nav-icon">📄</span> Footer
+      </div>
+
+      <div class="sb-group">Products</div>
+      <div class="nav-item" data-section="products">
+        <span class="nav-icon">🥦</span> Product Manager
+      </div>
+
       <div class="sb-group">Media</div>
-      <div class="nav-item" data-section="gallery">📷 Gallery</div>
-      <div class="nav-item" data-section="images">🖼 Site Images</div>
+      <div class="nav-item" data-section="gallery">
+        <span class="nav-icon">📷</span> Gallery Photos
+      </div>
+      <div class="nav-item" data-section="images">
+        <span class="nav-icon">🖼</span> Site Images
+      </div>
+
     </div>
     <div class="sb-foot">
       <a href="/" target="_blank">↗ View Site</a>
       <span id="logout-btn">Sign out</span>
     </div>
-  </div>
+  </div><!-- /sidebar -->
 
+  <!-- MAIN -->
   <div id="main">
     <div id="toolbar">
-      <div style="flex:1;min-width:0">
+      <div id="tb-breadcrumb">
         <div id="tb-title">Hero</div>
-        <div id="tb-sub">Click any text to edit inline</div>
+        <div id="tb-sub">Click any text to edit inline, then Save</div>
       </div>
       <span id="tb-status"></span>
-      <button class="btn-preview-site" onclick="window.open('/','_blank')">↗ Live Site</button>
-      <button id="save-btn" onclick="saveSection()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      <button class="btn-toolbar" onclick="window.open('/','_blank')">↗ Live Site</button>
+      <button class="btn-toolbar primary" id="save-btn" onclick="saveSection()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         Save Changes
       </button>
     </div>
-    <div id="preview-wrap"><div id="preview"></div></div>
+    <div id="content"><!-- section panels injected here --></div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ════════════════════════════════════
+     PRODUCT MODAL (Add / Edit)
+════════════════════════════════════ -->
+<div class="modal-overlay" id="prod-modal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head">
+      <h2 id="prod-modal-title">Add Product</h2>
+      <button class="modal-close" onclick="closeProdModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:1.25rem;align-items:start">
+
+        <!-- Image upload -->
+        <div>
+          <label class="field-label">Product Image</label>
+          <div id="img-upload-zone" class="img-upload-zone" onclick="triggerImgPicker()">
+            <div class="upload-icon">📸</div>
+            <strong>Click to upload</strong>
+            <span>or drag &amp; drop here</span>
+            <span style="font-size:.68rem;color:var(--muted)">JPG, PNG, WebP · Max 5MB</span>
+          </div>
+          <div id="img-preview-wrap" class="img-preview-wrap" style="display:none">
+            <img id="img-preview" class="img-preview" alt="Preview" />
+            <button class="img-preview-remove" onclick="removeImgPreview()">Remove</button>
+          </div>
+          <input type="file" id="prod-file-inp" accept="image/*" style="display:none" />
+        </div>
+
+        <!-- Fields -->
+        <div>
+          <div class="field-group">
+            <label class="field-label">Product Name *</label>
+            <input type="text" class="field-input" id="prod-form-name" placeholder="e.g. Purple Sprouting Broccoli" />
+          </div>
+          <div class="modal-grid-2">
+            <div class="field-group">
+              <label class="field-label">Category</label>
+              <input type="text" class="field-input" id="prod-form-category" placeholder="e.g. Vegetables" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Price / Notes</label>
+              <input type="text" class="field-input" id="prod-form-price" placeholder="e.g. Seasonal / POA" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Description</label>
+            <textarea class="field-input" id="prod-form-desc" rows="3"
+              placeholder="Short description shown as tooltip on the public site…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeProdModal()">Cancel</button>
+      <button class="btn-save" id="prod-modal-save" onclick="submitProdModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Product
+      </button>
+    </div>
   </div>
 </div>
 
-<input type="file" id="gallery-inp" multiple accept="image/*" style="display:none"/>
-<input type="file" id="slot-inp" accept="image/*" style="display:none"/>
-<input type="file" id="prod-img-inp" accept="image/*" style="display:none"/>
+<!-- ════════════════════════════════════
+     CONFIRM DELETE MODAL
+════════════════════════════════════ -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal confirm-modal">
+    <div class="modal-head">
+      <h2 id="confirm-title">Confirm Delete</h2>
+      <button class="modal-close" onclick="closeConfirm()">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-msg">Are you sure?</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm-delete" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
 
+<!-- Hidden file inputs for gallery & slot image uploads -->
+<input type="file" id="gallery-inp" multiple accept="image/*" style="display:none" />
+<input type="file" id="slot-inp"    accept="image/*"          style="display:none" />
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════ -->
 <script>
-'use strict'
+'use strict';
 
-/* ── STATE ── */
-let section = 'hero'
-let data = {}
-let tData = []
-let pendingSlot = null
+/* ──────────────────────────────────────────────────────────
+   STATE
+────────────────────────────────────────────────────────── */
+let currentSection = 'hero';
+let sectionData    = {};      // currently loaded section's data object
+let testimonials   = [];      // testimonial array (own state)
+let products       = [];      // product array (own state)
+let pendingSlot    = null;    // for site-image slot uploads
+let prodModalIdx   = null;    // null = add new; number = edit existing
+let pendingImgB64  = null;    // base64 for product image to upload on save
+let pendingImgMime = null;
 
-const LABELS = {
-  hero:'Hero', nav:'Navigation', about:'About', fresho:'Fresho / Ordering',
-  delivery:'Delivery', mission:'Mission & Vision', testimonials:'Testimonials',
-  environment:'Environment', commitment:'Commitment', contact:'Contact',
-  footer:'Footer', products:'Products', gallery:'Gallery', images:'Site Images'
+const SECTION_LABELS = {
+  hero:'Hero', nav:'Navigation', about:'About',
+  fresho:'Fresho / Ordering', delivery:'Delivery',
+  mission:'Mission & Vision', testimonials:'Testimonials',
+  environment:'Environment', commitment:'Commitment',
+  contact:'Contact', footer:'Footer',
+  products:'Product Manager', gallery:'Gallery Photos', images:'Site Images'
+};
+
+/* ──────────────────────────────────────────────────────────
+   TOAST SYSTEM
+────────────────────────────────────────────────────────── */
+const ICONS = { success:'✓', error:'✕', warning:'⚠', info:'ℹ' };
+
+function toast(msg, type='success', duration=3500) {
+  const ct = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span class="toast-icon">${ICONS[type]}</span><span class="toast-msg">${msg}</span>`;
+  ct.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('removing');
+    setTimeout(() => el.remove(), 200);
+  }, duration);
 }
 
-/* ── AUTH ── */
-document.getElementById('login-btn').onclick = doLogin
-document.getElementById('pw').addEventListener('keydown', e => e.key==='Enter' && doLogin())
+/* ──────────────────────────────────────────────────────────
+   CONFIRM DIALOG (replaces window.confirm)
+────────────────────────────────────────────────────────── */
+let _confirmResolve = null;
+
+function showConfirm(title, msg) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').innerHTML = msg;
+  document.getElementById('confirm-modal').classList.add('open');
+  return new Promise(resolve => { _confirmResolve = resolve; });
+}
+
+function closeConfirm(result=false) {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if (_confirmResolve) { _confirmResolve(result); _confirmResolve = null; }
+}
+
+document.getElementById('confirm-ok').onclick = () => closeConfirm(true);
+
+/* ──────────────────────────────────────────────────────────
+   AUTH
+────────────────────────────────────────────────────────── */
+const loginEl  = document.getElementById('login');
+const appEl    = document.getElementById('app');
+const loginBtn = document.getElementById('login-btn');
+const pwInput  = document.getElementById('pw');
+const loginErr = document.getElementById('login-err');
+
+loginBtn.onclick = doLogin;
+pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 async function doLogin() {
-  const pw = document.getElementById('pw').value.trim()
-  if (!pw) return
-  const errEl = document.getElementById('login-err')
-  errEl.style.display = 'none'
+  const pw = pwInput.value.trim();
+  if (!pw) return;
+  loginErr.style.display = 'none';
+  loginBtn.textContent = 'Signing in…';
+  loginBtn.disabled = true;
   try {
     const r = await fetch('/api/admin-login', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({password:pw}), credentials:'include'
-    })
-    if (r.ok) { showApp(); load('hero') }
-    else errEl.style.display = 'block'
-  } catch { errEl.style.display = 'block' }
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw }),
+      credentials: 'include'
+    });
+    if (r.ok) {
+      showApp();
+    } else {
+      loginErr.style.display = 'block';
+    }
+  } catch {
+    loginErr.style.display = 'block';
+  } finally {
+    loginBtn.textContent = 'Sign In';
+    loginBtn.disabled = false;
+  }
 }
 
-fetch('/api/admin-auth-check', {credentials:'include'}).then(r => {
-  if (r.ok) { showApp(); load('hero') }
-})
+/* Auto-check existing session */
+fetch('/api/admin-auth-check', { credentials: 'include' }).then(r => {
+  if (r.ok) showApp();
+});
 
 function showApp() {
-  document.getElementById('login').style.display = 'none'
-  document.getElementById('app').style.display = 'flex'
+  loginEl.classList.add('hidden');
+  appEl.classList.add('visible');
+  loadSection('hero');
 }
 
 document.getElementById('logout-btn').onclick = () => {
-  document.cookie = 'amj_session=; Max-Age=0; Path=/'
-  location.reload()
-}
+  document.cookie = 'amj_session=; Max-Age=0; Path=/';
+  location.reload();
+};
 
-/* ── SIDEBAR NAV ── */
+/* ──────────────────────────────────────────────────────────
+   SIDEBAR NAVIGATION
+────────────────────────────────────────────────────────── */
 document.querySelectorAll('.nav-item').forEach(el => {
-  el.onclick = () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
-    el.classList.add('active')
-    load(el.dataset.section)
-  }
-})
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    loadSection(el.dataset.section);
+  });
+});
 
-/* ── LOAD SECTION ── */
-async function load(sec) {
-  section = sec
-  const lbl = LABELS[sec] || sec
-  document.getElementById('tb-title').textContent = lbl
-  const saveBtn = document.getElementById('save-btn')
-  const isMedia = sec === 'gallery' || sec === 'images' || sec === 'products'
-  saveBtn.style.display = isMedia ? 'none' : 'flex'
-  document.getElementById('tb-sub').textContent = isMedia
-    ? (sec === 'gallery' ? 'Upload and manage gallery photos'
-       : sec === 'products' ? 'Edit product names & image URLs — then Save All'
-       : 'Replace named image slots')
-    : 'Click any text to edit — then Save'
-  setStatus('')
+/* ──────────────────────────────────────────────────────────
+   SECTION LOADER
+────────────────────────────────────────────────────────── */
+async function loadSection(sec) {
+  currentSection = sec;
+  const label = SECTION_LABELS[sec] || sec;
+  document.getElementById('tb-title').textContent = label;
+  setStatus('');
 
-  if (sec === 'gallery') { renderGallery(); return }
-  if (sec === 'images') { renderImages(); return }
-  if (sec === 'testimonials') { loadTestimonials(); return }
-  if (sec === 'products') { loadProducts(); return }
+  const isProducts = sec === 'products';
+  const isMedia    = sec === 'gallery' || sec === 'images';
+  const isTestimonials = sec === 'testimonials';
 
-  document.getElementById('preview').innerHTML =
-    `<div style="padding:4rem;text-align:center;color:var(--sh-muted)">Loading ${lbl}…</div>`
+  // Hide save button for sections with own save logic
+  const saveBtn = document.getElementById('save-btn');
+  saveBtn.style.display = (isMedia || isProducts) ? 'none' : 'flex';
+  document.getElementById('tb-sub').textContent = isProducts
+    ? 'Add, edit, or remove products — click Add Product to begin'
+    : isMedia ? (sec === 'gallery' ? 'Upload and manage gallery photos' : 'Replace named image slots')
+    : 'Click any text to edit inline, then Save';
+
+  const ct = document.getElementById('content');
+  ct.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div> Loading ${label}…</div>`;
+
+  if (isProducts)    { await loadProducts(); return; }
+  if (isMedia)       { sec === 'gallery' ? await renderGallery() : await renderImages(); return; }
+  if (isTestimonials){ await loadTestimonials(); return; }
 
   try {
-    const r = await fetch(`/api/admin-content?section=${sec}`, {credentials:'include'})
-    if (!r.ok) throw new Error(await r.text())
-    const {content} = await r.json()
-    data = content || {}
-    renderSection(sec, data)
-  } catch(e) {
-    document.getElementById('preview').innerHTML =
-      `<div style="padding:2rem;color:var(--sh-red)">Error: ${e.message}</div>`
+    const r = await fetch(`/api/admin-content?section=${sec}`, { credentials: 'include' });
+    if (!r.ok) throw new Error(await r.text());
+    const { content } = await r.json();
+    sectionData = content || {};
+    renderSection(sec, sectionData);
+  } catch (e) {
+    ct.innerHTML = `<div class="spinner-wrap" style="color:var(--red)">Error: ${e.message}</div>`;
   }
 }
 
-/* ── RENDER WYSIWYG ── */
+/* ──────────────────────────────────────────────────────────
+   HELPERS
+────────────────────────────────────────────────────────── */
+function esc(v)    { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escA(v)   { return String(v||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+// Build a contenteditable inline span
+function ce(val, field, ph='Edit…') {
+  return `<span class="ce-field" contenteditable="true" data-f="${field}" placeholder="${ph}">${esc(val||'')}</span>`;
+}
+// Build a contenteditable block div
+function ced(val, field, ph='Edit…') {
+  return `<div class="ce-block" contenteditable="true" data-f="${field}" placeholder="${ph}">${esc(val||'')}</div>`;
+}
+// A standard text input (dark) for meta/URL fields
+function fi(val, field, ph='', type='text') {
+  return `<input class="field-input" type="${type}" data-f="${field}" value="${escA(val||'')}" placeholder="${ph}" />`;
+}
+// A textarea (dark) for long meta text
+function ta(val, field, rows=2) {
+  return `<textarea class="field-input" data-f="${field}" rows="${rows}">${esc(val||'')}</textarea>`;
+}
+
+/* Bind input/change events after innerHTML injection */
+function bindEditorEvents(container) {
+  container.querySelectorAll('[contenteditable][data-f]').forEach(el => {
+    el.addEventListener('input', () => { sectionData[el.dataset.f] = el.innerText.trim(); });
+  });
+  container.querySelectorAll('input[data-f], textarea[data-f]').forEach(el => {
+    el.addEventListener('input', () => { sectionData[el.dataset.f] = el.value.trim(); });
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+   SECTION RENDERERS
+────────────────────────────────────────────────────────── */
 function renderSection(sec, d) {
-  const el = document.getElementById('preview')
-  const fn = RENDERERS[sec]
-  if (!fn) { el.innerHTML = '<div style="padding:2rem;color:var(--sh-muted)">No preview available.</div>'; return }
-  el.innerHTML = fn(d)
-  el.querySelectorAll('[contenteditable][data-f]').forEach(node => {
-    node.addEventListener('input', () => { data[node.dataset.f] = node.innerText.trim() })
-  })
+  const ct = document.getElementById('content');
+  const fn = RENDERERS[sec];
+  if (!fn) {
+    ct.innerHTML = `<div class="spinner-wrap">No editor available for "${sec}".</div>`;
+    return;
+  }
+  ct.innerHTML = fn(d);
+  bindEditorEvents(ct);
 }
 
-/* ── CONTENTEDITABLE HELPERS ── */
-function ce(v, f, ph='Edit…') {
-  const s = esc(v||'')
-  return `<span contenteditable="true" data-f="${f}" placeholder="${ph}">${s}</span>`
-}
-function ced(v, f, ph='Edit…') {
-  const s = esc(v||'')
-  return `<div contenteditable="true" class="block" data-f="${f}" placeholder="${ph}">${s}</div>`
-}
-function esc(v) { return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-function escAttr(v) { return String(v||'').replace(/"/g,'&quot;').replace(/</g,'&lt;') }
-
-/* ── SECTION RENDERERS ── */
+// ── RENDERER MAP ──────────────────────────────────────────
 const RENDERERS = {
 
+  /* HERO */
   hero: d => `
-    <div class="ww">
-      <div class="p-hero">
-        <div>
-          <div class="p-hero-eyebrow">${ce(d.eyebrow,'eyebrow','Eyebrow text')}</div>
-          <h1 class="p-hero-title">
-            ${ce(d.titleLine1,'titleLine1','Title line 1')}<br>
-            <em>${ce(d.titleLine2,'titleLine2','Title line 2 (green)')}</em>
-          </h1>
-          <p class="p-hero-sub">${ced(d.sub,'sub','Sub-paragraph')}</p>
-          <div class="p-hero-actions">
-            <span class="p-btn p-btn-primary">${ce(d.ctaPrimary,'ctaPrimary','Primary CTA text')}</span>
-            <span class="p-btn p-btn-outline">${ce(d.ctaOutline,'ctaOutline','Outline CTA text')}</span>
+    <div class="editor-wrap">
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Hero Section</h3><span class="badge">Above the fold</span></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Eyebrow tag</span>
+            <div class="preview-eyebrow">${ce(d.eyebrow,'eyebrow','South Australia\'s Premium Wholesaler')}</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Headline — Line 1</span>
+            <div class="preview-h1">${ce(d.titleLine1,'titleLine1','Premium Wholesale')}</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Headline — Line 2 <span style="color:var(--green);font-size:.65rem">(displays green)</span></span>
+            <div class="preview-h1"><em>${ce(d.titleLine2,'titleLine2','Fresh Produce')}</em></div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Subheading paragraph</span>
+            ${ced(d.sub,'sub','Delivering the finest local and specialty produce…')}
+          </div>
+          <div class="field-grid-2" style="margin-top:.25rem">
+            <div class="field-group">
+              <span class="field-label">Primary button text</span>
+              ${fi(d.ctaPrimary,'ctaPrimary','View Our Produce')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Outline button text</span>
+              ${fi(d.ctaOutline,'ctaOutline','Enquire Now')}
+            </div>
           </div>
         </div>
-        <div class="p-hero-video"><span>🎥</span> Video (live site only)</div>
       </div>
-      <div class="meta-panel">
-        <h4>Button Links</h4>
-        <div class="meta-grid">
-          <div class="meta-field"><label>Primary CTA URL</label><input data-f="ctaPrimaryHref" value="${escAttr(d.ctaPrimaryHref)}" placeholder="https://…"/></div>
-          <div class="meta-field"><label>Outline CTA URL</label><input data-f="ctaOutlineHref" value="${escAttr(d.ctaOutlineHref)}" placeholder="#about"/></div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Button Links</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Primary button URL</span>
+              ${fi(d.ctaPrimaryHref,'ctaPrimaryHref','#products')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Outline button URL</span>
+              ${fi(d.ctaOutlineHref,'ctaOutlineHref','#contact')}
+            </div>
+          </div>
         </div>
       </div>
+
     </div>`,
 
+  /* NAVIGATION */
   nav: d => `
-    <div class="ww">
-      <div class="p-sec" style="background:var(--b-bg-soft)">
-        <p class="p-lead" style="margin-bottom:1.25rem">Click any nav label below to edit it.</p>
-        <div class="p-nav-bar">
-          ${['wholesale','aboutAmj','products','media','environment','contact','marketReport'].map(k =>
-            `<span class="p-nav-item">${ce(d[k]||k, k, k)}</span>`
-          ).join('')}
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Navigation Labels</h3><span class="badge">Public nav bar</span></div>
+        <div class="editor-card-body">
+          <p class="field-hint" style="margin-bottom:1rem">Click any label below to rename it.</p>
+          <div class="nav-pills">
+            ${['wholesale','aboutAmj','products','media','environment','contact','marketReport'].map(k =>
+              `<span class="nav-pill">${ce(d[k]||k, k, k)}</span>`
+            ).join('')}
+          </div>
         </div>
       </div>
     </div>`,
 
+  /* ABOUT */
   about: d => `
-    <div class="ww">
-      <div class="p-sec">
-        <div class="two-col">
-          <div>
-            <div class="p-label">${ce(d.sectionLabel,'sectionLabel','Section label')}</div>
-            <h2 class="p-h2">${ce(d.heading,'heading','Section heading')}</h2>
-            <p class="p-lead">${ced(d.leadParagraph,'leadParagraph','Lead paragraph')}</p>
-            <p class="p-body">${ced(d.body1,'body1','Body paragraph 1')}</p>
-            <p class="p-body">${ced(d.body2,'body2','Body paragraph 2')}</p>
-            <p class="p-body">${ced(d.body3,'body3','Body paragraph 3')}</p>
-            <div class="p-awards">
-              ${[1,2,3].map(n=>`<span class="p-award">${ce(d['award'+n],'award'+n,'Award/cert '+n)}</span>`).join('')}
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Section Header</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Section label</span>
+              ${fi(d.sectionLabel,'sectionLabel','About Us')}
             </div>
-            <div class="p-pillars">
-              ${[1,2,3,4].map(n=>`
-                <div class="p-pillar">
-                  <div class="p-pillar-title">${ce(d['pillar'+n+'Title'],'pillar'+n+'Title','Pillar '+n)}</div>
-                  <div class="p-pillar-body">${ced(d['pillar'+n+'Desc'],'pillar'+n+'Desc','Description')}</div>
-                </div>`).join('')}
+            <div class="field-group">
+              <span class="field-label">CTA button text</span>
+              ${fi(d.ctaLabel,'ctaLabel','Get in Touch')}
             </div>
           </div>
-          <div>
-            <div class="img-placeholder" style="background:linear-gradient(135deg,#e8f5d0,#d4edb8)"><span>🥦</span> About image (managed in Site Images)</div>
-            <div class="meta-panel" style="margin-top:1rem;border:1px solid var(--sh-border);border-radius:8px">
-              <h4>CTA Button</h4>
-              <div class="meta-grid col1">
-                <div class="meta-field"><label>Button Label</label><input data-f="ctaLabel" value="${escAttr(d.ctaLabel)}" placeholder="Learn more about us"/></div>
-              </div>
-            </div>
+          <div class="field-group">
+            <span class="field-label">Main heading</span>
+            ${fi(d.heading,'heading','South Australia\'s Trusted Fresh Produce Partner')}
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Body Copy</h3></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Lead paragraph</span>
+            ${ced(d.leadParagraph,'leadParagraph','Lead paragraph…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Body paragraph 1</span>
+            ${ced(d.body1,'body1','Body paragraph 1…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Body paragraph 2</span>
+            ${ced(d.body2,'body2','Body paragraph 2…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Body paragraph 3</span>
+            ${ced(d.body3,'body3','Body paragraph 3…')}
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Awards &amp; Certifications</h3></div>
+        <div class="editor-card-body">
+          ${[1,2,3].map(n => `
+            <div class="field-group">
+              <span class="field-label">Award / Cert ${n}</span>
+              ${fi(d['award'+n],'award'+n,'Award or certification…')}
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Value Pillars</h3></div>
+        <div class="editor-card-body">
+          <div class="pillar-grid">
+            ${[1,2,3,4].map(n => `
+              <div class="pillar-item">
+                <span class="field-label">Pillar ${n} — Title</span>
+                ${fi(d['pillar'+n+'Title'],'pillar'+n+'Title','Title…')}
+                <span class="field-label" style="margin-top:.5rem">Description</span>
+                ${ta(d['pillar'+n+'Desc'],'pillar'+n+'Desc',2)}
+              </div>`).join('')}
           </div>
         </div>
       </div>
     </div>`,
 
+  /* FRESHO */
   fresho: d => `
-    <div class="ww">
-      <div class="p-fresho-bg">
-        <div class="p-fresho-inner">
-          <div>
-            <div class="p-label">${ce(d.sectionLabel,'sectionLabel','Section label')}</div>
-            <h2 class="p-h2">${ce(d.heading,'heading','Heading')}</h2>
-            <p class="p-body">${ced(d.body,'body','Body text')}</p>
-            <button class="p-btn-fresho">${ce(d.buttonLabel,'buttonLabel','Button label')}</button>
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Fresho / Ordering Section</h3></div>
+        <div class="editor-card-body">
+          <div class="fresho-preview">
+            <div class="field-group">
+              <span class="field-label" style="color:rgba(255,255,255,.6)">Section label</span>
+              ${fi(d.sectionLabel,'sectionLabel','Order Online')}
+            </div>
+            <div class="field-group">
+              <span class="field-label" style="color:rgba(255,255,255,.6)">Heading</span>
+              ${fi(d.heading,'heading','Heading…')}
+            </div>
+            <div class="field-group">
+              <span class="field-label" style="color:rgba(255,255,255,.6)">Body text</span>
+              ${ced(d.body,'body','Body copy…')}
+            </div>
           </div>
-          <div class="p-fresho-logo">Fresho Logo</div>
-        </div>
-      </div>
-      <div class="meta-panel">
-        <h4>Button Link</h4>
-        <div class="meta-grid col1">
-          <div class="meta-field"><label>Button URL</label><input data-f="buttonUrl" value="${escAttr(d.buttonUrl)}" placeholder="https://fresho.com.au/…"/></div>
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Button label</span>
+              ${fi(d.buttonLabel,'buttonLabel','Order via Fresho')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Button URL</span>
+              ${fi(d.buttonUrl,'buttonUrl','https://fresho.com.au/…')}
+            </div>
+          </div>
         </div>
       </div>
     </div>`,
 
+  /* DELIVERY */
   delivery: d => `
-    <div class="ww">
-      <div class="p-sec">
-        <div class="two-col">
-          <div>
-            <div class="p-label">${ce(d.sectionLabel,'sectionLabel','Section label')}</div>
-            <h2 class="p-h2">${ce(d.heading,'heading','Heading')}</h2>
-            <p class="p-lead">${ced(d.lead,'lead','Lead paragraph')}</p>
-            <ul class="p-bullets">
-              ${[1,2,3,4,5].map(n=>`<li class="p-bullet">${ced(d['bullet'+n],'bullet'+n,'Bullet point '+n)}</li>`).join('')}
-            </ul>
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Delivery Section</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Section label</span>
+              ${fi(d.sectionLabel,'sectionLabel','Delivery')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Heading</span>
+              ${fi(d.heading,'heading','Heading…')}
+            </div>
           </div>
-          <div class="img-placeholder" style="background:linear-gradient(135deg,#e0f0e8,#ccead8)"><span>🚚</span> Delivery image</div>
+          <div class="field-group">
+            <span class="field-label">Lead paragraph</span>
+            ${ced(d.lead,'lead','Lead paragraph…')}
+          </div>
+        </div>
+      </div>
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Delivery Points</h3></div>
+        <div class="editor-card-body">
+          ${[1,2,3,4,5].map(n => `
+            <div class="field-group">
+              <span class="field-label">Bullet point ${n}</span>
+              ${ced(d['bullet'+n],'bullet'+n,'Bullet point ${n}…')}
+            </div>`).join('')}
         </div>
       </div>
     </div>`,
 
+  /* MISSION */
   mission: d => `
-    <div class="ww">
-      <div class="p-sec">
-        <div class="two-col">
-          <div>
-            <h2 class="p-h2">${ce(d.missionHeading,'missionHeading','Mission heading')}</h2>
-            <p class="p-lead">${ced(d.missionIntro,'missionIntro','Mission intro')}</p>
-            <ul class="p-mission-list">
-              ${[1,2,3,4,5,6,7].map(n=>`<li class="p-mission-item">${ced(d['missionItem'+n],'missionItem'+n,'Mission item '+n)}</li>`).join('')}
-            </ul>
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Our Mission</h3></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Mission heading</span>
+            ${fi(d.missionHeading,'missionHeading','Our Mission')}
           </div>
-          <div>
-            <h2 class="p-h2">${ce(d.visionHeading,'visionHeading','Vision heading')}</h2>
-            <p class="p-lead">${ced(d.visionBody,'visionBody','Vision body')}</p>
-            <p style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--b-primary);margin-top:1.1rem;margin-bottom:.5rem">Guiding Principles</p>
-            <div class="p-principles">
-              ${[1,2,3,4,5,6,7,8].map(n=>`<span class="p-principle">${ce(d['principle'+n],'principle'+n,'Principle '+n)}</span>`).join('')}
-            </div>
+          <div class="field-group">
+            <span class="field-label">Mission intro</span>
+            ${ced(d.missionIntro,'missionIntro','Mission introduction…')}
+          </div>
+          ${[1,2,3,4,5,6,7].map(n => `
+            <div class="field-group">
+              <span class="field-label">Mission item ${n}</span>
+              ${ced(d['missionItem'+n],'missionItem'+n,'Mission item ${n}…')}
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Our Vision</h3></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Vision heading</span>
+            ${fi(d.visionHeading,'visionHeading','Our Vision')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Vision body</span>
+            ${ced(d.visionBody,'visionBody','Vision body…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Guiding principles <span style="font-size:.65rem;color:var(--muted)">(comma-separated tags)</span></span>
+            ${[1,2,3,4,5,6,7,8].map(n => `
+              <div style="margin-bottom:.5rem">${fi(d['principle'+n],'principle'+n,'Principle '+n+'…')}</div>`).join('')}
           </div>
         </div>
       </div>
     </div>`,
 
-  testimonials: () => `<div style="padding:4rem;text-align:center;color:var(--sh-muted)">Loading testimonials…</div>`,
-
+  /* ENVIRONMENT */
   environment: d => `
-    <div class="ww">
-      <div class="p-sec">
-        <div class="p-label">${ce(d.sectionLabel,'sectionLabel','Section label')}</div>
-        <h2 class="p-h2">${ce(d.heading,'heading','Heading')}</h2>
-        <p class="p-lead">${ced(d.lead,'lead','Lead paragraph')}</p>
-        <div class="p-env-cards">
-          ${[1,2,3,4,5,6].map(n=>`
-            <div class="p-env-card">
-              <div class="p-env-title">${ce(d['card'+n+'Title'],'card'+n+'Title','Card '+n+' title')}</div>
-              <div class="p-env-body">${ced(d['card'+n+'Body'],'card'+n+'Body','Card '+n+' body')}</div>
-            </div>`).join('')}
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Environment &amp; Sustainability</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Section label</span>
+              ${fi(d.sectionLabel,'sectionLabel','Environment')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Heading</span>
+              ${fi(d.heading,'heading','Heading…')}
+            </div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Lead paragraph</span>
+            ${ced(d.lead,'lead','Lead paragraph…')}
+          </div>
         </div>
-        <div class="p-env-stats">
-          ${[1,2,3].map(n=>`
-            <div class="p-env-stat">
-              <span class="p-env-stat-num">${ce(d['stat'+n+'Num'],'stat'+n+'Num','Stat')}</span>
-              <span class="p-env-stat-label">${ce(d['stat'+n+'Label'],'stat'+n+'Label','Label')}</span>
-            </div>`).join('')}
+      </div>
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Info Cards</h3></div>
+        <div class="editor-card-body">
+          <div class="env-card-grid">
+            ${[1,2,3,4,5,6].map(n => `
+              <div class="pillar-item">
+                <div class="field-group">
+                  <span class="field-label">Card ${n} title</span>
+                  ${fi(d['card'+n+'Title'],'card'+n+'Title','Title…')}
+                </div>
+                <div class="field-group">
+                  <span class="field-label">Card ${n} body</span>
+                  ${ta(d['card'+n+'Body'],'card'+n+'Body',2)}
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Stats</h3></div>
+        <div class="editor-card-body">
+          <div class="env-stat-grid">
+            ${[1,2,3].map(n => `
+              <div class="pillar-item">
+                <div class="field-group">
+                  <span class="field-label">Stat ${n} number</span>
+                  ${fi(d['stat'+n+'Num'],'stat'+n+'Num','e.g. 95%')}
+                </div>
+                <div class="field-group">
+                  <span class="field-label">Stat ${n} label</span>
+                  ${fi(d['stat'+n+'Label'],'stat'+n+'Label','Label…')}
+                </div>
+              </div>`).join('')}
+          </div>
         </div>
       </div>
     </div>`,
 
+  /* COMMITMENT */
   commitment: d => `
-    <div class="ww">
-      <div class="p-sec">
-        <h2 class="p-h2">${ce(d.heading,'heading','Heading')}</h2>
-        <p class="p-lead">${ced(d.body1,'body1','Paragraph 1')}</p>
-        <p class="p-body">${ced(d.body2,'body2','Paragraph 2')}</p>
-        <div class="p-values">
-          ${[1,2,3,4,5,6].map(n=>`<span class="p-value">${ce(d['value'+n],'value'+n,'Value '+n)}</span>`).join('')}
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Commitment Section</h3></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Heading</span>
+            ${fi(d.heading,'heading','Heading…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Paragraph 1</span>
+            ${ced(d.body1,'body1','Paragraph 1…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Paragraph 2</span>
+            ${ced(d.body2,'body2','Paragraph 2…')}
+          </div>
+          <div class="field-grid-3" style="margin-top:.25rem">
+            ${[1,2,3,4,5,6].map(n => `
+              <div class="field-group">
+                <span class="field-label">Value tag ${n}</span>
+                ${fi(d['value'+n],'value'+n,'Value…')}
+              </div>`).join('')}
+          </div>
         </div>
       </div>
     </div>`,
 
+  /* CONTACT */
   contact: d => `
-    <div class="ww">
-      <div class="p-sec">
-        <div class="p-label">${ce(d.sectionLabel,'sectionLabel','Section label')}</div>
-        <h2 class="p-h2">${ce(d.heading,'heading','Heading')}</h2>
-        <p class="p-lead">${ced(d.sub,'sub','Sub-paragraph')}</p>
-        <div class="p-contact-grid">
-          <div>
-            <div class="p-contact-label">Contact Persons</div>
-            <div class="p-contact-value">${ced(d.persons,'persons','Contact persons')}</div>
-          </div>
-          <div>
-            <div class="p-contact-label">Phone</div>
-            <div class="p-contact-value">${ce(d.phone,'phone','Phone number')}</div>
-          </div>
-          <div>
-            <div class="p-contact-label">Address</div>
-            <div class="p-contact-value">
-              ${ced(d.addressStreet,'addressStreet','Street')}<br>
-              ${ce(d.addressCity,'addressCity','City/State')}<br>
-              ${ce(d.addressGPO,'addressGPO','GPO address')}
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Contact Section</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Section label</span>
+              ${fi(d.sectionLabel,'sectionLabel','Contact')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Heading</span>
+              ${fi(d.heading,'heading','Get in touch')}
             </div>
           </div>
-          <div>
-            <div class="p-contact-label">Fax</div>
-            <div class="p-contact-value">${ce(d.fax,'fax','Fax number')}</div>
-          </div>
-          <div>
-            <div class="p-contact-label">Email</div>
-            <div class="p-contact-value">${ce(d.email,'email','Email address')}</div>
+          <div class="field-group">
+            <span class="field-label">Subheading</span>
+            ${ced(d.sub,'sub','Subheading…')}
           </div>
         </div>
       </div>
-      <div class="meta-panel">
-        <h4>Contact Form Note</h4>
-        <div class="meta-grid col1">
-          <div class="meta-field"><label>Form note (shown below the contact form)</label><textarea data-f="formNote" rows="2">${escAttr(d.formNote)}</textarea></div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Contact Details</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Contact persons</span>
+              ${fi(d.persons,'persons','Chris & Margy Abbot')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Phone</span>
+              ${fi(d.phone,'phone','(08) 8349 5222')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Fax</span>
+              ${fi(d.fax,'fax','(08) 8349 4390')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Email</span>
+              ${fi(d.email,'email','admin@amjproduce.com.au')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Street address</span>
+              ${fi(d.addressStreet,'addressStreet','13 Burma Road, Pooraka SA 5095')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">City / State</span>
+              ${fi(d.addressCity,'addressCity','Pooraka, South Australia')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">GPO address</span>
+              ${fi(d.addressGPO,'addressGPO','GPO Box 310, Adelaide SA 5000')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Form note</span>
+              ${fi(d.formNote,'formNote','We typically respond within one business day.')}
+            </div>
+          </div>
         </div>
       </div>
     </div>`,
 
+  /* FOOTER */
   footer: d => `
-    <div class="ww">
-      <div class="p-footer-bg">
-        <div class="p-footer-grid">
-          <div>
-            <div class="p-footer-brand">${ce(d.companyName,'companyName','Company name')}</div>
-            <div class="p-footer-sub">${ce(d.companySubtitle,'companySubtitle','Subtitle')}</div>
-            <div class="p-footer-text">${ced(d.commitmentParagraph,'commitmentParagraph','Commitment paragraph')}</div>
-          </div>
-          <div>
-            <div class="p-footer-col-label">Contact</div>
-            <div class="p-footer-text">
-              ${ced(d.addressStreet,'addressStreet','Street address')}<br>
-              ${ce(d.phone,'phone','Phone')}<br>
-              ${ce(d.fax,'fax','Fax')}<br>
-              ${ce(d.email,'email','Email')}
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Footer Content</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Company name</span>
+              ${fi(d.companyName,'companyName','AMJ Produce Co.')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Company subtitle</span>
+              ${fi(d.companySubtitle,'companySubtitle','Fruit & Vegetable Wholesalers')}
             </div>
           </div>
-          <div>
-            <div class="p-footer-col-label">Credits</div>
-            <div class="p-footer-text">${ce(d.designerLabel,'designerLabel','Designer credit text')}</div>
+          <div class="field-group">
+            <span class="field-label">Commitment paragraph</span>
+            ${ced(d.commitmentParagraph,'commitmentParagraph','Brief commitment statement shown in footer…')}
           </div>
         </div>
-        <div class="p-footer-bottom"><span>© AMJ Produce. All rights reserved.</span></div>
       </div>
-      <div class="meta-panel">
-        <h4>Designer Link URL</h4>
-        <div class="meta-grid col1">
-          <div class="meta-field"><label>Designer URL</label><input data-f="designerUrl" value="${escAttr(d.designerUrl)}" placeholder="https://…"/></div>
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Contact (footer copy)</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Street address</span>
+              ${fi(d.addressStreet,'addressStreet','')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Phone</span>
+              ${fi(d.phone,'phone','')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Fax</span>
+              ${fi(d.fax,'fax','')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Email</span>
+              ${fi(d.email,'email','')}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Designer Credit</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Credit text</span>
+              ${fi(d.designerLabel,'designerLabel','Website by…')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Credit link URL</span>
+              ${fi(d.designerUrl,'designerUrl','https://…')}
+            </div>
+          </div>
         </div>
       </div>
     </div>`,
-}
+};
 
-/* ── COLLECT & SAVE ── */
-function collectData() {
-  document.querySelectorAll('[contenteditable][data-f]').forEach(el => {
-    data[el.dataset.f] = el.innerText.trim()
-  })
-  document.querySelectorAll('input[data-f], textarea[data-f]').forEach(el => {
-    data[el.dataset.f] = el.value.trim()
-  })
+/* ──────────────────────────────────────────────────────────
+   SAVE (text sections)
+────────────────────────────────────────────────────────── */
+function collectEditorData() {
+  /* Pull latest values from all bound elements */
+  const ct = document.getElementById('content');
+  ct.querySelectorAll('[contenteditable][data-f]').forEach(el => {
+    sectionData[el.dataset.f] = el.innerText.trim();
+  });
+  ct.querySelectorAll('input[data-f], textarea[data-f]').forEach(el => {
+    sectionData[el.dataset.f] = el.value.trim();
+  });
 }
 
 async function saveSection() {
-  if (section === 'testimonials') { saveTData(); return }
-  collectData()
-  const btn = document.getElementById('save-btn')
-  btn.disabled = true
-  setStatus('Saving…')
+  if (currentSection === 'testimonials') { await saveTData(); return; }
+  collectEditorData();
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Saving…');
+
   try {
     const r = await fetch('/api/admin-save', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({section, content:data}), credentials:'include'
-    })
-    if (!r.ok) throw new Error(await r.text())
-    setStatus('✓ Saved', 'ok')
-  } catch(e) {
-    setStatus('Error: '+e.message, 'err')
-  } finally { btn.disabled = false }
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: currentSection, content: sectionData }),
+      credentials: 'include'
+    });
+    if (!r.ok) throw new Error(await r.text());
+    toast('Changes saved successfully!', 'success');
+    setStatus('');
+  } catch (e) {
+    toast('Save failed: ' + e.message, 'error');
+    setStatus('');
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function setStatus(msg, cls='') {
-  const el = document.getElementById('tb-status')
-  el.textContent = msg
-  el.className = cls ? cls : ''
-  if (cls==='ok') setTimeout(()=>{ el.textContent=''; el.className='' }, 3000)
+  const el = document.getElementById('tb-status');
+  el.textContent = msg;
+  el.className = cls || '';
 }
 
-/* ── TESTIMONIALS ── */
+/* ──────────────────────────────────────────────────────────
+   TESTIMONIALS
+────────────────────────────────────────────────────────── */
 async function loadTestimonials() {
-  document.getElementById('preview').innerHTML =
-    `<div style="padding:4rem;text-align:center;color:var(--sh-muted)">Loading testimonials…</div>`
+  const ct = document.getElementById('content');
   try {
-    const r = await fetch('/api/admin-content?section=testimonials', {credentials:'include'})
-    if (!r.ok) throw new Error(await r.text())
-    const {content} = await r.json()
-    tData = Array.isArray(content) ? content.map(t=>({...t})) : []
-    renderTUI()
-  } catch(e) {
-    document.getElementById('preview').innerHTML =
-      `<div style="padding:2rem;color:var(--sh-red)">Error: ${e.message}</div>`
+    const r = await fetch('/api/admin-content?section=testimonials', { credentials: 'include' });
+    if (!r.ok) throw new Error(await r.text());
+    const { content } = await r.json();
+    testimonials = Array.isArray(content) ? content.map(t => ({...t})) : [];
+    renderTUI();
+  } catch (e) {
+    ct.innerHTML = `<div class="spinner-wrap" style="color:var(--red)">Error: ${e.message}</div>`;
   }
 }
 
 function renderTUI() {
-  const pr = document.getElementById('preview')
-  pr.innerHTML = `
-    <div class="ww">
-      <div class="p-sec">
-        <div class="p-label">⭐ Testimonials</div>
-        <h2 class="p-h2">What Our Customers Say</h2>
-        <div class="p-t-grid" id="tgrid">${tData.map(tCard).join('')}</div>
-        <button class="btn-add-t" onclick="addT()">+ Add Testimonial</button>
+  const ct = document.getElementById('content');
+  ct.innerHTML = `
+    <div class="editor-wrap">
+      <div class="editor-card">
+        <div class="editor-card-head">
+          <h3>Testimonials</h3>
+          <span class="badge" id="t-count">${testimonials.length} reviews</span>
+          <button class="btn-toolbar primary" style="margin-left:auto" onclick="addT()">+ Add</button>
+          <button class="btn-toolbar primary" style="margin-left:.5rem" onclick="saveSection()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save All
+          </button>
+        </div>
+        <div class="editor-card-body">
+          <div class="t-grid" id="t-grid">${testimonials.map((t,i) => tCard(t,i)).join('')}</div>
+          <button class="btn-add-t" onclick="addT()">+ Add Testimonial</button>
+        </div>
       </div>
-    </div>`
+    </div>`;
+  bindTEvents();
 }
 
 function tCard(t, i) {
-  const stars = t.stars||5
+  const stars = t.stars || 5;
   return `
-    <div class="p-t-card" id="tc${i}">
-      <button class="p-t-del" onclick="delT(${i})">Remove</button>
-      <div class="p-t-stars" id="tsr${i}">${[1,2,3,4,5].map(n=>`<span class="p-t-star${n<=stars?' on':''}" onclick="setStar(${i},${n})">★</span>`).join('')}</div>
-      <div class="p-t-quote" contenteditable="true" data-ti="${i}" data-tf="quote" placeholder="Customer quote…">${esc(t.quote)}</div>
-      <div style="margin-top:.5rem;display:flex;align-items:center;gap:.4rem">
-        <span style="font-size:.72rem;font-weight:700;color:var(--b-primary)">— </span>
-        <span class="p-t-author" contenteditable="true" data-ti="${i}" data-tf="author" placeholder="Customer name">${esc(t.author)}</span>
+    <div class="t-card" id="tc${i}">
+      <button class="t-del" onclick="delT(${i})">Remove</button>
+      <div class="t-stars" id="tsr${i}">
+        ${[1,2,3,4,5].map(n =>
+          `<span class="t-star${n<=stars?' on':''}" onclick="setStar(${i},${n})">★</span>`
+        ).join('')}
       </div>
-    </div>`
+      <div class="t-quote" contenteditable="true" data-ti="${i}" data-tf="quote"
+        placeholder="Customer quote…">${esc(t.quote||'')}</div>
+      <div style="display:flex;align-items:center;gap:.3rem;margin-top:.4rem">
+        <span style="font-size:.72rem;font-weight:700;color:var(--green)">—</span>
+        <span class="t-author" contenteditable="true" data-ti="${i}" data-tf="author"
+          placeholder="Customer name">${esc(t.author||'')}</span>
+      </div>
+    </div>`;
+}
+
+function bindTEvents() {
+  document.querySelectorAll('[data-ti][data-tf]').forEach(el => {
+    el.addEventListener('input', () => {
+      const i = +el.dataset.ti;
+      testimonials[i] = testimonials[i] || {};
+      testimonials[i][el.dataset.tf] = el.innerText.trim();
+    });
+  });
 }
 
 function setStar(i, n) {
-  tData[i] = tData[i]||{}; tData[i].stars = n
-  const row = document.getElementById('tsr'+i)
-  if (row) row.querySelectorAll('.p-t-star').forEach((s,j)=>s.classList.toggle('on',j<n))
+  if (!testimonials[i]) testimonials[i] = {};
+  testimonials[i].stars = n;
+  const row = document.getElementById('tsr'+i);
+  if (row) row.querySelectorAll('.t-star').forEach((s,j) => s.classList.toggle('on', j < n));
 }
 
 function addT() {
-  tData.push({quote:'',author:'',stars:5})
-  const grid = document.getElementById('tgrid')
-  if (!grid) return
-  const i = tData.length-1
-  const div = document.createElement('div')
-  div.innerHTML = tCard({quote:'',author:'',stars:5}, i)
-  grid.appendChild(div.firstElementChild)
+  testimonials.push({ quote:'', author:'', stars:5 });
+  renderTUI();
+  const lastCard = document.querySelector('.t-card:last-of-type');
+  if (lastCard) lastCard.querySelector('.t-quote')?.focus();
 }
 
 function delT(i) {
-  const el = document.getElementById('tc'+i)
-  if (el) el.remove()
-  tData = collectTData(); tData.splice(i,1); renderTUI()
+  showConfirm('Remove Testimonial', `Remove this review by <strong class="highlight">${esc(testimonials[i]?.author||'this customer')}</strong>?`)
+    .then(ok => {
+      if (!ok) return;
+      testimonials.splice(i, 1);
+      renderTUI();
+    });
 }
 
 function collectTData() {
-  return tData.map((orig,i)=>{
-    const card = document.getElementById('tc'+i)
-    if (!card) return orig
-    const q = card.querySelector('[data-tf="quote"]')
-    const a = card.querySelector('[data-tf="author"]')
+  return testimonials.map((orig, i) => {
+    const card = document.getElementById('tc'+i);
+    if (!card) return orig;
+    const q = card.querySelector('[data-tf="quote"]');
+    const a = card.querySelector('[data-tf="author"]');
     return {
-      quote: q ? q.innerText.trim() : (orig.quote||''),
+      quote:  q ? q.innerText.trim() : (orig.quote||''),
       author: a ? a.innerText.trim() : (orig.author||''),
-      stars: orig.stars||5
-    }
-  })
+      stars:  orig.stars || 5
+    };
+  });
 }
 
 async function saveTData() {
-  const btn = document.getElementById('save-btn')
-  btn.disabled = true; setStatus('Saving…')
+  const content = collectTData();
+  const btn = document.getElementById('save-btn');
+  if (btn) btn.disabled = true;
   try {
-    const content = collectTData()
     const r = await fetch('/api/admin-save', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({section:'testimonials', content}), credentials:'include'
-    })
-    if (!r.ok) throw new Error(await r.text())
-    tData = content; setStatus('✓ Saved','ok')
-  } catch(e) { setStatus('Error: '+e.message,'err') }
-  finally { btn.disabled = false }
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: 'testimonials', content }),
+      credentials: 'include'
+    });
+    if (!r.ok) throw new Error(await r.text());
+    testimonials = content;
+    toast('Testimonials saved!', 'success');
+  } catch (e) {
+    toast('Save failed: ' + e.message, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
-/* ── GALLERY ── */
+/* ──────────────────────────────────────────────────────────
+   GALLERY
+────────────────────────────────────────────────────────── */
 async function renderGallery() {
-  const pr = document.getElementById('preview')
-  pr.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--sh-muted)">Loading gallery…</div>'
-  let gallery = []
+  const ct = document.getElementById('content');
+  let gallery = [];
   try {
-    const r = await fetch('/api/admin-content?section=gallery', {credentials:'include'})
-    if (r.ok) { const j=await r.json(); gallery=Array.isArray(j.content)?j.content:[] }
+    const r = await fetch('/api/admin-content?section=gallery', { credentials: 'include' });
+    if (r.ok) { const j = await r.json(); gallery = Array.isArray(j.content) ? j.content : []; }
   } catch {}
-  pr.innerHTML = `
+
+  ct.innerHTML = `
     <div class="media-shell">
       <div class="media-card">
         <div class="media-card-head"><h3>Upload Photos</h3></div>
@@ -838,354 +1787,537 @@ async function renderGallery() {
           <div class="upload-zone" id="g-zone">
             <div class="upload-zone-icon">📤</div>
             <strong>Drop images here or click to upload</strong>
-            <div class="upload-zone-note">JPEG, PNG, WebP · Max 1MB per file · Compressed to 1920px</div>
+            <div class="upload-zone-note">JPEG, PNG, WebP · Max 10MB per file</div>
           </div>
         </div>
       </div>
       <div class="media-card">
-        <div class="media-card-head"><h3>Photos</h3><span class="chip" id="g-count">${gallery.length} photos</span></div>
-        <div class="media-card-body"><div class="gallery-grid" id="g-grid"></div></div>
+        <div class="media-card-head">
+          <h3>Gallery Photos</h3>
+          <span class="chip" id="g-count">${gallery.length} photos</span>
+        </div>
+        <div class="media-card-body">
+          <div class="gallery-grid" id="g-grid"></div>
+        </div>
       </div>
-    </div>`
-  renderGGrid(gallery)
-  const zone = document.getElementById('g-zone')
-  const inp = document.getElementById('gallery-inp')
-  zone.onclick = ()=>inp.click()
-  zone.ondragover = e=>{e.preventDefault();zone.classList.add('drag')}
-  zone.ondragleave = ()=>zone.classList.remove('drag')
-  zone.ondrop = e=>{e.preventDefault();zone.classList.remove('drag');handleGFiles(e.dataTransfer.files)}
-  inp.onchange = ()=>{handleGFiles(inp.files);inp.value=''}
+    </div>`;
+
+  renderGGrid(gallery);
+
+  const zone = document.getElementById('g-zone');
+  const inp  = document.getElementById('gallery-inp');
+  zone.onclick  = () => inp.click();
+  zone.ondragover  = e => { e.preventDefault(); zone.classList.add('drag'); };
+  zone.ondragleave = ()  => zone.classList.remove('drag');
+  zone.ondrop      = e  => { e.preventDefault(); zone.classList.remove('drag'); handleGFiles(e.dataTransfer.files); };
+  inp.onchange     = ()  => { handleGFiles(inp.files); inp.value=''; };
 }
 
 function renderGGrid(gallery) {
-  const grid = document.getElementById('g-grid')
-  if (!grid) return
-  if (!gallery.length) { grid.innerHTML='<div style="color:var(--sh-muted);font-size:.85rem">No photos yet.</div>'; return }
-  grid.innerHTML=''
-  gallery.forEach(item=>{
-    const div=document.createElement('div'); div.className='g-item'
-    div.innerHTML=`<img src="/${item.src}" loading="lazy"/><button class="g-del" title="Delete">✕</button>`
-    div.querySelector('.g-del').onclick=()=>delPhoto(item.src,div)
-    grid.appendChild(div)
-  })
+  const grid = document.getElementById('g-grid');
+  if (!grid) return;
+  if (!gallery.length) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:.5rem">No photos yet. Upload your first image above.</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  gallery.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'g-item';
+    const src = item.src.startsWith('/') ? item.src : '/' + item.src;
+    div.innerHTML = `<img src="${src}" loading="lazy" /><button class="g-del" title="Delete photo">✕</button>`;
+    div.querySelector('.g-del').onclick = () => delPhoto(item.src, div);
+    grid.appendChild(div);
+  });
 }
 
 async function handleGFiles(files) {
-  const errEl = document.getElementById('g-err')
-  const errMsg = document.getElementById('g-err-msg')
-  if (errEl) errEl.classList.remove('show')
+  const errEl  = document.getElementById('g-err');
+  const errMsg = document.getElementById('g-err-msg');
+  if (errEl) errEl.classList.remove('show');
+
   for (const file of files) {
-    if (file.size > 10*1024*1024) {
-      if (errEl && errMsg) { errMsg.textContent=`"${file.name}" — Image must be under 10MB`; errEl.classList.add('show') }
-      continue
+    if (file.size > 10 * 1024 * 1024) {
+      showErr(errEl, errMsg, `"${file.name}" exceeds 10MB`);
+      continue;
     }
-    const {mime,data} = await compressImg(file)
     try {
-      const r = await fetch('/api/admin-upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mime,data}),credentials:'include'})
+      const { mime, data } = await compressImg(file);
+      const r = await fetch('/api/admin-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mime, data }),
+        credentials: 'include'
+      });
       if (r.ok) {
-        const {src}=await r.json()
-        const grid=document.getElementById('g-grid')
-        const empty=grid?.querySelector('div:not(.g-item)')
-        if (empty) empty.remove()
-        const div=document.createElement('div'); div.className='g-item'
-        div.innerHTML=`<img src="/${src}"/><button class="g-del" title="Delete">✕</button>`
-        div.querySelector('.g-del').onclick=()=>delPhoto(src,div)
-        grid?.prepend(div)
-        const c=document.getElementById('g-count')
-        if (c) c.textContent=(grid?.querySelectorAll('.g-item').length||0)+' photos'
+        const { src } = await r.json();
+        const grid = document.getElementById('g-grid');
+        const empty = grid?.querySelector('div:not(.g-item)');
+        if (empty) empty.remove();
+        const div = document.createElement('div');
+        div.className = 'g-item';
+        const imgSrc = src.startsWith('/') ? src : '/' + src;
+        div.innerHTML = `<img src="${imgSrc}" /><button class="g-del" title="Delete">✕</button>`;
+        div.querySelector('.g-del').onclick = () => delPhoto(src, div);
+        grid?.prepend(div);
+        const c = document.getElementById('g-count');
+        if (c) c.textContent = (grid?.querySelectorAll('.g-item').length || 0) + ' photos';
+        toast('Photo uploaded!', 'success');
       } else {
-        const j=await r.json().catch(()=>({}))
-        if (errEl&&errMsg){errMsg.textContent=j.error||'Upload failed';errEl.classList.add('show')}
+        const j = await r.json().catch(() => ({}));
+        showErr(errEl, errMsg, j.error || 'Upload failed');
       }
-    } catch(e){if(errEl&&errMsg){errMsg.textContent=e.message;errEl.classList.add('show')}}
+    } catch (err) {
+      showErr(errEl, errMsg, err.message);
+    }
   }
 }
 
 async function delPhoto(src, el) {
-  if (!confirm('Delete this photo?')) return
-  const r=await fetch('/api/admin-delete-photo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({src}),credentials:'include'})
+  const confirmed = await showConfirm('Delete Photo', 'This will permanently remove the photo from your site.');
+  if (!confirmed) return;
+  const r = await fetch('/api/admin-delete-photo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ src }),
+    credentials: 'include'
+  });
   if (r.ok) {
-    el.remove()
-    const c=document.getElementById('g-count'),g=document.getElementById('g-grid')
-    if(c&&g) c.textContent=g.querySelectorAll('.g-item').length+' photos'
+    el.remove();
+    const c = document.getElementById('g-count');
+    const g = document.getElementById('g-grid');
+    if (c && g) c.textContent = g.querySelectorAll('.g-item').length + ' photos';
+    toast('Photo deleted.', 'info');
+  } else {
+    toast('Delete failed.', 'error');
   }
 }
 
-/* ── SITE IMAGES ── */
+/* ──────────────────────────────────────────────────────────
+   SITE IMAGES
+────────────────────────────────────────────────────────── */
 async function renderImages() {
-  const pr = document.getElementById('preview')
-  pr.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--sh-muted)">Loading image slots…</div>'
-  let images = {}
+  const ct = document.getElementById('content');
+  let images = {};
   try {
-    const r=await fetch('/api/admin-content?section=images',{credentials:'include'})
-    if(r.ok){const j=await r.json();images=j.content||{}}
+    const r = await fetch('/api/admin-content?section=images', { credentials: 'include' });
+    if (r.ok) { const j = await r.json(); images = j.content || {}; }
   } catch {}
-  const slots = Object.entries(images)
-  pr.innerHTML = `
+
+  const slots = Object.entries(images);
+  ct.innerHTML = `
     <div class="media-shell">
       <div class="err-banner" id="s-err" style="margin-bottom:1rem"><span>⚠</span><span id="s-err-msg"></span></div>
       <div class="media-card">
-        <div class="media-card-head"><h3>Image Slots</h3><span class="chip">${slots.length} slots</span></div>
+        <div class="media-card-head">
+          <h3>Image Slots</h3>
+          <span class="chip">${slots.length} slots</span>
+        </div>
         <div class="media-card-body">
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">
+            These are named image positions on the public site. Click a slot to replace its image.
+          </p>
           <div class="slot-grid">
-            ${slots.map(([slot,info])=>{
-              const hasSrc=info.src&&info.src.length>0
+            ${slots.map(([slot, info]) => {
+              const hasSrc = info.src && info.src.length > 0;
+              const imgSrc = hasSrc ? (info.src.startsWith('/') ? info.src : '/' + info.src) : '';
               return `
                 <div class="slot-card">
-                  <div class="slot-thumb" data-slot="${slot}" data-label="${escAttr(info.label||slot)}">
-                    ${hasSrc?`<img src="/${info.src}" alt="${escAttr(info.label||slot)}" onerror="this.style.display='none'">`:`<div class="slot-thumb-empty"><div style="font-size:1.5rem">🖼</div>No image set</div>`}
-                    <div class="slot-overlay"><span>Replace Image</span></div>
+                  <div class="slot-thumb" data-slot="${slot}" data-label="${escA(info.label||slot)}">
+                    ${hasSrc
+                      ? `<img src="${imgSrc}" alt="${escA(info.label||slot)}" onerror="this.parentElement.innerHTML='<div class=slot-thumb-empty><div style=font-size:1.5rem>🖼</div>Failed to load</div>'" />`
+                      : `<div class="slot-thumb-empty"><div style="font-size:1.5rem">🖼</div>No image set</div>`}
+                    <div class="slot-overlay"><span>Replace</span></div>
                   </div>
                   <div class="slot-info">
-                    <div class="slot-name">${info.label||slot}</div>
+                    <div class="slot-name">${info.label || slot}</div>
                     <div class="slot-key">${slot}</div>
-                    <button class="slot-btn" data-slot="${slot}" data-label="${escAttr(info.label||slot)}">Replace Image</button>
+                    <button class="slot-btn" data-slot="${slot}" data-label="${escA(info.label||slot)}">Replace Image</button>
                   </div>
-                </div>`
+                </div>`;
             }).join('')}
           </div>
         </div>
       </div>
-    </div>`
-  pr.querySelectorAll('[data-slot]').forEach(el=>{
-    el.onclick=()=>{
-      pendingSlot={slot:el.dataset.slot,label:el.dataset.label}
-      document.getElementById('slot-inp').click()
-    }
-  })
+    </div>`;
+
+  ct.querySelectorAll('[data-slot]').forEach(el => {
+    el.onclick = () => {
+      pendingSlot = { slot: el.dataset.slot, label: el.dataset.label };
+      document.getElementById('slot-inp').click();
+    };
+  });
 }
 
 document.getElementById('slot-inp').onchange = async e => {
-  const file=e.target.files[0]; e.target.value=''
-  if(!file||!pendingSlot) return
-  const errEl=document.getElementById('s-err'),errMsg=document.getElementById('s-err-msg')
-  if(errEl) errEl.classList.remove('show')
-  if(file.size>10*1024*1024){
-    if(errEl&&errMsg){errMsg.textContent=`"${file.name}" — Image must be under 10MB`;errEl.classList.add('show')}
-    pendingSlot=null; return
-  }
-  const {mime,data}=await compressImg(file)
-  try{
-    const r=await fetch('/api/admin-replace-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mime,data,slot:pendingSlot.slot,label:pendingSlot.label}),credentials:'include'})
-    if(r.ok) renderImages()
-    else{const j=await r.json().catch(()=>({}));if(errEl&&errMsg){errMsg.textContent=j.error||'Upload failed';errEl.classList.add('show')}}
-  }catch(e){if(errEl&&errMsg){errMsg.textContent=e.message;errEl.classList.add('show')}}
-  pendingSlot=null
-}
-
-/* ── PRODUCTS ── */
-let prodData = []
-
-async function loadProducts() {
-  const pr = document.getElementById('preview')
-  pr.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--sh-muted)">Loading products…</div>'
-  try {
-    const r = await fetch('/api/admin-content?section=products', {credentials:'include'})
-    if (!r.ok) throw new Error(await r.text())
-    const {content} = await r.json()
-    prodData = Array.isArray(content) ? content.map(p=>({...p})) : []
-    renderProdUI()
-  } catch(e) {
-    pr.innerHTML = `<div style="padding:2rem;color:var(--sh-red)">Error: ${e.message}</div>`
-  }
-}
-
-function renderProdUI() {
-  const pr = document.getElementById('preview')
-  pr.innerHTML = `
-    <div class="media-shell">
-      <div class="media-card">
-        <div class="media-card-head">
-          <h3>Product Gallery</h3>
-          <span class="chip" id="prod-count">${prodData.length} products</span>
-        </div>
-        <div class="media-card-body">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.875rem;gap:1rem">
-            <input id="prod-search" placeholder="Search products…" style="padding:.45rem .75rem;background:var(--sh-surface2);border:1px solid var(--sh-border);border-radius:6px;color:var(--sh-text);font-size:.8rem;font-family:inherit;flex:1;max-width:280px" oninput="filterProds(this.value)"/>
-            <button onclick="addProd()" style="padding:.45rem 1rem;background:var(--sh-green);border:none;border-radius:6px;color:#fff;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">+ Add Product</button>
-          </div>
-          <div class="prod-grid" id="prod-grid"></div>
-        </div>
-      </div>
-      <div style="padding:.75rem 0;display:flex;justify-content:flex-end">
-        <button onclick="saveProds()" style="padding:.6rem 1.4rem;background:var(--sh-green);border:none;border-radius:6px;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.4rem">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save All Changes
-        </button>
-      </div>
-    </div>`
-  renderProdGrid(prodData)
-}
-
-function renderProdGrid(list) {
-  const grid = document.getElementById('prod-grid')
-  if (!grid) return
-  grid.innerHTML = ''
-  list.forEach((p, i) => {
-    const realIdx = prodData.indexOf(p)
-    const card = document.createElement('div')
-    card.className = 'prod-card'
-    card.id = `pc${realIdx}`
-    card.innerHTML = `
-      <div class="prod-thumb">
-        ${p.src ? `<img src="${p.src}" alt="${escAttr(p.name)}" loading="lazy" onerror="this.style.display='none'">` : '<div class="prod-thumb-empty">No image</div>'}
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">${esc(p.name)}</div>
-        <div class="prod-url" title="${escAttr(p.src)}">${p.src ? p.src.split('/').pop() : '—'}</div>
-        <div class="prod-actions">
-          <button class="prod-edit-btn" onclick="openProdEdit(${realIdx})">Edit</button>
-          <button class="prod-del-btn" onclick="delProd(${realIdx})">✕</button>
-        </div>
-      </div>
-      <div class="prod-edit-panel" id="pe${realIdx}">
-        <label>Product Name</label>
-        <input id="pen${realIdx}" value="${escAttr(p.name)}" placeholder="Product name"/>
-        <label style="margin-top:.25rem">Image</label>
-        <div style="display:flex;gap:.35rem;align-items:center">
-          <input id="peu${realIdx}" value="${escAttr(p.src)}" placeholder="Path or URL" style="flex:1;font-size:.65rem"/>
-          <button onclick="triggerProdImg(${realIdx})" style="padding:.3rem .5rem;background:var(--sh-green);border:none;border-radius:4px;color:#fff;font-size:.65rem;cursor:pointer;white-space:nowrap;font-family:inherit">Upload</button>
-        </div>
-        <label style="margin-top:.25rem">Description</label>
-        <textarea id="ped${realIdx}" placeholder="Product description (shown as tooltip)" style="width:100%;padding:.3rem .5rem;background:var(--sh-surface3);border:1px solid var(--sh-border);border-radius:4px;color:var(--sh-text);font-size:.65rem;font-family:inherit;resize:vertical;min-height:55px;box-sizing:border-box">${esc(p.description||'')}</textarea>
-        <div class="prod-edit-footer">
-          <button class="prod-edit-save" onclick="saveProdEdit(${realIdx})">Save</button>
-          <button class="prod-edit-cancel" onclick="closeProdEdit(${realIdx})">Cancel</button>
-        </div>
-      </div>`
-    grid.appendChild(card)
-  })
-  // Add button
-  const addBtn = document.createElement('button')
-  addBtn.className = 'prod-add-btn'
-  addBtn.innerHTML = '+ Add Product'
-  addBtn.onclick = addProd
-  grid.appendChild(addBtn)
-}
-
-function filterProds(q) {
-  const lower = q.toLowerCase()
-  const filtered = lower ? prodData.filter(p => p.name.toLowerCase().includes(lower)) : prodData
-  renderProdGrid(filtered)
-}
-
-function openProdEdit(i) {
-  document.querySelectorAll('.prod-edit-panel.open').forEach(el => el.classList.remove('open'))
-  document.getElementById('pe'+i)?.classList.add('open')
-}
-function closeProdEdit(i) { document.getElementById('pe'+i)?.classList.remove('open') }
-
-function saveProdEdit(i) {
-  const name = document.getElementById('pen'+i)?.value.trim()
-  const src = document.getElementById('peu'+i)?.value.trim()
-  const description = document.getElementById('ped'+i)?.value.trim()
-  if (!name) return
-  prodData[i] = {name, src: src||'', description: description||''}
-  renderProdGrid(prodData)
-  updateProdCount()
-}
-
-function delProd(i) {
-  if (!confirm(`Delete "${prodData[i]?.name}"?`)) return
-  prodData.splice(i, 1)
-  renderProdGrid(prodData)
-  updateProdCount()
-}
-
-function addProd() {
-  prodData.push({name:'New Product',src:'',description:''})
-  renderProdGrid(prodData)
-  updateProdCount()
-  const newIdx = prodData.length - 1
-  setTimeout(() => openProdEdit(newIdx), 50)
-}
-
-function updateProdCount() {
-  const c = document.getElementById('prod-count')
-  if (c) c.textContent = prodData.length + ' products'
-}
-
-let pendingProdIdx = null
-
-function triggerProdImg(i) {
-  pendingProdIdx = i
-  document.getElementById('prod-img-inp').click()
-}
-
-document.getElementById('prod-img-inp').onchange = async e => {
-  const file = e.target.files[0]; e.target.value = ''
-  if (!file || pendingProdIdx === null) return
-  const i = pendingProdIdx; pendingProdIdx = null
-
-  const errEl = document.getElementById('g-err')
-  const errMsg = document.getElementById('g-err-msg')
-  if (errEl) errEl.classList.remove('show')
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file || !pendingSlot) return;
+  const errEl  = document.getElementById('s-err');
+  const errMsg = document.getElementById('s-err-msg');
+  if (errEl) errEl.classList.remove('show');
 
   if (file.size > 10 * 1024 * 1024) {
-    if (errEl && errMsg) { errMsg.textContent = `"${file.name}" — Image must be under 10MB`; errEl.classList.add('show') }
-    return
+    showErr(errEl, errMsg, `"${file.name}" exceeds 10MB`);
+    pendingSlot = null; return;
   }
 
-  // Show uploading state
-  const urlInput = document.getElementById('peu' + i)
-  if (urlInput) urlInput.value = 'Uploading…'
-
-  const {mime,data} = await compressImg(file)
   try {
-    const r = await fetch('/api/admin-replace-image', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({mime,data,slot:'product_'+i,label:prodData[i]?.name||'product'}), credentials: 'include' })
+    const { mime, data } = await compressImg(file);
+    const r = await fetch('/api/admin-replace-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mime, data, slot: pendingSlot.slot, label: pendingSlot.label }),
+      credentials: 'include'
+    });
     if (r.ok) {
-      const { src } = await r.json()
-      if (urlInput) urlInput.value = src
-      // Update preview thumb
-      const card = document.getElementById('pc' + i)
-      const thumb = card?.querySelector('.prod-thumb img')
-      if (thumb) { thumb.src = src.startsWith('/') ? src : '/' + src; thumb.style.display = '' }
+      toast(`"${pendingSlot.label}" updated!`, 'success');
+      renderImages();
     } else {
-      const j = await r.json().catch(() => ({}))
-      if (urlInput) urlInput.value = prodData[i]?.src || ''
-      if (errEl && errMsg) { errMsg.textContent = j.error || 'Upload failed'; errEl.classList.add('show') }
+      const j = await r.json().catch(() => ({}));
+      showErr(errEl, errMsg, j.error || 'Upload failed');
     }
   } catch (err) {
-    if (urlInput) urlInput.value = prodData[i]?.src || ''
+    showErr(errEl, errMsg, err.message);
+  }
+  pendingSlot = null;
+};
+
+/* ──────────────────────────────────────────────────────────
+   PRODUCT MANAGER
+────────────────────────────────────────────────────────── */
+async function loadProducts() {
+  const ct = document.getElementById('content');
+  try {
+    const r = await fetch('/api/admin-content?section=products', { credentials: 'include' });
+    if (!r.ok) throw new Error(await r.text());
+    const { content } = await r.json();
+    products = Array.isArray(content) ? content.map(p => ({...p})) : [];
+    renderProductUI();
+  } catch (e) {
+    ct.innerHTML = `<div class="spinner-wrap" style="color:var(--red)">Error loading products: ${e.message}</div>`;
   }
 }
 
-async function saveProds() {
-  setStatus('Saving…')
-  try {
-    const r = await fetch('/api/admin-save', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({section:'products', content:prodData}), credentials:'include'
-    })
-    if (!r.ok) throw new Error(await r.text())
-    setStatus('✓ Saved','ok')
-  } catch(e) { setStatus('Error: '+e.message,'err') }
+function renderProductUI(filter='') {
+  const ct = document.getElementById('content');
+  const shown = filter
+    ? products.filter(p => (p.name||'').toLowerCase().includes(filter.toLowerCase()))
+    : products;
+
+  ct.innerHTML = `
+    <div class="prod-shell">
+      <div class="prod-toolbar">
+        <h2>Products <span class="prod-count-badge" id="prod-count">${products.length}</span></h2>
+        <input class="prod-search" id="prod-search" placeholder="Search by name…"
+          value="${escA(filter)}" oninput="renderProductUI(this.value)" />
+        <button class="btn-toolbar primary" onclick="openProdModal(null)">+ Add Product</button>
+        <button class="btn-toolbar primary" onclick="saveProductsAll()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save All
+        </button>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <table class="prod-table">
+          <thead>
+            <tr>
+              <th class="prod-thumb-cell"></th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="prod-tbody">
+            ${shown.length ? shown.map((p, i) => prodRow(p, products.indexOf(p))).join('')
+              : `<tr><td colspan="5" class="prod-empty">
+                  No products found. <button class="btn-row" onclick="openProdModal(null)" style="margin-left:.5rem">Add your first product</button>
+                </td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
-/* ── IMAGE COMPRESSION ── */
-function compressImg(file) {
-  return new Promise(resolve=>{
-    const img=new Image(),url=URL.createObjectURL(file)
-    img.onload=()=>{
-      URL.revokeObjectURL(url)
-      const MAX=1920; let w=img.width,h=img.height
-      if(w>MAX){h=Math.round(h*MAX/w);w=MAX} else if(h>MAX){w=Math.round(w*MAX/h);h=MAX}
-      const c=document.createElement('canvas'); c.width=w; c.height=h
-      c.getContext('2d').drawImage(img,0,0,w,h)
-      c.toBlob(blob=>{
-        const reader=new FileReader()
-        reader.onload=()=>{
-          const comma=reader.result.indexOf(',')
-          const mime=reader.result.slice(5,reader.result.indexOf(';'))
-          const data=reader.result.slice(comma+1)
-          resolve({mime,data})
-        }
-        reader.readAsDataURL(blob)
-      },'image/jpeg',0.85)
-    }
-    img.src=url
-  })
+function prodRow(p, realIdx) {
+  const src = p.src
+    ? (p.src.startsWith('http') ? p.src : (p.src.startsWith('/') ? p.src : '/' + p.src))
+    : '';
+  return `
+    <tr>
+      <td class="prod-thumb-cell">
+        ${src
+          ? `<img class="prod-thumb-img" src="${src}" alt="${escA(p.name)}" loading="lazy"
+               onerror="this.outerHTML='<div class=prod-thumb-empty>No img</div>'" />`
+          : `<div class="prod-thumb-empty">No img</div>`}
+      </td>
+      <td class="prod-name-cell">${esc(p.name)}</td>
+      <td class="prod-cat-cell">${esc(p.category||'—')}</td>
+      <td class="prod-desc-cell">${esc((p.description||'').slice(0,80))}${(p.description||'').length>80?'…':''}</td>
+      <td class="prod-actions-cell" style="text-align:right">
+        <button class="btn-row" onclick="openProdModal(${realIdx})" style="margin-right:.35rem">Edit</button>
+        <button class="btn-row danger" onclick="deleteProd(${realIdx})">Delete</button>
+      </td>
+    </tr>`;
 }
+
+/* ── Product modal (add / edit) ────────────────────────── */
+function openProdModal(idx) {
+  prodModalIdx = idx;
+  pendingImgB64 = null;
+  pendingImgMime = null;
+
+  const title  = document.getElementById('prod-modal-title');
+  const nameEl = document.getElementById('prod-form-name');
+  const catEl  = document.getElementById('prod-form-category');
+  const priceEl= document.getElementById('prod-form-price');
+  const descEl = document.getElementById('prod-form-desc');
+
+  if (idx === null) {
+    /* Adding new product */
+    title.textContent = 'Add Product';
+    nameEl.value  = '';
+    catEl.value   = '';
+    priceEl.value = '';
+    descEl.value  = '';
+    resetImgPreview();
+  } else {
+    /* Editing existing */
+    const p = products[idx];
+    title.textContent = 'Edit Product';
+    nameEl.value  = p.name        || '';
+    catEl.value   = p.category    || '';
+    priceEl.value = p.price       || '';
+    descEl.value  = p.description || '';
+    if (p.src) {
+      const src = p.src.startsWith('http') ? p.src : (p.src.startsWith('/') ? p.src : '/' + p.src);
+      showImgPreview(src);
+    } else {
+      resetImgPreview();
+    }
+  }
+
+  document.getElementById('prod-modal').classList.add('open');
+  setTimeout(() => nameEl.focus(), 50);
+}
+
+function closeProdModal() {
+  document.getElementById('prod-modal').classList.remove('open');
+  pendingImgB64 = null;
+  pendingImgMime = null;
+}
+
+async function submitProdModal() {
+  const name  = document.getElementById('prod-form-name').value.trim();
+  const cat   = document.getElementById('prod-form-category').value.trim();
+  const price = document.getElementById('prod-form-price').value.trim();
+  const desc  = document.getElementById('prod-form-desc').value.trim();
+
+  if (!name) {
+    toast('Product name is required.', 'warning');
+    document.getElementById('prod-form-name').focus();
+    return;
+  }
+
+  const saveBtn = document.getElementById('prod-modal-save');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
+
+  try {
+    let imgSrc = (prodModalIdx !== null) ? (products[prodModalIdx]?.src || '') : '';
+
+    /* Upload image if one was picked */
+    if (pendingImgB64) {
+      const slot = `product_${Date.now()}`;
+      const r = await fetch('/api/admin-replace-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mime: pendingImgMime, data: pendingImgB64, slot, label: name }),
+        credentials: 'include'
+      });
+      if (!r.ok) throw new Error('Image upload failed: ' + await r.text());
+      const { src } = await r.json();
+      imgSrc = src;
+    }
+
+    const product = { name, src: imgSrc, category: cat, price, description: desc };
+
+    if (prodModalIdx === null) {
+      products.push(product);
+    } else {
+      products[prodModalIdx] = product;
+    }
+
+    /* Persist to GitHub via admin-save */
+    const sr = await fetch('/api/admin-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: 'products', content: products }),
+      credentials: 'include'
+    });
+    if (!sr.ok) throw new Error('Save failed: ' + await sr.text());
+
+    toast(prodModalIdx === null ? 'Product added!' : 'Product updated!', 'success');
+    closeProdModal();
+    renderProductUI();
+  } catch (e) {
+    toast(e.message, 'error');
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Product`;
+  }
+}
+
+async function deleteProd(idx) {
+  const name = products[idx]?.name || 'this product';
+  const ok = await showConfirm('Delete Product',
+    `Permanently delete <strong class="highlight">${esc(name)}</strong>? This cannot be undone.`);
+  if (!ok) return;
+  products.splice(idx, 1);
+  try {
+    await fetch('/api/admin-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: 'products', content: products }),
+      credentials: 'include'
+    });
+    toast(`"${name}" deleted.`, 'info');
+    renderProductUI();
+  } catch (e) {
+    toast('Delete failed: ' + e.message, 'error');
+  }
+}
+
+async function saveProductsAll() {
+  try {
+    const r = await fetch('/api/admin-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: 'products', content: products }),
+      credentials: 'include'
+    });
+    if (!r.ok) throw new Error(await r.text());
+    toast('All products saved!', 'success');
+  } catch (e) {
+    toast('Save failed: ' + e.message, 'error');
+  }
+}
+
+/* ── Product image picker ──────────────────────────────── */
+function triggerImgPicker() {
+  document.getElementById('prod-file-inp').click();
+}
+
+function removeImgPreview() {
+  pendingImgB64  = null;
+  pendingImgMime = null;
+  resetImgPreview();
+}
+
+function resetImgPreview() {
+  document.getElementById('img-upload-zone').style.display  = '';
+  document.getElementById('img-preview-wrap').style.display = 'none';
+}
+
+function showImgPreview(src) {
+  document.getElementById('img-preview').src                = src;
+  document.getElementById('img-upload-zone').style.display  = 'none';
+  document.getElementById('img-preview-wrap').style.display = '';
+}
+
+/* Drag & drop on modal image zone */
+const imgZone = document.getElementById('img-upload-zone');
+imgZone.addEventListener('dragover',  e => { e.preventDefault(); imgZone.classList.add('drag'); });
+imgZone.addEventListener('dragleave', () => imgZone.classList.remove('drag'));
+imgZone.addEventListener('drop', e => {
+  e.preventDefault(); imgZone.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) handleProdImgFile(file);
+});
+
+document.getElementById('prod-file-inp').onchange = e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (file) handleProdImgFile(file);
+};
+
+async function handleProdImgFile(file) {
+  if (file.size > 5 * 1024 * 1024) {
+    toast('Image must be under 5MB.', 'warning'); return;
+  }
+  try {
+    const { mime, data } = await compressImg(file);
+    pendingImgB64  = data;
+    pendingImgMime = mime;
+    /* Show data URL preview immediately */
+    const reader = new FileReader();
+    reader.onload = ev => showImgPreview(ev.target.result);
+    reader.readAsDataURL(file);
+  } catch (e) {
+    toast('Could not process image: ' + e.message, 'error');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   IMAGE COMPRESSION UTILITY
+   Resizes to max 1920px, converts to JPEG/WebP, returns
+   base64 and mime type for GitHub upload.
+────────────────────────────────────────────────────────── */
+function compressImg(file, maxDim=1920, quality=0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ev => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload  = () => {
+        const { width: w, height: h } = img;
+        const scale = Math.min(1, maxDim / Math.max(w, h));
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(w * scale);
+        canvas.height = Math.round(h * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const mime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+        canvas.toBlob(blob => {
+          if (!blob) { reject(new Error('Failed to compress image')); return; }
+          const fr2 = new FileReader();
+          fr2.onload = e2 => {
+            const b64 = e2.target.result.split(',')[1];
+            resolve({ mime, data: b64 });
+          };
+          fr2.onerror = reject;
+          fr2.readAsDataURL(blob);
+        }, mime, quality);
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+   UTILITIES
+────────────────────────────────────────────────────────── */
+function showErr(errEl, errMsg, msg) {
+  if (errEl && errMsg) { errMsg.textContent = msg; errEl.classList.add('show'); }
+  toast(msg, 'error');
+}
+
+/* Close modals on overlay click */
+document.getElementById('prod-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeProdModal();
+});
+document.getElementById('confirm-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeConfirm(false);
+});
+
+/* Close modals on Escape */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('prod-modal').classList.contains('open'))    closeProdModal();
+  if (document.getElementById('confirm-modal').classList.contains('open')) closeConfirm(false);
+});
 </script>
 </body>
 </html>

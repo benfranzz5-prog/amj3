@@ -2038,6 +2038,7 @@
       <li><a href="#contact" role="link" tabindex="0">Contact</a></li>
       <li><a href="login.html" class="nav-cta nav-market-report" role="link" tabindex="0">Market Report</a></li>
     </ul>
+    <!-- Note: nav labels are updated dynamically by cms-loader.js from nav.json -->
 
     <button class="nav-toggle" id="navToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navDrawer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -2069,17 +2070,17 @@
       <div class="hero-sticky">
 
         <div class="hero-content" id="heroContent">
-          <span class="hero-eyebrow">South Australia's Premium Wholesaler</span>
+          <span class="hero-eyebrow" data-cms="hero_eyebrow">South Australia's Premium Wholesaler</span>
           <h1 class="hero-title">
-            Premium Wholesale<br/>
-            <em>Fresh Produce</em>
+            <span data-cms="hero_titleLine1">Premium Wholesale</span><br/>
+            <em data-cms="hero_titleLine2">Fresh Produce</em>
           </h1>
-          <p class="hero-sub">
+          <p class="hero-sub" data-cms="hero_sub">
             Delivering the finest local and specialty produce to chefs, restaurants, caterers, and corporate kitchens across South Australia.
           </p>
           <div class="hero-actions">
-            <a href="#products" class="btn btn-primary">View Our Produce</a>
-            <a href="#contact" class="btn btn-outline">Enquire Now</a>
+            <a href="#products" class="btn btn-primary" data-cms-href="hero_ctaPrimaryHref" data-cms="hero_ctaPrimary">View Our Produce</a>
+            <a href="#contact" class="btn btn-outline" data-cms-href="hero_ctaOutlineHref" data-cms="hero_ctaOutline">Enquire Now</a>
           </div>
         </div>
 
@@ -2108,24 +2109,24 @@
           <!-- Text Column -->
           <div class="about-content">
             <div class="reveal">
-              <span class="section-label">About Us</span>
-              <h2 class="section-heading">
-                South Australia's Trusted<br/>Fresh Produce Partner
+              <span class="section-label" data-cms="about_sectionLabel">About Us</span>
+              <h2 class="section-heading" data-cms="about_heading">
+                South Australia's Trusted Fresh Produce Partner
               </h2>
-              <p class="section-lead">
+              <p class="section-lead" data-cms="about_leadParagraph">
                 AMJ Produce Co, led by Chris and Margy Abbot, is a premium wholesale fresh produce supplier based in Pooraka, South Australia. We're dedicated to delivering the freshest, highest-quality produce to the region's finest kitchens.
               </p>
             </div>
 
-            <p class="reveal reveal-delay-1" style="font-size:0.95rem; color:#444444; line-height:1.75;">
+            <p class="reveal reveal-delay-1" style="font-size:0.95rem; color:#444444; line-height:1.75;" data-cms="about_body1">
               AMJ Produce is an Award winning, well-established wholesale produce vendor and a strong supporter of South Australian Agriculture. Fresh fruits and vegetables are at the heart of healthy eating.
             </p>
 
-            <p class="reveal reveal-delay-1" style="font-size:0.95rem; color:#444444; line-height:1.75;">
+            <p class="reveal reveal-delay-1" style="font-size:0.95rem; color:#444444; line-height:1.75;" data-cms="about_body2">
               The driving force behind AMJ Produce is a proactive commitment to deliver fresh produce to the doorstep of our customers when they need them.
             </p>
 
-            <p class="reveal reveal-delay-1" style="font-size:0.95rem; color:#444444; line-height:1.75;">
+            <p class="reveal reveal-delay-1" style="font-size:0.95rem; color:#444444; line-height:1.75;" data-cms="about_body3">
               Our strong relationships with local growers and trusted importers mean we can consistently source what chefs and caterers need — from everyday staples to rare, hard-to-find specialty ingredients and exquisite edible flowers.
             </p>
 
@@ -2134,15 +2135,15 @@
               <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem; color: #333;">
                 <li style="display: flex; align-items: flex-start; gap: 0.6rem;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0; margin-top:2px;" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  HACCP Certification #FSAU06/5769
+                  <span data-cms="about_award1">HACCP Certification #FSAU06/5769</span>
                 </li>
                 <li style="display: flex; align-items: flex-start; gap: 0.6rem;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0; margin-top:2px;" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  2010 Winner 'The Premiers Food Award' for service to the Industry
+                  <span data-cms="about_award2">2010 Winner 'The Premiers Food Award' for service to the Industry</span>
                 </li>
                 <li style="display: flex; align-items: flex-start; gap: 0.6rem;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0; margin-top:2px;" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  2009 / 2011 / 2012 / 2014 / 2015 Finalist 'Restaurant &amp; Catering Supplier of the year'
+                  <span data-cms="about_award3">2009 / 2011 / 2012 / 2014 / 2015 Finalist 'Restaurant &amp; Catering Supplier of the year'</span>
                 </li>
               </ul>
             </div>
@@ -2152,34 +2153,34 @@
                 <div class="pillar-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
                 </div>
-                <strong>Quality Products</strong>
-                <p>Only the finest produce, carefully selected and quality-checked before delivery.</p>
+                <strong data-cms="about_pillar1Title">Quality Products</strong>
+                <p data-cms="about_pillar1Desc">Only the finest produce, carefully selected and quality-checked before delivery.</p>
               </div>
               <div class="pillar tilt-card">
                 <div class="pillar-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
                 </div>
-                <strong>Fast Service</strong>
-                <p>Reliable delivery schedules built around your kitchen's needs and timing.</p>
+                <strong data-cms="about_pillar2Title">Fast Service</strong>
+                <p data-cms="about_pillar2Desc">Reliable delivery schedules built around your kitchen's needs and timing.</p>
               </div>
               <div class="pillar tilt-card">
                 <div class="pillar-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                 </div>
-                <strong>Fair Pricing</strong>
-                <p>Transparent, competitive wholesale pricing with no hidden fees or surprises.</p>
+                <strong data-cms="about_pillar3Title">Fair Pricing</strong>
+                <p data-cms="about_pillar3Desc">Transparent, competitive wholesale pricing with no hidden fees or surprises.</p>
               </div>
               <div class="pillar tilt-card">
                 <div class="pillar-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
                 </div>
-                <strong>SA Grown</strong>
-                <p>Championing South Australian growers and local seasonal produce first.</p>
+                <strong data-cms="about_pillar4Title">SA Grown</strong>
+                <p data-cms="about_pillar4Desc">Championing South Australian growers and local seasonal produce first.</p>
               </div>
             </div>
 
             <div class="reveal reveal-delay-3">
-              <a href="#contact" class="btn btn-primary">Get in Touch</a>
+              <a href="#contact" class="btn btn-primary" data-cms="about_ctaLabel">Get in Touch</a>
             </div>
           </div>
         </div>
@@ -2195,12 +2196,12 @@
         <div class="fresho-inner">
 
           <div class="fresho-text reveal">
-            <span class="section-label">Online Ordering</span>
-            <h2>Order Fresh Produce Through Fresho</h2>
-            <p>
+            <span class="section-label" data-cms="fresho_sectionLabel">Online Ordering</span>
+            <h2 data-cms="fresho_heading">Order Fresh Produce Through Fresho</h2>
+            <p data-cms="fresho_body">
               AMJ Produce is fully integrated with Fresho — the leading fresh produce ordering platform trusted by chefs and hospitality businesses across Australia. Browse our current stock, place orders, track deliveries and manage invoices all in one place.
             </p>
-            <a href="https://www.fresho.com/au" target="_blank" rel="noopener" class="btn btn-primary">
+            <a href="https://www.fresho.com/au" target="_blank" rel="noopener" class="btn btn-primary" data-cms="fresho_buttonLabel" data-cms-href="fresho_buttonUrl">
               Order on Fresho
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </a>
@@ -2229,31 +2230,31 @@
 
       <div class="delivery-inner">
         <div class="delivery-text reveal">
-          <span class="section-label">Logistics</span>
-          <h2 class="section-heading">From Our Hands to Your Kitchen</h2>
-          <p class="section-lead">
+          <span class="section-label" data-cms="delivery_sectionLabel">Logistics</span>
+          <h2 class="section-heading" data-cms="delivery_heading">From Our Hands to Your Kitchen</h2>
+          <p class="section-lead" data-cms="delivery_lead">
             We understand that timing is everything in a professional kitchen. AMJ Produce is committed to reliable, early-morning delivery so your team has what they need before service begins.
           </p>
           <ul class="delivery-points">
             <li>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span>Early-morning dispatch — delivered before your kitchen opens</span>
+              <span data-cms="delivery_bullet1">Early-morning dispatch — delivered before your kitchen opens</span>
             </li>
             <li>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span>Temperature-controlled vehicles maintaining peak freshness</span>
+              <span data-cms="delivery_bullet2">Temperature-controlled vehicles maintaining peak freshness</span>
             </li>
             <li>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span>Consistent, scheduled runs across metropolitan Adelaide</span>
+              <span data-cms="delivery_bullet3">Consistent, scheduled runs across metropolitan Adelaide</span>
             </li>
             <li>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span>Direct contact with our team for last-minute orders and substitutions</span>
+              <span data-cms="delivery_bullet4">Direct contact with our team for last-minute orders and substitutions</span>
             </li>
             <li>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span>Carefully packed to protect delicate specialty and edible flower items</span>
+              <span data-cms="delivery_bullet5">Carefully packed to protect delicate specialty and edible flower items</span>
             </li>
           </ul>
         </div>
@@ -2276,40 +2277,40 @@
           <!-- Mission Card -->
           <div class="mission-card reveal">
             <div class="mission-card-label">Mission</div>
-            <h3>What We Do Every Day</h3>
-            <p>
+            <h3 data-cms="mission_missionHeading">What We Do Every Day</h3>
+            <p data-cms="mission_missionIntro">
               AMJ Produce is committed to delivering the highest quality wholesale fresh produce to our customers. We achieve this through:
             </p>
             <ul class="mission-list">
-              <li>Sourcing the freshest, highest quality produce available</li>
-              <li>Building strong, lasting relationships with reputable local growers and trusted importers</li>
-              <li>Providing exceptional, personalised customer service</li>
-              <li>Offering competitive pricing through efficient operations</li>
-              <li>Maintaining strict quality control from farm to delivery</li>
-              <li>Continuously expanding our range to meet the evolving needs of our customers</li>
-              <li>Supporting and promoting South Australian produce</li>
+              <li data-cms="mission_missionItem1">Sourcing the freshest, highest quality produce available</li>
+              <li data-cms="mission_missionItem2">Building strong, lasting relationships with reputable local growers and trusted importers</li>
+              <li data-cms="mission_missionItem3">Providing exceptional, personalised customer service</li>
+              <li data-cms="mission_missionItem4">Offering competitive pricing through efficient operations</li>
+              <li data-cms="mission_missionItem5">Maintaining strict quality control from farm to delivery</li>
+              <li data-cms="mission_missionItem6">Continuously expanding our range to meet the evolving needs of our customers</li>
+              <li data-cms="mission_missionItem7">Supporting and promoting South Australian produce</li>
             </ul>
           </div>
 
           <!-- Vision Card -->
           <div class="mission-card reveal reveal-delay-2">
             <div class="mission-card-label">Vision</div>
-            <h3>Where We're Headed</h3>
-            <p>
+            <h3 data-cms="mission_visionHeading">Where We're Headed</h3>
+            <p data-cms="mission_visionBody">
               To be South Australia's most trusted and preferred wholesale fresh produce supplier, renowned for uncompromising quality, reliability, and our deep commitment to supporting local growers and sustainable practices.
             </p>
 
             <div class="guiding-principles">
               <h4>Guiding Principles</h4>
               <div class="principles-grid">
-                <span class="principle-pill">Quality First</span>
-                <span class="principle-pill">Local Pride</span>
-                <span class="principle-pill">Integrity</span>
-                <span class="principle-pill">Partnership</span>
-                <span class="principle-pill">Sustainability</span>
-                <span class="principle-pill">Innovation</span>
-                <span class="principle-pill">Reliability</span>
-                <span class="principle-pill">Excellence</span>
+                <span class="principle-pill" data-cms="mission_principle1">Quality First</span>
+                <span class="principle-pill" data-cms="mission_principle2">Local Pride</span>
+                <span class="principle-pill" data-cms="mission_principle3">Integrity</span>
+                <span class="principle-pill" data-cms="mission_principle4">Partnership</span>
+                <span class="principle-pill" data-cms="mission_principle5">Sustainability</span>
+                <span class="principle-pill" data-cms="mission_principle6">Innovation</span>
+                <span class="principle-pill" data-cms="mission_principle7">Reliability</span>
+                <span class="principle-pill" data-cms="mission_principle8">Excellence</span>
               </div>
             </div>
           </div>
@@ -2707,9 +2708,9 @@
       <div class="section-inner" style="position:relative;z-index:1;">
 
         <div class="env-header reveal">
-          <span class="section-label">Sustainability</span>
-          <h2 class="section-heading">Environment / Sustainability Policy</h2>
-          <p class="section-lead">
+          <span class="section-label" data-cms="environment_sectionLabel">Sustainability</span>
+          <h2 class="section-heading" data-cms="environment_heading">Environment / Sustainability Policy</h2>
+          <p class="section-lead" data-cms="environment_lead">
             AMJ Produce designed and built a state of the art warehouse in 2008, purpose built for optimal sustainability. Ensuring all produce would be stored in a climate controlled warehouse with environmentally friendly attitudes &amp; procedures in place to be a leader in this area.
           </p>
         </div>
@@ -2720,48 +2721,48 @@
             <div class="env-card-icon">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AC92C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12c0-2.64 1.02-5.04 2.68-6.83"/><path d="M12 2v4M12 18v4M2 12H6M18 12h4"/></svg>
             </div>
-            <h3>Water Supply</h3>
-            <p>100% fully self-sufficient water supply – 2 x 22,000 Ltr capacity water tanks have been operational since 2008.</p>
+            <h3 data-cms="environment_card1Title">Water Supply</h3>
+            <p data-cms="environment_card1Body">100% fully self-sufficient water supply – 2 x 22,000 Ltr capacity water tanks have been operational since 2008.</p>
           </div>
 
           <div class="env-card reveal reveal-delay-1">
             <div class="env-card-icon">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AC92C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             </div>
-            <h3>Waste &amp; Recycling</h3>
-            <p>All green off cuts &amp; shrinkage is collected by a farmer in the Adelaide Hills for stock feed. We recycle all cardboard &amp; plastic — clients are encouraged to retain boxes which are collected by AMJ Produce to recycle/reuse for packing purposes.</p>
+            <h3 data-cms="environment_card2Title">Waste &amp; Recycling</h3>
+            <p data-cms="environment_card2Body">All green off cuts &amp; shrinkage is collected by a farmer in the Adelaide Hills for stock feed. We recycle all cardboard &amp; plastic — clients are encouraged to retain boxes which are collected by AMJ Produce to recycle/reuse for packing purposes.</p>
           </div>
 
           <div class="env-card reveal reveal-delay-2">
             <div class="env-card-icon">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AC92C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             </div>
-            <h3>Energy Efficiency</h3>
-            <p>Engaged the services of an energy consultant to manage lighting efficiency within the warehouse — including installation of skylights for natural lighting, energy efficient lights, and an employee policy for turning off lights when not in use.</p>
+            <h3 data-cms="environment_card3Title">Energy Efficiency</h3>
+            <p data-cms="environment_card3Body">Engaged the services of an energy consultant to manage lighting efficiency within the warehouse — including installation of skylights for natural lighting, energy efficient lights, and an employee policy for turning off lights when not in use.</p>
           </div>
 
           <div class="env-card reveal reveal-delay-3">
             <div class="env-card-icon">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AC92C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </div>
-            <h3>Local Sourcing</h3>
-            <p>80% of produce comes from within a 50km radius of the warehouse — supporting the local economy and reducing fleet mileage, subsequently reducing carbon emissions.</p>
+            <h3 data-cms="environment_card4Title">Local Sourcing</h3>
+            <p data-cms="environment_card4Body">80% of produce comes from within a 50km radius of the warehouse — supporting the local economy and reducing fleet mileage, subsequently reducing carbon emissions.</p>
           </div>
 
           <div class="env-card reveal reveal-delay-1">
             <div class="env-card-icon">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AC92C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
             </div>
-            <h3>Fleet Management</h3>
-            <p>A mechanic is on 24-hour call responsible for maintenance of all company vehicles, ensuring employee and customer safety while guaranteeing optimal efficiency which reduces pollution/emissions.</p>
+            <h3 data-cms="environment_card5Title">Fleet Management</h3>
+            <p data-cms="environment_card5Body">A mechanic is on 24-hour call responsible for maintenance of all company vehicles, ensuring employee and customer safety while guaranteeing optimal efficiency which reduces pollution/emissions.</p>
           </div>
 
           <div class="env-card reveal reveal-delay-2">
             <div class="env-card-icon">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AC92C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
             </div>
-            <h3>HACCP &amp; Clean Practices</h3>
-            <p>HACCP accredited wholesalers must use HACCP accredited growers who supply spray sheets to obtain accreditation. We use biodegradable chemicals for cleaning and sustainable wooden pallets in storage areas.</p>
+            <h3 data-cms="environment_card6Title">HACCP &amp; Clean Practices</h3>
+            <p data-cms="environment_card6Body">HACCP accredited wholesalers must use HACCP accredited growers who supply spray sheets to obtain accreditation. We use biodegradable chemicals for cleaning and sustainable wooden pallets in storage areas.</p>
           </div>
 
         </div>
@@ -2769,16 +2770,16 @@
         <!-- Stats -->
         <div class="env-stat-bar reveal">
           <div class="env-stat">
-            <div class="env-stat-num">80%</div>
-            <div class="env-stat-label">Produce within 50km</div>
+            <div class="env-stat-num" data-cms="environment_stat1Num">80%</div>
+            <div class="env-stat-label" data-cms="environment_stat1Label">Produce within 50km</div>
           </div>
           <div class="env-stat">
-            <div class="env-stat-num">100%</div>
-            <div class="env-stat-label">Self-Sufficient Water Supply</div>
+            <div class="env-stat-num" data-cms="environment_stat2Num">100%</div>
+            <div class="env-stat-label" data-cms="environment_stat2Label">Self-Sufficient Water Supply</div>
           </div>
           <div class="env-stat">
-            <div class="env-stat-num">2008</div>
-            <div class="env-stat-label">Sustainable Warehouse Built</div>
+            <div class="env-stat-num" data-cms="environment_stat3Num">2008</div>
+            <div class="env-stat-label" data-cms="environment_stat3Label">Sustainable Warehouse Built</div>
           </div>
         </div>
 
@@ -2806,20 +2807,20 @@
     ============================================================ -->
     <section class="commitment" id="commitment" aria-label="Customer commitment">
       <div class="commitment-inner reveal">
-        <h2>Our Commitment to You</h2>
-        <p>
+        <h2 data-cms="commitment_heading">Our Commitment to You</h2>
+        <p data-cms="commitment_body1">
           We understand that in a professional kitchen, quality and consistency aren't optional — they're everything. That's why every order from AMJ Produce comes with our personal commitment to freshness, accuracy, and service excellence.
         </p>
-        <p>
+        <p data-cms="commitment_body2">
           Whether you're a head chef at a fine-dining restaurant, a catering manager for a major event, or a corporate kitchen buyer, we treat every customer with the same dedication and care.
         </p>
         <div class="commitment-values">
-          <span class="commitment-value">Freshness Guaranteed</span>
-          <span class="commitment-value">Accurate Orders, Every Time</span>
-          <span class="commitment-value">Responsive Communication</span>
-          <span class="commitment-value">Consistent Quality</span>
-          <span class="commitment-value">Tailored to Your Needs</span>
-          <span class="commitment-value">Seasonal Guidance</span>
+          <span class="commitment-value" data-cms="commitment_value1">Freshness Guaranteed</span>
+          <span class="commitment-value" data-cms="commitment_value2">Accurate Orders, Every Time</span>
+          <span class="commitment-value" data-cms="commitment_value3">Responsive Communication</span>
+          <span class="commitment-value" data-cms="commitment_value4">Consistent Quality</span>
+          <span class="commitment-value" data-cms="commitment_value5">Tailored to Your Needs</span>
+          <span class="commitment-value" data-cms="commitment_value6">Seasonal Guidance</span>
         </div>
       </div>
     </section>
@@ -2831,9 +2832,9 @@
       <div class="section-inner">
 
         <div class="text-center reveal" style="max-width:600px; margin: 0 auto 3.5rem;">
-          <span class="section-label">Get in Touch</span>
-          <h2 class="section-heading">Start Your Order Today</h2>
-          <p class="section-lead">
+          <span class="section-label" data-cms="contact_sectionLabel">Get in Touch</span>
+          <h2 class="section-heading" data-cms="contact_heading">Start Your Order Today</h2>
+          <p class="section-lead" data-cms="contact_sub">
             Ready to experience premium wholesale produce? Reach out to the AMJ Produce team and we'll take care of the rest.
           </p>
         </div>
@@ -2851,8 +2852,8 @@
               </div>
               <div class="contact-detail-body">
                 <strong>Address</strong>
-                <p>13 Burma Road, Pooraka SA 5095</p>
-                <p style="font-size:0.85rem;color:#6b7280;margin-top:0.25rem;">GPO Box 310, Adelaide SA 5000</p>
+                <p data-cms="contact_addressStreet">13 Burma Road, Pooraka SA 5095</p>
+                <p style="font-size:0.85rem;color:#6b7280;margin-top:0.25rem;" data-cms="contact_addressGPO">GPO Box 310, Adelaide SA 5000</p>
               </div>
             </div>
 
@@ -2864,7 +2865,7 @@
               </div>
               <div class="contact-detail-body">
                 <strong>Phone</strong>
-                <a href="tel:0883495222"><p>(08) 8349 5222</p></a>
+                <a href="tel:0883495222"><p data-cms="contact_phone">(08) 8349 5222</p></a>
               </div>
             </div>
 
@@ -2876,7 +2877,7 @@
               </div>
               <div class="contact-detail-body">
                 <strong>Email</strong>
-                <a href="mailto:admin@amjproduce.com.au"><p>admin@amjproduce.com.au</p></a>
+                <a href="mailto:admin@amjproduce.com.au"><p data-cms="contact_email">admin@amjproduce.com.au</p></a>
               </div>
             </div>
 
@@ -2888,7 +2889,7 @@
               </div>
               <div class="contact-detail-body">
                 <strong>Fax</strong>
-                <p>(08) 8349 4390</p>
+                <p data-cms="contact_fax">(08) 8349 4390</p>
               </div>
             </div>
 
@@ -2900,7 +2901,7 @@
               </div>
               <div class="contact-detail-body">
                 <strong>Contacts</strong>
-                <p>Chris &amp; Margy Abbot</p>
+                <p data-cms="contact_persons">Chris &amp; Margy Abbot</p>
               </div>
             </div>
 
@@ -2985,7 +2986,7 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                   Send Enquiry
                 </button>
-                <p class="form-note">We typically respond within one business day.</p>
+                <p class="form-note" data-cms="contact_formNote">We typically respond within one business day.</p>
                 <div class="form-success" id="formSuccess" role="status" aria-live="polite">
                   Thank you! Your enquiry has been received. We'll be in touch shortly.
                 </div>
@@ -3010,19 +3011,19 @@
         <div class="footer-col">
           <h4>Contact Us</h4>
           <p style="margin-bottom:0.75rem; line-height:1.7;">
-            <strong>AMJ Produce Co.</strong><br/>
-            Fruit &amp; Vegetable Wholesalers<br/>
-            13 Burma Road, Pooraka SA 5095<br/>
-            P: <a href="tel:0883495222">(08) 8349 5222</a><br/>
-            F: (08) 8349 4390<br/>
-            E: <a href="mailto:admin@amjproduce.com.au">admin@amjproduce.com.au</a>
+            <strong data-cms="footer_companyName">AMJ Produce Co.</strong><br/>
+            <span data-cms="footer_companySubtitle">Fruit &amp; Vegetable Wholesalers</span><br/>
+            <span data-cms="footer_addressStreet">13 Burma Road, Pooraka SA 5095</span><br/>
+            P: <a href="tel:0883495222" data-cms="footer_phone">(08) 8349 5222</a><br/>
+            F: <span data-cms="footer_fax">(08) 8349 4390</span><br/>
+            E: <a href="mailto:admin@amjproduce.com.au" data-cms="footer_email">admin@amjproduce.com.au</a>
           </p>
-          <p style="font-size:0.8rem; opacity:0.7;">&copy; AMJ Produce <span id="footerYear"></span> | Website by <a href="https://shiftwebdesigns.com" target="_blank" rel="noopener" style="color:inherit;">Shift Web Designs</a></p>
+          <p style="font-size:0.8rem; opacity:0.7;">&copy; AMJ Produce <span id="footerYear"></span> | Website by <a href="https://shiftwebdesigns.com" target="_blank" rel="noopener" style="color:inherit;" data-cms="footer_designerLabel">Shift Web Designs</a></p>
         </div>
 
         <div class="footer-col">
           <h4>Our Commitment</h4>
-          <p style="line-height:1.7;">
+          <p style="line-height:1.7;" data-cms="footer_commitmentParagraph">
             AMJ Produce Co. aim to be South Australia's wholesale distributor of choice for fresh fruits and vegetables. Driven by the Guiding Principles: "Quality Products, Fast Service and Fair Pricing." and in all our business relationships by the basic values of integrity, honesty, trustworthiness and excellence in customer service.
           </p>
         </div>
@@ -3030,9 +3031,9 @@
         <div class="footer-col">
           <h4>Certification / Awards</h4>
           <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem;">
-            <li style="padding-bottom:0.6rem; border-bottom:1px solid rgba(255,255,255,0.25);">HACCP Certification #FSAU06/5769</li>
-            <li style="padding-bottom:0.6rem; border-bottom:1px solid rgba(255,255,255,0.25);">2010 Winner 'The Premiers Food Award' for service to the Industry</li>
-            <li>2009 / 2011 / 2012 / 2014 / 2015 Finalist 'Restaurant &amp; Catering Supplier of the year'</li>
+            <li style="padding-bottom:0.6rem; border-bottom:1px solid rgba(255,255,255,0.25);" data-cms="about_award1">HACCP Certification #FSAU06/5769</li>
+            <li style="padding-bottom:0.6rem; border-bottom:1px solid rgba(255,255,255,0.25);" data-cms="about_award2">2010 Winner 'The Premiers Food Award' for service to the Industry</li>
+            <li data-cms="about_award3">2009 / 2011 / 2012 / 2014 / 2015 Finalist 'Restaurant &amp; Catering Supplier of the year'</li>
           </ul>
         </div>
 

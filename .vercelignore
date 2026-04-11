@@ -1,1 +1,4 @@
 node_modules/
+cms/
+.next/
+.opencode/
