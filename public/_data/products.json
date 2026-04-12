@@ -356,5 +356,12 @@
     "name": "Gooseberries",
     "src": "/images/products/IMG_2768_270_200_s_c1.jpeg",
     "description": "Gooseberries are low in calories and fat, yet packed with nutrients. Gooseberries can be golden, greenish or reddish in color, and they really do have a tart grape flavor. Gooseberries are almost savory with a sharpness that may remind you of lemons, though there is a subtle sweetness that comes across like tropical fruit. Mostly, these little berries are zingy, zesty and bright."
+  },
+  {
+    "name": "Leos mums olive loaf",
+    "src": "images/products/1775976985779-product_1775976984126.jpg",
+    "category": "Bread",
+    "price": "",
+    "description": "Leos mums beautiful seasonal olive loaf. You better hope you get to leos house while its still steaming hot YUM!"
   }
 ]
