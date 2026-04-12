@@ -820,9 +820,9 @@
       z-index: 10;
       box-shadow: 0 -12px 40px rgba(0,0,0,0.12);
       border-radius: 1.5rem 1.5rem 0 0;
-      margin-top: -20vh;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
+      margin-top: -80vh;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 10%);
     }
 
 
@@ -888,6 +888,11 @@
           url('background.png');
         background-position: center top;
       }
+    }
+
+    @media (max-width: 768px) {
+      /* Hero is non-scrolling on tablet/mobile, so keep about flush */
+      .about { margin-top: -8vh; }
     }
 
     @media (max-width: 600px) {
