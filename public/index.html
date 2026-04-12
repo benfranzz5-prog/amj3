@@ -1268,10 +1268,8 @@
 
     /* ── Category group blocks ── */
     .catalogue-results {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      align-items: start;
+      columns: 3;
+      column-gap: 1.5rem;
     }
 
     .cat-group {
@@ -1279,6 +1277,8 @@
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       overflow: hidden;
+      break-inside: avoid;
+      margin-bottom: 1.5rem;
     }
 
     .cat-group-header {
@@ -1334,7 +1334,7 @@
 
     /* No results */
     .catalogue-no-results {
-      grid-column: 1 / -1;
+      column-span: all;
       text-align: center;
       padding: 4rem 2rem;
       color: var(--color-secondary);
@@ -1344,11 +1344,11 @@
     .catalogue-no-results strong { display: block; font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--color-fg); }
 
     @media (max-width: 1100px) {
-      .catalogue-results { grid-template-columns: repeat(2, 1fr); }
+      .catalogue-results { columns: 2; }
     }
 
     @media (max-width: 640px) {
-      .catalogue-results { grid-template-columns: 1fr; }
+      .catalogue-results { columns: 1; }
       .catalogue-filters { gap: 0.4rem; }
       .cat-pill { font-size: 0.75rem; padding: 0.38rem 0.8rem; }
     }
