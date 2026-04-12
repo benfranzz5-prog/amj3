@@ -209,67 +209,15 @@
 
     <div class="page-header">
       <p class="eyebrow">AMJ Produce — Members Area</p>
-      <h1>Market Reports</h1>
-      <p>Latest pricing, availability, and seasonal produce insights from our team.</p>
+      <h1 id="mr-page-title">Market Reports</h1>
+      <p id="mr-page-desc">Latest pricing, availability, and seasonal produce insights from our team.</p>
     </div>
 
-    <div class="report-grid">
-
-      <div class="report-card">
-        <div class="report-card-top">
-          <span class="report-tag tag-weekly">Weekly</span>
-          <span class="report-date">Week of 31 Mar 2025</span>
-        </div>
-        <h3>Weekly Market Update — Week 13</h3>
-        <p>Overview of current availability, pricing movements, and featured specialty items this week.</p>
-        <a href="#" class="btn-download">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
-        </a>
-      </div>
-
-      <div class="report-card">
-        <div class="report-card-top">
-          <span class="report-tag tag-weekly">Weekly</span>
-          <span class="report-date">Week of 24 Mar 2025</span>
-        </div>
-        <h3>Weekly Market Update — Week 12</h3>
-        <p>Highlights include strong citrus supply, limited stone fruit, and new season brassica arrivals.</p>
-        <a href="#" class="btn-download">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
-        </a>
-      </div>
-
-      <div class="report-card">
-        <div class="report-card-top">
-          <span class="report-tag tag-monthly">Monthly</span>
-          <span class="report-date">March 2025</span>
-        </div>
-        <h3>Monthly Produce Outlook — March</h3>
-        <p>Seasonal transition report covering autumn arrivals, pricing trends, and grower updates across SA.</p>
-        <a href="#" class="btn-download">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
-        </a>
-      </div>
-
-      <div class="report-card">
-        <div class="report-card-top">
-          <span class="report-tag tag-special">Special Report</span>
-          <span class="report-date">Feb 2025</span>
-        </div>
-        <h3>Edible Flowers & Micro Herb Guide</h3>
-        <p>A comprehensive seasonal guide to available edible flowers, micro herbs, and specialty garnishes.</p>
-        <a href="#" class="btn-download">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
-        </a>
-      </div>
-
+    <div class="report-grid" id="report-grid">
+      <!-- Loaded dynamically from /_data/marketreport.json -->
     </div>
 
-    <div class="coming-soon">
+    <div class="coming-soon" id="mr-coming-soon" style="display:none">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <h2>More reports coming soon</h2>
       <p>New weekly and monthly reports are uploaded each Monday morning. Check back regularly.</p>
@@ -283,6 +231,57 @@
 
   <script>
     document.getElementById('yr').textContent = new Date().getFullYear();
+
+    const TAG_LABELS = { weekly: 'Weekly', monthly: 'Monthly', special: 'Special Report' };
+    const TAG_CLASSES = { weekly: 'tag-weekly', monthly: 'tag-monthly', special: 'tag-special' };
+    const DL_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+    function esc(s) {
+      return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderReports(data) {
+      const titleEl = document.getElementById('mr-page-title');
+      const descEl  = document.getElementById('mr-page-desc');
+      const grid    = document.getElementById('report-grid');
+      const banner  = document.getElementById('mr-coming-soon');
+
+      if (data.pageTitle) titleEl.textContent = data.pageTitle;
+      if (data.pageDesc)  descEl.textContent  = data.pageDesc;
+
+      const reports = Array.isArray(data.reports) ? data.reports : [];
+
+      if (reports.length === 0) {
+        banner.style.display = '';
+        return;
+      }
+
+      grid.innerHTML = reports.map(r => `
+        <div class="report-card">
+          <div class="report-card-top">
+            <span class="report-tag ${esc(TAG_CLASSES[r.tag] || 'tag-special')}">${esc(TAG_LABELS[r.tag] || r.tag)}</span>
+            <span class="report-date">${esc(r.date)}</span>
+          </div>
+          <h3>${esc(r.title)}</h3>
+          <p>${esc(r.description)}</p>
+          ${r.pdfUrl && r.pdfUrl !== '#'
+            ? `<a href="${esc(r.pdfUrl)}" class="btn-download" target="_blank" rel="noopener noreferrer">${DL_ICON} Download PDF</a>`
+            : `<span class="btn-download" style="opacity:.45;cursor:default">${DL_ICON} PDF coming soon</span>`
+          }
+        </div>`).join('');
+
+      banner.style.display = '';
+    }
+
+    (async function () {
+      try {
+        const r = await fetch('/_data/marketreport.json');
+        if (!r.ok) throw new Error('Failed to load reports');
+        renderReports(await r.json());
+      } catch {
+        document.getElementById('mr-coming-soon').style.display = '';
+      }
+    })();
   </script>
 
 </body>

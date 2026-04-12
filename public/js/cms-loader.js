@@ -48,7 +48,7 @@
   }
 
   /* ── Fetch all data in parallel ──────────────────── */
-  const SECTIONS = ['hero','nav','about','fresho','delivery','mission','environment','commitment','contact','footer'];
+  const SECTIONS = ['hero','nav','about','fresho','delivery','mission','environment','commitment','contact','footer','producerange'];
 
   const [
     hero, nav, about, fresho, delivery, mission, environment, commitment, contact, footer,
@@ -200,6 +200,23 @@
         <img src="${imgSrc}" alt="Gallery photo" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
       </div>`;
     }).join('');
+  }
+
+  /* ── Produce Range category lists ───────────────────── */
+  // Populate each list from producerange.json items (one item per line).
+  // Items may contain safe HTML (e.g. <strong>text</strong>) — sanitized below.
+  const produceListMap = {
+    'produce-veg-list':       data['producerange_cat1Items'],
+    'produce-fruit-list':     data['producerange_cat2Items'],
+    'produce-specialty-list': data['producerange_cat3Items'],
+  };
+  for (const [id, raw] of Object.entries(produceListMap)) {
+    const ul = document.getElementById(id);
+    if (!ul || !raw) continue;
+    ul.innerHTML = String(raw).split('\n')
+      .map(s => s.trim()).filter(Boolean)
+      .map(item => `<li>${sanitizeHtml(item)}</li>`)
+      .join('');
   }
 
 })();

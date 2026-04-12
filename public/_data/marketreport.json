@@ -1,0 +1,38 @@
+{
+  "pageTitle": "Market Reports",
+  "pageDesc": "Latest pricing, availability, and seasonal produce insights from our team.",
+  "reports": [
+    {
+      "id": "1",
+      "tag": "weekly",
+      "date": "Week of 31 Mar 2025",
+      "title": "Weekly Market Update — Week 13",
+      "description": "Overview of current availability, pricing movements, and featured specialty items this week.",
+      "pdfUrl": "#"
+    },
+    {
+      "id": "2",
+      "tag": "weekly",
+      "date": "Week of 24 Mar 2025",
+      "title": "Weekly Market Update — Week 12",
+      "description": "Highlights include strong citrus supply, limited stone fruit, and new season brassica arrivals.",
+      "pdfUrl": "#"
+    },
+    {
+      "id": "3",
+      "tag": "monthly",
+      "date": "March 2025",
+      "title": "Monthly Produce Outlook — March",
+      "description": "Seasonal transition report covering autumn arrivals, pricing trends, and grower updates across SA.",
+      "pdfUrl": "#"
+    },
+    {
+      "id": "4",
+      "tag": "special",
+      "date": "Feb 2025",
+      "title": "Edible Flowers & Micro Herb Guide",
+      "description": "A comprehensive seasonal guide to available edible flowers, micro herbs, and specialty garnishes.",
+      "pdfUrl": "#"
+    }
+  ]
+}

@@ -183,6 +183,29 @@ body {
 }
 #logout-btn:hover { color: var(--red); background: var(--red-lt); }
 
+/* ─── MOBILE SIDEBAR TOGGLE ──────────────────────────── */
+#sb-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; cursor: pointer; color: var(--text);
+}
+#sb-toggle:hover { background: var(--surface3); }
+#sb-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); z-index: 199;
+}
+#sb-overlay.visible { display: block; }
+@media (max-width: 768px) {
+  #sb-toggle { display: flex; }
+  #sidebar {
+    position: fixed; left: calc(-1 * var(--sidebar-w) - 4px);
+    top: 0; bottom: 0; z-index: 200;
+    transition: left 250ms ease;
+  }
+  #sidebar.sb-open { left: 0; box-shadow: 4px 0 32px rgba(0,0,0,.5); }
+}
+
 /* ─── MAIN AREA ───────────────────────────────────────── */
 #main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
 
@@ -787,6 +810,14 @@ textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
       <div class="nav-item" data-section="products">
         <span class="nav-icon">🥦</span> Product Manager
       </div>
+      <div class="nav-item" data-section="producerange">
+        <span class="nav-icon">🥬</span> Produce Range
+      </div>
+
+      <div class="sb-group">Pages</div>
+      <div class="nav-item" data-section="marketreport">
+        <span class="nav-icon">📊</span> Market Reports
+      </div>
 
       <div class="sb-group">Media</div>
       <div class="nav-item" data-section="gallery">
@@ -806,6 +837,9 @@ textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
   <!-- MAIN -->
   <div id="main">
     <div id="toolbar">
+      <button id="sb-toggle" aria-label="Toggle sidebar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <div id="tb-breadcrumb">
         <div id="tb-title">Hero</div>
         <div id="tb-sub">Click any text to edit inline, then Save</div>
@@ -821,6 +855,54 @@ textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
   </div>
 
 </div><!-- /app -->
+<div id="sb-overlay"></div>
+
+<!-- ════════════════════════════════════
+     MARKET REPORT MODAL (Add / Edit)
+════════════════════════════════════ -->
+<div class="modal-overlay" id="mr-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head">
+      <h2 id="mr-modal-title">Add Report</h2>
+      <button class="modal-close" onclick="closeMRModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-grid-2">
+        <div class="field-group">
+          <label class="field-label">Report type</label>
+          <select class="field-input" id="mr-tag">
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="special">Special Report</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Date / Period</label>
+          <input type="text" class="field-input" id="mr-date" placeholder="e.g. Week of 7 Apr 2025" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Title *</label>
+        <input type="text" class="field-input" id="mr-title" placeholder="e.g. Weekly Market Update — Week 14" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Description</label>
+        <textarea class="field-input" id="mr-desc" rows="3" placeholder="Brief overview of what this report covers…"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">PDF link URL</label>
+        <input type="url" class="field-input" id="mr-pdf" placeholder="https://… (leave blank if not yet available)" />
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeMRModal()">Cancel</button>
+      <button class="btn-save" onclick="submitMRModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Report
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════
      PRODUCT MODAL (Add / Edit)
@@ -934,7 +1016,8 @@ const SECTION_LABELS = {
   mission:'Mission & Vision', testimonials:'Testimonials',
   environment:'Environment', commitment:'Commitment',
   contact:'Contact', footer:'Footer',
-  products:'Product Manager', gallery:'Gallery Photos', images:'Site Images'
+  products:'Product Manager', gallery:'Gallery Photos', images:'Site Images',
+  producerange:'Produce Range', marketreport:'Market Reports'
 };
 
 /* ──────────────────────────────────────────────────────────
@@ -1050,13 +1133,15 @@ async function loadSection(sec) {
   const isProducts = sec === 'products';
   const isMedia    = sec === 'gallery' || sec === 'images';
   const isTestimonials = sec === 'testimonials';
+  const isMarketReport = sec === 'marketreport';
 
   // Hide save button for sections with own save logic
   const saveBtn = document.getElementById('save-btn');
-  saveBtn.style.display = (isMedia || isProducts) ? 'none' : 'flex';
+  saveBtn.style.display = (isMedia || isProducts || isMarketReport) ? 'none' : 'flex';
   document.getElementById('tb-sub').textContent = isProducts
     ? 'Add, edit, or remove products — click Add Product to begin'
     : isMedia ? (sec === 'gallery' ? 'Upload and manage gallery photos' : 'Replace named image slots')
+    : isMarketReport ? 'Add, edit, or remove market reports'
     : 'Click any text to edit inline, then Save';
 
   const ct = document.getElementById('content');
@@ -1065,6 +1150,7 @@ async function loadSection(sec) {
   if (isProducts)    { await loadProducts(); return; }
   if (isMedia)       { sec === 'gallery' ? await renderGallery() : await renderImages(); return; }
   if (isTestimonials){ await loadTestimonials(); return; }
+  if (isMarketReport){ await loadMR(); return; }
 
   try {
     const r = await fetch(`/api/admin-content?section=${sec}`, { credentials: 'include' });
@@ -1592,6 +1678,78 @@ const RENDERERS = {
         </div>
       </div>
     </div>`,
+  /* PRODUCE RANGE */
+  producerange: d => `
+    <div class="editor-wrap">
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Section Header</h3></div>
+        <div class="editor-card-body">
+          <div class="field-grid-2">
+            <div class="field-group">
+              <span class="field-label">Section label <span style="color:var(--muted);font-weight:400">(eyebrow text)</span></span>
+              ${fi(d.sectionLabel,'sectionLabel','What We Supply')}
+            </div>
+            <div class="field-group">
+              <span class="field-label">Heading</span>
+              ${fi(d.heading,'heading','Our Produce Range')}
+            </div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Lead paragraph</span>
+            ${ced(d.lead,'lead','From everyday essentials…')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Availability note</span>
+            ${fi(d.noteText,'noteText','Seasonal availability applies…')}
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Category 1</h3><span class="badge">Vegetables &amp; Greens column</span></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Category title</span>
+            ${fi(d.cat1Title,'cat1Title','Vegetables & Greens')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Items <span style="color:var(--muted);font-weight:400">— one per line. Use &lt;strong&gt;text&lt;/strong&gt; for bold.</span></span>
+            ${ta(d.cat1Items,'cat1Items',14)}
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Category 2</h3><span class="badge">Fruits column</span></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Category title</span>
+            ${fi(d.cat2Title,'cat2Title','Fruits')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Items <span style="color:var(--muted);font-weight:400">— one per line.</span></span>
+            ${ta(d.cat2Items,'cat2Items',14)}
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head"><h3>Category 3</h3><span class="badge">Specialty / Gourmet / Rare column</span></div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Category title</span>
+            ${fi(d.cat3Title,'cat3Title','Specialty / Gourmet / Rare')}
+          </div>
+          <div class="field-group">
+            <span class="field-label">Items <span style="color:var(--muted);font-weight:400">— one per line. Use &lt;strong&gt;text&lt;/strong&gt; for bold.</span></span>
+            ${ta(d.cat3Items,'cat3Items',14)}
+          </div>
+        </div>
+      </div>
+
+    </div>`,
+
 };
 
 /* ──────────────────────────────────────────────────────────
@@ -2297,6 +2455,180 @@ function compressImg(file, maxDim=1920, quality=0.82) {
 }
 
 /* ──────────────────────────────────────────────────────────
+   MARKET REPORT MANAGER
+────────────────────────────────────────────────────────── */
+let mrReports = [];
+let mrPageData = {};
+let mrEditIdx  = null; // null = add new
+
+const MR_TAGS = { weekly: 'Weekly', monthly: 'Monthly', special: 'Special Report' };
+
+async function loadMR() {
+  const ct = document.getElementById('content');
+  try {
+    const r = await fetch('/api/admin-content?section=marketreport', { credentials: 'include' });
+    if (!r.ok) throw new Error(await r.text());
+    const { content } = await r.json();
+    mrReports  = Array.isArray(content?.reports) ? content.reports.map(r => ({...r})) : [];
+    mrPageData = { pageTitle: content?.pageTitle || '', pageDesc: content?.pageDesc || '' };
+    renderMRUI();
+  } catch (e) {
+    ct.textContent = `Error: ${e.message}`;
+  }
+}
+
+function renderMRUI() {
+  const ct = document.getElementById('content');
+  ct.innerHTML = `
+    <div class="editor-wrap">
+
+      <div class="editor-card">
+        <div class="editor-card-head">
+          <h3>Page Text</h3>
+          <button class="btn-toolbar primary" style="margin-left:auto" onclick="saveMR()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save All
+          </button>
+        </div>
+        <div class="editor-card-body">
+          <div class="field-group">
+            <span class="field-label">Page title</span>
+            <input class="field-input" id="mr-pageTitle" value="${esc(mrPageData.pageTitle)}" placeholder="Market Reports" />
+          </div>
+          <div class="field-group">
+            <span class="field-label">Page description</span>
+            <input class="field-input" id="mr-pageDesc" value="${esc(mrPageData.pageDesc)}" placeholder="Latest pricing and insights…" />
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-card">
+        <div class="editor-card-head">
+          <h3>Reports</h3>
+          <span class="badge">${mrReports.length} report${mrReports.length !== 1 ? 's' : ''}</span>
+          <button class="btn-toolbar primary" style="margin-left:auto" onclick="openMRModal(null)">+ Add Report</button>
+        </div>
+        <div class="editor-card-body" style="padding:0">
+          ${mrReports.length === 0
+            ? `<p style="padding:1.5rem;color:var(--muted);text-align:center">No reports yet — click <strong>+ Add Report</strong> to add one.</p>`
+            : `<table style="width:100%;border-collapse:collapse">
+                <thead><tr style="border-bottom:1px solid var(--border)">
+                  <th style="padding:.65rem 1rem;text-align:left;font-size:.72rem;color:var(--muted);font-weight:600">TYPE</th>
+                  <th style="padding:.65rem 1rem;text-align:left;font-size:.72rem;color:var(--muted);font-weight:600">DATE</th>
+                  <th style="padding:.65rem 1rem;text-align:left;font-size:.72rem;color:var(--muted);font-weight:600">TITLE</th>
+                  <th style="padding:.65rem 1rem;text-align:right;font-size:.72rem;color:var(--muted);font-weight:600">ACTIONS</th>
+                </tr></thead>
+                <tbody>
+                  ${mrReports.map((r, i) => `
+                    <tr style="border-bottom:1px solid var(--border)">
+                      <td style="padding:.7rem 1rem">
+                        <span style="font-size:.7rem;font-weight:600;text-transform:uppercase;padding:.2rem .55rem;border-radius:20px;background:var(--surface3);color:var(--muted2)">
+                          ${esc(MR_TAGS[r.tag] || r.tag || '—')}
+                        </span>
+                      </td>
+                      <td style="padding:.7rem 1rem;font-size:.8rem;color:var(--muted2)">${esc(r.date)}</td>
+                      <td style="padding:.7rem 1rem;font-size:.83rem;font-weight:500">${esc(r.title)}</td>
+                      <td style="padding:.7rem 1rem;text-align:right">
+                        <button class="btn-row" onclick="openMRModal(${i})">Edit</button>
+                        <button class="btn-row danger" onclick="deleteMR(${i})" style="margin-left:.4rem">Delete</button>
+                      </td>
+                    </tr>`).join('')}
+                </tbody>
+              </table>`}
+        </div>
+      </div>
+
+    </div>`;
+}
+
+function openMRModal(idx) {
+  mrEditIdx = idx;
+  const r = idx !== null ? mrReports[idx] : { tag:'weekly', date:'', title:'', description:'', pdfUrl:'' };
+  document.getElementById('mr-modal-title').textContent = idx !== null ? 'Edit Report' : 'Add Report';
+  document.getElementById('mr-tag').value   = r.tag || 'weekly';
+  document.getElementById('mr-date').value  = r.date || '';
+  document.getElementById('mr-title').value = r.title || '';
+  document.getElementById('mr-desc').value  = r.description || '';
+  document.getElementById('mr-pdf').value   = r.pdfUrl || '';
+  document.getElementById('mr-modal').classList.add('open');
+}
+
+function closeMRModal() {
+  document.getElementById('mr-modal').classList.remove('open');
+  mrEditIdx = null;
+}
+
+function submitMRModal() {
+  const tag   = document.getElementById('mr-tag').value;
+  const date  = document.getElementById('mr-date').value.trim();
+  const title = document.getElementById('mr-title').value.trim();
+  const desc  = document.getElementById('mr-desc').value.trim();
+  const pdf   = document.getElementById('mr-pdf').value.trim();
+
+  if (!title) { toast('Title is required.', 'warning'); return; }
+
+  const report = { id: String(Date.now()), tag, date, title, description: desc, pdfUrl: pdf };
+
+  if (mrEditIdx !== null) {
+    report.id = mrReports[mrEditIdx].id || report.id;
+    mrReports[mrEditIdx] = report;
+  } else {
+    mrReports.unshift(report);
+  }
+  closeMRModal();
+  renderMRUI();
+}
+
+async function deleteMR(idx) {
+  const ok = await showConfirm('Delete Report', `Delete "<strong>${esc(mrReports[idx]?.title)}</strong>"? This cannot be undone.`);
+  if (!ok) return;
+  mrReports.splice(idx, 1);
+  renderMRUI();
+  toast('Report deleted. Click Save All to persist.', 'info');
+}
+
+async function saveMR() {
+  mrPageData.pageTitle = document.getElementById('mr-pageTitle')?.value.trim() || mrPageData.pageTitle;
+  mrPageData.pageDesc  = document.getElementById('mr-pageDesc')?.value.trim()  || mrPageData.pageDesc;
+  const content = { ...mrPageData, reports: mrReports };
+  setStatus('Saving…');
+  try {
+    const r = await fetch('/api/admin-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: 'marketreport', content }),
+      credentials: 'include'
+    });
+    if (!r.ok) throw new Error(await r.text());
+    toast('Market reports saved!', 'success');
+    setStatus('');
+  } catch (e) {
+    toast('Save failed: ' + e.message, 'error');
+    setStatus('');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   MOBILE SIDEBAR TOGGLE
+────────────────────────────────────────────────────────── */
+const sbToggle  = document.getElementById('sb-toggle');
+const sbSidebar = document.getElementById('sidebar');
+const sbOverlay = document.getElementById('sb-overlay');
+
+function openSidebar()  { sbSidebar.classList.add('sb-open');    sbOverlay.classList.add('visible'); }
+function closeSidebar() { sbSidebar.classList.remove('sb-open'); sbOverlay.classList.remove('visible'); }
+
+sbToggle.addEventListener('click', () =>
+  sbSidebar.classList.contains('sb-open') ? closeSidebar() : openSidebar()
+);
+sbOverlay.addEventListener('click', closeSidebar);
+
+// Auto-close sidebar on mobile after selecting a section
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); });
+});
+
+/* ──────────────────────────────────────────────────────────
    UTILITIES
 ────────────────────────────────────────────────────────── */
 function showErr(errEl, errMsg, msg) {
@@ -2311,12 +2643,16 @@ document.getElementById('prod-modal').addEventListener('click', e => {
 document.getElementById('confirm-modal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeConfirm(false);
 });
+document.getElementById('mr-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeMRModal();
+});
 
 /* Close modals on Escape */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   if (document.getElementById('prod-modal').classList.contains('open'))    closeProdModal();
   if (document.getElementById('confirm-modal').classList.contains('open')) closeConfirm(false);
+  if (document.getElementById('mr-modal').classList.contains('open'))      closeMRModal();
 });
 </script>
 </body>
