@@ -1,7 +1,9 @@
 // Shared HMAC auth helper
 import crypto from 'crypto'
 
-const SECRET = process.env.ADMIN_PASSWORD || ''
+const SECRET = process.env.ADMIN_PASSWORD
+if (!SECRET) throw new Error('ADMIN_PASSWORD environment variable is required')
+
 const COOKIE = 'amj_session'
 const MAX_AGE = 60 * 60 * 8 // 8 hours
 

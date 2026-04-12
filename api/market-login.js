@@ -1,13 +1,12 @@
 import crypto from 'crypto'
-import { makeSessionCookie } from './_auth.js'
+import { makeMarketSessionCookie } from './_market-auth.js'
 
-const BODY_LIMIT = 1024 // login body never needs more than 1KB
+const BODY_LIMIT = 1024
 
-// In-memory rate limiter — resets on cold start, but still prevents
-// rapid brute-force within a single warm serverless instance.
+// Rate limiter for market login
 const loginAttempts = new Map()
 const MAX_ATTEMPTS = 5
-const WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const WINDOW_MS = 15 * 60 * 1000
 
 function checkRateLimit(ip) {
   const now = Date.now()
@@ -23,6 +22,15 @@ function getClientIp(req) {
     req.socket?.remoteAddress || 'unknown'
 }
 
+function safeEqual(a, b) {
+  if (!a || !b || a.length !== b.length) return false
+  try {
+    return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
+  } catch {
+    return false
+  }
+}
+
 export default function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
@@ -31,8 +39,11 @@ export default function handler(req, res) {
     return res.status(429).json({ error: 'Too many login attempts. Try again later.' })
   }
 
-  const expected = process.env.ADMIN_PASSWORD
-  if (!expected) return res.status(500).json({ error: 'Server misconfigured' })
+  const expectedEmail = process.env.MARKET_EMAIL
+  const expectedPassword = process.env.MARKET_PASSWORD
+  if (!expectedEmail || !expectedPassword) {
+    return res.status(500).json({ error: 'Server misconfigured' })
+  }
 
   let body = ''
   req.on('data', chunk => {
@@ -44,18 +55,17 @@ export default function handler(req, res) {
   })
   req.on('end', () => {
     if (res.writableEnded) return
-    let password
-    try { password = JSON.parse(body).password } catch { return res.status(400).json({ error: 'Invalid JSON' }) }
+    let email, password
+    try { ({ email, password } = JSON.parse(body)) } catch { return res.status(400).json({ error: 'Invalid JSON' }) }
 
-    const match = password?.length > 0 &&
-      password.length === expected.length &&
-      crypto.timingSafeEqual(Buffer.from(password.padEnd(64)), Buffer.from(expected.padEnd(64)))
+    const emailOk = safeEqual(String(email || ''), expectedEmail)
+    const passOk = safeEqual(String(password || ''), expectedPassword)
 
-    if (!match) {
-      return res.status(401).json({ error: 'Invalid password' })
+    if (!emailOk || !passOk) {
+      return res.status(401).json({ error: 'Invalid credentials' })
     }
 
-    res.setHeader('Set-Cookie', makeSessionCookie())
+    res.setHeader('Set-Cookie', makeMarketSessionCookie())
     res.status(200).json({ ok: true })
   })
 }

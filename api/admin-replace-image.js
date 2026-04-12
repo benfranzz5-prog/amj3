@@ -5,6 +5,15 @@ const SAFE_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp'
 const SLOT_RE = /^[a-zA-Z0-9_]+$/
 const MAX_B64 = 1.5 * 1024 * 1024 // ~1MB binary after decoding
 
+function validateMagicBytes(buf, mime) {
+  if (mime === 'image/jpeg') return buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF
+  if (mime === 'image/png')  return buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47
+  if (mime === 'image/gif')  return buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x38
+  if (mime === 'image/webp') return buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&
+                                    buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50
+  return false
+}
+
 async function githubGet(path) {
   const repo = process.env.GITHUB_REPO
   const branch = process.env.GITHUB_BRANCH || 'main'
@@ -48,6 +57,9 @@ export default function handler(req, res) {
     if (!ALLOWED_MIME.includes(mime)) return res.status(400).json({ error: 'Invalid file type' })
     if (data.length > MAX_B64) return res.status(413).json({ error: 'Image must be under 1MB' })
 
+    const buf = Buffer.from(data, 'base64')
+    if (!validateMagicBytes(buf, mime)) return res.status(400).json({ error: 'Invalid file type' })
+
     const ext = SAFE_EXT[mime]
     const ts = Date.now()
     const isProduct = slot.startsWith('product_')
@@ -68,7 +80,8 @@ export default function handler(req, res) {
 
       res.status(200).json({ ok: true, src: publicSrc })
     } catch (e) {
-      res.status(500).json({ error: e.message })
+      console.error('[admin-replace-image] error:', e.message)
+      res.status(500).json({ error: 'Failed to replace image. Please try again.' })
     }
   })
 }

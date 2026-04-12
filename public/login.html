@@ -306,21 +306,36 @@
   <script>
     document.getElementById('yr').textContent = new Date().getFullYear();
 
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const error    = document.getElementById('loginError');
-      if (email === '1@1.com' && password === '1') {
-        window.location.href = 'market-report.html';
-      } else {
+      const btn      = this.querySelector('button[type="submit"]');
+      error.style.display = 'none';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/market-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
+        });
+        if (res.ok) {
+          window.location.href = 'market-report.html';
+        } else {
+          error.style.display = 'block';
+          btn.disabled = false;
+        }
+      } catch {
         error.style.display = 'block';
+        btn.disabled = false;
       }
     });
 
     document.getElementById('forgotLink').addEventListener('click', function (e) {
       e.preventDefault();
-      alert('Please contact admin@amjproduce.com.au to reset your password.');
+      alert('Please contact us to reset your password.');
     });
 
     const modal     = document.getElementById('signupModal');

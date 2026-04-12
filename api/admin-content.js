@@ -29,6 +29,7 @@ export default async function handler(req, res) {
     const content = JSON.parse(Buffer.from(file.content, 'base64').toString('utf8'))
     res.status(200).json({ content, sha: file.sha })
   } catch (e) {
-    res.status(500).json({ error: e.message })
+    console.error('[admin-content] error:', e.message)
+    res.status(500).json({ error: 'Failed to load content. Please try again.' })
   }
 }

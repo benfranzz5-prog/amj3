@@ -47,9 +47,17 @@ export default async function handler(req, res) {
   if (!verifyRequest(req)) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'POST') return res.status(405).end()
 
+  const BODY_LIMIT = 512 * 1024 // 512KB max for JSON content
   let body = ''
-  req.on('data', c => { body += c })
+  req.on('data', c => {
+    body += c
+    if (body.length > BODY_LIMIT) {
+      res.status(413).json({ error: 'Request too large' })
+      req.destroy()
+    }
+  })
   req.on('end', async () => {
+    if (res.writableEnded) return
     let section, content
     try { ({ section, content } = JSON.parse(body)) } catch { return res.status(400).json({ error: 'Invalid JSON' }) }
 
@@ -62,7 +70,8 @@ export default async function handler(req, res) {
       await githubPut(filePath, JSON.stringify(content, null, 2), sha, `cms: update ${section}`)
       res.status(200).json({ ok: true })
     } catch (e) {
-      res.status(500).json({ error: e.message })
+      console.error('[admin-save] error:', e.message)
+      res.status(500).json({ error: 'Failed to save content. Please try again.' })
     }
   })
 }

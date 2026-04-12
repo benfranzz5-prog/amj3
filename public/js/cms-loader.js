@@ -5,6 +5,43 @@
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  // Allowlist-based HTML sanitizer for data-cms-html fields.
+  // Only permits safe formatting tags; strips scripts, event handlers, and
+  // javascript: hrefs. Uses the browser's own DOM parser so no external lib needed.
+  function sanitizeHtml(dirty) {
+    const ALLOWED_TAGS = new Set(['B','I','EM','STRONG','U','BR','P','SPAN','UL','OL','LI','A','H1','H2','H3','H4','H5','H6'])
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(String(dirty || ''), 'text/html')
+
+    function cleanNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) return node.cloneNode()
+      if (node.nodeType !== Node.ELEMENT_NODE) return null
+      if (!ALLOWED_TAGS.has(node.tagName)) {
+        // Unwrap: keep text content, strip the unsafe tag itself
+        const frag = document.createDocumentFragment()
+        node.childNodes.forEach(c => { const n = cleanNode(c); if (n) frag.appendChild(n) })
+        return frag
+      }
+      const el = document.createElement(node.tagName.toLowerCase())
+      // Only copy href on anchors, and only safe protocols
+      if (node.tagName === 'A' && node.hasAttribute('href')) {
+        const href = node.getAttribute('href').trim().toLowerCase()
+        if (!href.startsWith('javascript:') && !href.startsWith('vbscript:') && !href.startsWith('data:')) {
+          el.setAttribute('href', node.getAttribute('href'))
+          el.setAttribute('rel', 'noopener noreferrer')
+        }
+      }
+      node.childNodes.forEach(c => { const n = cleanNode(c); if (n) el.appendChild(n) })
+      return el
+    }
+
+    const frag = document.createDocumentFragment()
+    doc.body.childNodes.forEach(c => { const n = cleanNode(c); if (n) frag.appendChild(n) })
+    const tmp = document.createElement('div')
+    tmp.appendChild(frag)
+    return tmp.innerHTML
+  }
+
   function starsSvg(n) {
     const star = (fill) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="${fill}" aria-hidden="true"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>`;
     return Array.from({ length: 5 }, (_, i) => star(i < n ? '#9AC92C' : '#3a3a3a')).join('');
@@ -47,10 +84,10 @@
     if (key in data) el.textContent = data[key];
   });
 
-  /* ── data-cms-html="key" → innerHTML ────────────── */
+  /* ── data-cms-html="key" → innerHTML (sanitized) ── */
   document.querySelectorAll('[data-cms-html]').forEach(el => {
     const key = el.getAttribute('data-cms-html');
-    if (key in data) el.innerHTML = data[key];
+    if (key in data) el.innerHTML = sanitizeHtml(data[key]);
   });
 
   /* ── data-cms-href="key" → href ─────────────────── */

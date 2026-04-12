@@ -40,9 +40,17 @@ export default async function handler(req, res) {
   if (!verifyRequest(req)) return res.status(401).json({ error: 'Unauthorized' })
   if (req.method !== 'POST') return res.status(405).end()
 
+  const BODY_LIMIT = 4096 // delete only needs a path, 4KB is plenty
   let body = ''
-  req.on('data', c => { body += c })
+  req.on('data', c => {
+    body += c
+    if (body.length > BODY_LIMIT) {
+      res.status(413).json({ error: 'Request too large' })
+      req.destroy()
+    }
+  })
   req.on('end', async () => {
+    if (res.writableEnded) return
     let src
     try { ({ src } = JSON.parse(body)) } catch { return res.status(400).json({ error: 'Invalid JSON' }) }
 
@@ -68,7 +76,8 @@ export default async function handler(req, res) {
 
       res.status(200).json({ ok: true })
     } catch (e) {
-      res.status(500).json({ error: e.message })
+      console.error('[admin-delete-photo] error:', e.message)
+      res.status(500).json({ error: 'Failed to delete photo. Please try again.' })
     }
   })
 }

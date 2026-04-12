@@ -1022,8 +1022,8 @@ function showApp() {
   loadSection('hero');
 }
 
-document.getElementById('logout-btn').onclick = () => {
-  document.cookie = 'amj_session=; Max-Age=0; Path=/';
+document.getElementById('logout-btn').onclick = async () => {
+  try { await fetch('/api/admin-logout', { method: 'POST', credentials: 'include' }) } catch {}
   location.reload();
 };
 
@@ -1073,7 +1073,7 @@ async function loadSection(sec) {
     sectionData = content || {};
     renderSection(sec, sectionData);
   } catch (e) {
-    ct.innerHTML = `<div class="spinner-wrap" style="color:var(--red)">Error: ${e.message}</div>`;
+    ct.textContent = `Error: ${e.message}`;
   }
 }
 
@@ -1652,7 +1652,7 @@ async function loadTestimonials() {
     testimonials = Array.isArray(content) ? content.map(t => ({...t})) : [];
     renderTUI();
   } catch (e) {
-    ct.innerHTML = `<div class="spinner-wrap" style="color:var(--red)">Error: ${e.message}</div>`;
+    ct.textContent = `Error: ${e.message}`;
   }
 }
 
@@ -1995,7 +1995,7 @@ async function loadProducts() {
     products = Array.isArray(content) ? content.map(p => ({...p})) : [];
     renderProductUI();
   } catch (e) {
-    ct.innerHTML = `<div class="spinner-wrap" style="color:var(--red)">Error loading products: ${e.message}</div>`;
+    ct.textContent = `Error loading products: ${e.message}`;
   }
 }
 
