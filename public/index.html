@@ -1654,25 +1654,30 @@
       position: relative;
     }
 
-    .contact-margy {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 15%;
-      z-index: 0;
+    .contact-portrait-wrap {
+      margin-top: 0.5rem;
       border-radius: var(--radius-sm);
-      opacity: 0.28;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 45%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 45%);
-      pointer-events: none;
+      overflow: hidden;
+      position: relative;
+      line-height: 0;
     }
 
-    .contact-detail { position: relative; z-index: 1; }
+    .contact-margy {
+      width: 100%;
+      display: block;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      object-position: center 20%;
+      max-height: 280px;
+    }
+
+    .contact-portrait-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.55) 0%, transparent 40%);
+      pointer-events: none;
+    }
 
     .contact-detail {
       display: flex;
@@ -2764,8 +2769,6 @@
           <!-- Contact Info -->
           <div class="contact-info reveal">
 
-            <img src="/images/margy.jpg" alt="" class="contact-margy" aria-hidden="true" loading="lazy">
-
             <div class="contact-detail">
               <div class="contact-detail-icon" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#28A745" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -2825,6 +2828,10 @@
                 <strong>Contacts</strong>
                 <p data-cms="contact_persons">Chris &amp; Margy Abbot</p>
               </div>
+            </div>
+
+            <div class="contact-portrait-wrap">
+              <img src="/images/margy.jpg" alt="Chris and Margy Abbot" class="contact-margy" loading="lazy">
             </div>
 
           </div>
