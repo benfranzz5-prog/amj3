@@ -1638,7 +1638,7 @@
     /* ============================================================
        CONTACT SECTION
     ============================================================ */
-    .contact { background: var(--color-bg); }
+    .contact { background: var(--color-bg); position: relative; overflow: hidden; }
 
     .contact-grid {
       display: grid;
@@ -1655,29 +1655,31 @@
     }
 
     .contact-portrait-wrap {
-      margin-top: 0.5rem;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      position: relative;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 42%;
+      max-width: 520px;
+      pointer-events: none;
+      z-index: 0;
       line-height: 0;
     }
 
     .contact-margy {
       width: 100%;
       display: block;
-      border-radius: var(--radius-sm);
       object-fit: cover;
-      object-position: center 20%;
-      max-height: 280px;
+      object-position: center 10%;
+      -webkit-mask-image: linear-gradient(to right, black 40%, transparent 85%),
+                          linear-gradient(to top,   black 55%, transparent 100%);
+      mask-image: linear-gradient(to right, black 40%, transparent 85%),
+                  linear-gradient(to top,   black 55%, transparent 100%);
+      -webkit-mask-composite: intersect;
+      mask-composite: intersect;
     }
 
-    .contact-portrait-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.55) 0%, transparent 40%);
-      pointer-events: none;
-    }
+    .contact-info { position: relative; z-index: 1; }
+    .contact-form { position: relative; z-index: 1; }
 
     .contact-detail {
       display: flex;
@@ -1829,6 +1831,7 @@
     @media (max-width: 900px) {
       .contact-grid { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      .contact-portrait-wrap { display: none; }
     }
 
     /* ============================================================
@@ -2754,6 +2757,11 @@
          CONTACT
     ============================================================ -->
     <section class="contact section-pad" id="contact" aria-label="Contact us">
+
+      <div class="contact-portrait-wrap" aria-hidden="true">
+        <img src="/images/margy.jpg" alt="" class="contact-margy" loading="lazy">
+      </div>
+
       <div class="section-inner">
 
         <div class="text-center reveal" style="max-width:600px; margin: 0 auto 3.5rem;">
@@ -2828,10 +2836,6 @@
                 <strong>Contacts</strong>
                 <p data-cms="contact_persons">Chris &amp; Margy Abbot</p>
               </div>
-            </div>
-
-            <div class="contact-portrait-wrap">
-              <img src="/images/margy.jpg" alt="Chris and Margy Abbot" class="contact-margy" loading="lazy">
             </div>
 
           </div>
