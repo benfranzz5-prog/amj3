@@ -51,7 +51,7 @@
   const SECTIONS = ['hero','nav','about','fresho','delivery','mission','environment','commitment','contact','footer','producerange'];
 
   const [
-    hero, nav, about, fresho, delivery, mission, environment, commitment, contact, footer,
+    hero, nav, about, fresho, delivery, mission, environment, commitment, contact, footer, producerange,
     testimonials, products, gallery, images
   ] = await Promise.all([
     ...SECTIONS.map(s => fetch(`/_data/${s}.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}))),
@@ -66,7 +66,7 @@
   // contact.json keys are also available unprefixed for backward compat.
   const data = {};
 
-  const sectionData = { hero, nav, about, fresho, delivery, mission, environment, commitment, contact, footer };
+  const sectionData = { hero, nav, about, fresho, delivery, mission, environment, commitment, contact, footer, producerange };
   for (const [sec, obj] of Object.entries(sectionData)) {
     if (obj && typeof obj === 'object') {
       for (const [k, v] of Object.entries(obj)) {
