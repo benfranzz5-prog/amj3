@@ -807,11 +807,11 @@ textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.6; }
       </div>
 
       <div class="sb-group">Products</div>
-      <div class="nav-item" data-section="products">
-        <span class="nav-icon">🥦</span> Product Manager
+      <div class="nav-item" data-section="productcatalogue">
+        <span class="nav-icon">🥦</span> Product Catalogue
       </div>
       <div class="nav-item" data-section="producerange">
-        <span class="nav-icon">🥬</span> Produce Range
+        <span class="nav-icon">📋</span> Section Header
       </div>
 
       <div class="sb-group">Pages</div>
@@ -1016,8 +1016,8 @@ const SECTION_LABELS = {
   mission:'Mission & Vision', testimonials:'Testimonials',
   environment:'Environment', commitment:'Commitment',
   contact:'Contact', footer:'Footer',
-  products:'Product Manager', gallery:'Gallery Photos', images:'Site Images',
-  producerange:'Produce Range', marketreport:'Market Reports'
+  productcatalogue:'Product Catalogue', gallery:'Gallery Photos', images:'Site Images',
+  producerange:'Products Section Header', marketreport:'Market Reports'
 };
 
 /* ──────────────────────────────────────────────────────────
@@ -1131,15 +1131,16 @@ async function loadSection(sec) {
   setStatus('');
 
   const isProducts = sec === 'products';
+  const isCatalogue = sec === 'productcatalogue';
   const isMedia    = sec === 'gallery' || sec === 'images';
   const isTestimonials = sec === 'testimonials';
   const isMarketReport = sec === 'marketreport';
 
   // Hide save button for sections with own save logic
   const saveBtn = document.getElementById('save-btn');
-  saveBtn.style.display = (isMedia || isProducts || isMarketReport) ? 'none' : 'flex';
-  document.getElementById('tb-sub').textContent = isProducts
-    ? 'Add, edit, or remove products — click Add Product to begin'
+  saveBtn.style.display = (isMedia || isProducts || isMarketReport || isCatalogue) ? 'none' : 'flex';
+  document.getElementById('tb-sub').textContent = isCatalogue
+    ? 'Edit category names and items — one item per line'
     : isMedia ? (sec === 'gallery' ? 'Upload and manage gallery photos' : 'Replace named image slots')
     : isMarketReport ? 'Add, edit, or remove market reports'
     : 'Click any text to edit inline, then Save';
@@ -1147,6 +1148,7 @@ async function loadSection(sec) {
   const ct = document.getElementById('content');
   ct.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div> Loading ${label}…</div>`;
 
+  if (isCatalogue)   { await loadCatalogue(); return; }
   if (isProducts)    { await loadProducts(); return; }
   if (isMedia)       { sec === 'gallery' ? await renderGallery() : await renderImages(); return; }
   if (isTestimonials){ await loadTestimonials(); return; }
@@ -1681,9 +1683,8 @@ const RENDERERS = {
   /* PRODUCE RANGE */
   producerange: d => `
     <div class="editor-wrap">
-
       <div class="editor-card">
-        <div class="editor-card-head"><h3>Section Header</h3></div>
+        <div class="editor-card-head"><h3>Products Section Header</h3><span class="badge">Appears above the catalogue browser</span></div>
         <div class="editor-card-body">
           <div class="field-grid-2">
             <div class="field-group">
@@ -1705,49 +1706,6 @@ const RENDERERS = {
           </div>
         </div>
       </div>
-
-      <div class="editor-card">
-        <div class="editor-card-head"><h3>Category 1</h3><span class="badge">Vegetables &amp; Greens column</span></div>
-        <div class="editor-card-body">
-          <div class="field-group">
-            <span class="field-label">Category title</span>
-            ${fi(d.cat1Title,'cat1Title','Vegetables & Greens')}
-          </div>
-          <div class="field-group">
-            <span class="field-label">Items <span style="color:var(--muted);font-weight:400">— one per line. Use &lt;strong&gt;text&lt;/strong&gt; for bold.</span></span>
-            ${ta(d.cat1Items,'cat1Items',14)}
-          </div>
-        </div>
-      </div>
-
-      <div class="editor-card">
-        <div class="editor-card-head"><h3>Category 2</h3><span class="badge">Fruits column</span></div>
-        <div class="editor-card-body">
-          <div class="field-group">
-            <span class="field-label">Category title</span>
-            ${fi(d.cat2Title,'cat2Title','Fruits')}
-          </div>
-          <div class="field-group">
-            <span class="field-label">Items <span style="color:var(--muted);font-weight:400">— one per line.</span></span>
-            ${ta(d.cat2Items,'cat2Items',14)}
-          </div>
-        </div>
-      </div>
-
-      <div class="editor-card">
-        <div class="editor-card-head"><h3>Category 3</h3><span class="badge">Specialty / Gourmet / Rare column</span></div>
-        <div class="editor-card-body">
-          <div class="field-group">
-            <span class="field-label">Category title</span>
-            ${fi(d.cat3Title,'cat3Title','Specialty / Gourmet / Rare')}
-          </div>
-          <div class="field-group">
-            <span class="field-label">Items <span style="color:var(--muted);font-weight:400">— one per line. Use &lt;strong&gt;text&lt;/strong&gt; for bold.</span></span>
-            ${ta(d.cat3Items,'cat3Items',14)}
-          </div>
-        </div>
-      </div>
-
     </div>`,
 
 };
@@ -2457,6 +2415,105 @@ function compressImg(file, maxDim=1920, quality=0.82) {
 /* ──────────────────────────────────────────────────────────
    MARKET REPORT MANAGER
 ────────────────────────────────────────────────────────── */
+/* ──────────────────────────────────────────────────────────
+   PRODUCT CATALOGUE MANAGER
+────────────────────────────────────────────────────────── */
+let catalogueData = { categories: [] };
+let catalogueSha  = null;
+
+async function loadCatalogue() {
+  const ct = document.getElementById('content');
+  try {
+    const r = await fetch('/api/admin-content?section=productcatalogue', { credentials: 'include' });
+    if (!r.ok) throw new Error(await r.text());
+    const { content, sha } = await r.json();
+    catalogueData = content || { categories: [] };
+    catalogueSha  = sha;
+    renderCatalogue();
+  } catch (e) {
+    ct.textContent = `Error loading catalogue: ${e.message}`;
+  }
+}
+
+function renderCatalogue() {
+  const ct = document.getElementById('content');
+  const cats = catalogueData.categories || [];
+  const total = cats.reduce((n, c) => n + (c.items||[]).length, 0);
+  ct.innerHTML = `
+    <div class="editor-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h2 style="margin:0;font-size:1.25rem;">Product Catalogue</h2>
+          <p style="margin:.25rem 0 0;color:var(--muted);font-size:.85rem;">${cats.length} categories &nbsp;·&nbsp; ${total} items total</p>
+        </div>
+        <button class="btn-primary" onclick="saveCatalogue()">💾 Save All Changes</button>
+      </div>
+      ${cats.map((cat, ci) => `
+        <div class="editor-card" style="margin-bottom:1rem;" id="cat-card-${ci}">
+          <div class="editor-card-head" style="display:flex;align-items:center;gap:.75rem;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:.75rem;flex:1;min-width:0;">
+              <h3 style="margin:0;font-size:.95rem;">
+                <input
+                  class="field-input"
+                  style="font-weight:700;font-size:.95rem;width:100%;max-width:380px;"
+                  value="${esc(cat.name)}"
+                  data-cat-name="${ci}"
+                  placeholder="Category name"
+                />
+              </h3>
+              <span class="badge">${(cat.items||[]).length} items</span>
+            </div>
+          </div>
+          <div class="editor-card-body">
+            <div class="field-group">
+              <span class="field-label">Items — one per line</span>
+              <textarea
+                class="field-textarea"
+                rows="8"
+                data-cat-items="${ci}"
+                style="font-family:monospace;font-size:.82rem;"
+              >${esc((cat.items||[]).join('\n'))}</textarea>
+            </div>
+          </div>
+        </div>`).join('')}
+      <div style="text-align:center;margin-top:1.5rem;">
+        <button class="btn-primary" onclick="saveCatalogue()">💾 Save All Changes</button>
+      </div>
+    </div>`;
+}
+
+async function saveCatalogue() {
+  // Collect current values from the DOM
+  const cats = (catalogueData.categories || []).map((cat, ci) => {
+    const nameEl  = document.querySelector(`[data-cat-name="${ci}"]`);
+    const itemsEl = document.querySelector(`[data-cat-items="${ci}"]`);
+    const name  = nameEl  ? nameEl.value.trim()  : cat.name;
+    const items = itemsEl ? itemsEl.value.split('\n').map(s => s.trim()).filter(Boolean) : cat.items;
+    return { name, slug: cat.slug, items };
+  });
+
+  const payload = { categories: cats };
+  setStatus('Saving…');
+  try {
+    const r = await fetch('/api/admin-save', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section: 'productcatalogue', content: payload, sha: catalogueSha }),
+    });
+    if (!r.ok) throw new Error(await r.text());
+    const { sha } = await r.json();
+    catalogueSha  = sha || catalogueSha;
+    catalogueData = payload;
+    toast('Catalogue saved!', 'success');
+    setStatus('Saved');
+    renderCatalogue();
+  } catch (e) {
+    toast(`Save failed: ${e.message}`, 'error');
+    setStatus('');
+  }
+}
+
 let mrReports = [];
 let mrPageData = {};
 let mrEditIdx  = null; // null = add new
