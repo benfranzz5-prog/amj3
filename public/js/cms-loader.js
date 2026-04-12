@@ -52,13 +52,14 @@
 
   const [
     hero, nav, about, fresho, delivery, mission, environment, commitment, contact, footer, producerange,
-    testimonials, products, gallery, images
+    testimonials, products, gallery, images, productcatalogue
   ] = await Promise.all([
     ...SECTIONS.map(s => fetch(`/_data/${s}.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}))),
     fetch('/_data/testimonials.json').then(r => r.ok ? r.json() : []).catch(() => []),
     fetch('/_data/products.json').then(r => r.ok ? r.json() : []).catch(() => []),
     fetch('/_data/gallery.json').then(r => r.ok ? r.json() : []).catch(() => []),
     fetch('/_data/images.json').then(r => r.ok ? r.json() : {}).catch(() => ({})),
+    fetch('/_data/productcatalogue.json').then(r => r.ok ? r.json() : {categories:[]}).catch(() => ({categories:[]})),
   ]);
 
   /* ── Build flat data map with namespaced keys ────── */
@@ -202,21 +203,106 @@
     }).join('');
   }
 
-  /* ── Produce Range category lists ───────────────────── */
-  // Populate each list from producerange.json items (one item per line).
-  // Items may contain safe HTML (e.g. <strong>text</strong>) — sanitized below.
-  const produceListMap = {
-    'produce-veg-list':       data['producerange_cat1Items'],
-    'produce-fruit-list':     data['producerange_cat2Items'],
-    'produce-specialty-list': data['producerange_cat3Items'],
-  };
-  for (const [id, raw] of Object.entries(produceListMap)) {
-    const ul = document.getElementById(id);
-    if (!ul || !raw) continue;
-    ul.innerHTML = String(raw).split('\n')
-      .map(s => s.trim()).filter(Boolean)
-      .map(item => `<li>${sanitizeHtml(item)}</li>`)
-      .join('');
-  }
+  /* ── Product Catalogue — filterable browser ─────────── */
+  (function () {
+    const cats       = (productcatalogue && Array.isArray(productcatalogue.categories))
+                         ? productcatalogue.categories : [];
+    const filtersEl  = document.getElementById('catalogueFilters');
+    const resultsEl  = document.getElementById('catalogueResults');
+    const searchEl   = document.getElementById('catalogueSearch');
+
+    if (!filtersEl || !resultsEl || !searchEl || cats.length === 0) return;
+
+    let activeCat = 'all';   // slug or 'all'
+    let searchQ   = '';
+
+    /* Build "All" pill + one pill per category */
+    function buildPills() {
+      const total = cats.reduce((n, c) => n + c.items.length, 0);
+      const allPill = makePill('all', 'All Products', total);
+      filtersEl.innerHTML = '';
+      filtersEl.appendChild(allPill);
+      cats.forEach(c => filtersEl.appendChild(makePill(c.slug, c.name, c.items.length)));
+    }
+
+    function makePill(slug, label, count) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cat-pill' + (slug === activeCat ? ' active' : '');
+      btn.dataset.slug = slug;
+      btn.setAttribute('aria-pressed', slug === activeCat ? 'true' : 'false');
+      btn.innerHTML = `${safeHtml(label)} <span class="pill-count">(${count})</span>`;
+      btn.addEventListener('click', () => {
+        activeCat = slug;
+        render();
+      });
+      return btn;
+    }
+
+    function render() {
+      const q = searchQ.toLowerCase().trim();
+
+      /* Update pill active states */
+      filtersEl.querySelectorAll('.cat-pill').forEach(btn => {
+        const active = btn.dataset.slug === activeCat;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+
+      /* Filter categories */
+      const visibleCats = cats
+        .filter(c => activeCat === 'all' || c.slug === activeCat)
+        .map(c => {
+          if (!q) return { ...c, matchedItems: c.items, highlights: new Set() };
+          const highlights = new Set();
+          const matchedItems = c.items.filter(item => {
+            if (item.toLowerCase().includes(q)) {
+              highlights.add(item);
+              return true;
+            }
+            return false;
+          });
+          return { ...c, matchedItems, highlights };
+        })
+        .filter(c => c.matchedItems.length > 0);
+
+      /* Render groups */
+      if (visibleCats.length === 0) {
+        resultsEl.innerHTML = `<div class="catalogue-no-results">
+          <strong>No products found</strong>
+          Try a different search term or browse all categories.
+        </div>`;
+        return;
+      }
+
+      resultsEl.innerHTML = visibleCats.map(c => `
+        <div class="cat-group" data-slug="${safeHtml(c.slug)}">
+          <div class="cat-group-header">
+            <h3>${safeHtml(c.name)}</h3>
+            <span class="cat-group-count">${c.matchedItems.length}</span>
+          </div>
+          <ul class="cat-group-list" aria-label="${safeHtml(c.name)} items">
+            ${c.matchedItems.map(item =>
+              `<li class="${c.highlights && c.highlights.has(item) ? 'highlight' : ''}">${safeHtml(item)}</li>`
+            ).join('')}
+          </ul>
+        </div>`).join('');
+    }
+
+    /* Search input handler — debounced */
+    let debounceTimer;
+    searchEl.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        searchQ = searchEl.value;
+        /* When searching, reset to "all" so results cross categories */
+        if (searchQ.trim()) activeCat = 'all';
+        render();
+      }, 180);
+    });
+
+    buildPills();
+    render();
+  }());
 
 })();

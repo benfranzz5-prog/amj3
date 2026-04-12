@@ -1,0 +1,513 @@
+{
+  "categories": [
+    {
+      "name": "Leafy Greens & Salad",
+      "slug": "leafy-greens",
+      "items": [
+        "Alfalfa 250g Punnet",
+        "Alfalfa 125g Punnet",
+        "Baby Cos Lettuce",
+        "Baby Spinach",
+        "Butter Lettuce",
+        "Cos Lettuce",
+        "Endive",
+        "Green Coral Lettuce",
+        "Green Oak Lettuce",
+        "Iceberg Lettuce",
+        "Mesculin",
+        "Mignonette Lettuce",
+        "Radicchio",
+        "Red Coral Lettuce",
+        "Red Oak Lettuce",
+        "Rocket",
+        "Ruby Chard",
+        "Shredded Lettuce",
+        "Silverbeet",
+        "Spinach Chinese Bunch",
+        "Spinach Rainbow Bunch",
+        "Tat Soi",
+        "Tendrils",
+        "Watercress",
+        "Wild Rocket",
+        "Witlof Red",
+        "Witlof White"
+      ]
+    },
+    {
+      "name": "Brassicas & Asian Greens",
+      "slug": "brassicas",
+      "items": [
+        "Bok Choy",
+        "Broccoli",
+        "Broc Tops",
+        "Broccolini",
+        "Brussel Sprouts",
+        "Baby Brussels",
+        "Cabbage White",
+        "Cabbage Red",
+        "Cabbage Savoy",
+        "Cabbage Chinese",
+        "Cauliflower",
+        "Choi Sum",
+        "Gai Lan Bunch",
+        "Kale / Cav Nero",
+        "Kohlrabi",
+        "Mizuna"
+      ]
+    },
+    {
+      "name": "Salad Mixes",
+      "slug": "salad-mixes",
+      "items": [
+        "Mesculin",
+        "Baby Spinach",
+        "Wild Rocket",
+        "Rocket",
+        "Ruby Chard",
+        "Tat Soi",
+        "Tendrils"
+      ]
+    },
+    {
+      "name": "Root Vegetables",
+      "slug": "root-vegetables",
+      "items": [
+        "Beetroot",
+        "Beetroot Bunch",
+        "Beetroot Baby Bunch",
+        "Beetroot Golden Bunch",
+        "Beetroot Candy Bunch",
+        "Carrot Large",
+        "Carrot Medium",
+        "Carrot Pre Pack 1kg",
+        "Carrot Baby Bunch",
+        "Carrot Yellow Bunch",
+        "Carrot White Bunch",
+        "Carrot Purple Bunch",
+        "Carrot Rainbow Bunch",
+        "Carrot Juicing",
+        "Celeriac",
+        "Ginger",
+        "Horse Radish",
+        "Jerusalem Artichoke",
+        "Parsnips",
+        "Radish Red Bunch",
+        "Radish White Daikon",
+        "Radish Watermelon",
+        "Radish Breakfast",
+        "Radish Heirloom",
+        "Rhubarb",
+        "Swede",
+        "Turnip",
+        "Turnip Baby Bunch",
+        "Turmeric"
+      ]
+    },
+    {
+      "name": "Potatoes & Sweet Potatoes",
+      "slug": "potatoes",
+      "items": [
+        "Potato Brushed",
+        "Potato Large White",
+        "Potato Small White",
+        "Potato Specials",
+        "Potato Cocktails",
+        "Potato Large Red",
+        "Potato Medium Red",
+        "Potato Seconds",
+        "Potato Chef",
+        "Potato Premium",
+        "Potato Kipfler",
+        "Potato Dutch Cream",
+        "Potato Royal Blue",
+        "Potato Kestral",
+        "Sweet Potato"
+      ]
+    },
+    {
+      "name": "Onions, Leeks & Alliums",
+      "slug": "onions",
+      "items": [
+        "Brown Onion Large",
+        "Brown Onion Medium",
+        "White Onion Large",
+        "Salad Onion Bunched",
+        "Pickling Onion",
+        "Red Onion",
+        "Shallots",
+        "Spring Onion",
+        "Leeks Bunch",
+        "Leeks Pencil Bunch",
+        "Garlic Aussie",
+        "Garlic Chinese",
+        "Garlic 1kg Peeled",
+        "Garlic Shoots Bunch"
+      ]
+    },
+    {
+      "name": "Beans, Peas & Legumes",
+      "slug": "beans-peas",
+      "items": [
+        "Green Beans",
+        "Broad Beans",
+        "Snake Beans",
+        "Butter Beans",
+        "Flat Beans",
+        "Snow Peas",
+        "Snowpea Sprouts",
+        "Sugar Snap Peas",
+        "Bean Sprout Punnet",
+        "Bean Sprout",
+        "Mung Bean",
+        "Peas"
+      ]
+    },
+    {
+      "name": "Capsicum & Chilli",
+      "slug": "capsicum-chilli",
+      "items": [
+        "Capsicum Red",
+        "Capsicum Green",
+        "Capsicum Yellow",
+        "Capsicum Banana",
+        "Capsicum Red Seconds",
+        "Capsicum Green Seconds",
+        "Chilli Red",
+        "Chilli Green",
+        "Chilli Birdseye"
+      ]
+    },
+    {
+      "name": "Corn",
+      "slug": "corn",
+      "items": [
+        "Baby Corn Punnet",
+        "Sweet Corn",
+        "Corn Baby Bunch"
+      ]
+    },
+    {
+      "name": "Squash, Zucchini & Gourds",
+      "slug": "squash",
+      "items": [
+        "Zucchini",
+        "Zucchini Flowers",
+        "Squash",
+        "Chokos",
+        "Pumpkin Butternut",
+        "Pumpkin Japanese",
+        "Pumpkin QLD Blue"
+      ]
+    },
+    {
+      "name": "Mushrooms",
+      "slug": "mushrooms",
+      "items": [
+        "Mushroom Button",
+        "Mushroom Medium",
+        "Mushroom Large",
+        "Mushroom Cooking",
+        "Mushroom Large Open",
+        "Mushroom Swiss Brown",
+        "Mushroom Portabella",
+        "Mushroom Shitake",
+        "Mushroom Shimeji",
+        "Mushroom Oyster",
+        "Mushroom Enoki",
+        "Mushroom King Oyster",
+        "Pine Mushrooms"
+      ]
+    },
+    {
+      "name": "Tomatoes",
+      "slug": "tomatoes",
+      "items": [
+        "Tomato Large",
+        "Tomato Medium",
+        "Tomato Small",
+        "Tomato Cooking Seconds",
+        "Tomato Roma",
+        "Tomato Roma Cooking",
+        "Tomato Black Russian",
+        "Tomato Truss Trays 5kg",
+        "Tomato Cherry Punnet",
+        "Tomato Roma Cherry Punnet",
+        "Tomato Gold Cherry Punnet",
+        "Tomato Cherry Truss",
+        "Tomato Heirloom"
+      ]
+    },
+    {
+      "name": "Eggplant",
+      "slug": "eggplant",
+      "items": [
+        "Eggplant",
+        "Thai Eggplant"
+      ]
+    },
+    {
+      "name": "Cucumbers",
+      "slug": "cucumbers",
+      "items": [
+        "Cucumber Continental 15 Ea Bag",
+        "Cucumber Baby Punnet",
+        "Cucumber Lebanese",
+        "Cucumber Apple"
+      ]
+    },
+    {
+      "name": "Celery & Fennel",
+      "slug": "celery-fennel",
+      "items": [
+        "Celery",
+        "Fennel Large",
+        "Fennel Baby"
+      ]
+    },
+    {
+      "name": "Asparagus & Artichokes",
+      "slug": "asparagus-artichokes",
+      "items": [
+        "Asparagus White Bunch",
+        "Globe Artichoke"
+      ]
+    },
+    {
+      "name": "Herbs — Fresh",
+      "slug": "herbs-fresh",
+      "items": [
+        "Basil",
+        "Bay Leaves",
+        "Chervil",
+        "Chives",
+        "Coriander",
+        "Curry Leaves",
+        "Dill",
+        "Fennel Tops",
+        "Garlic Chives",
+        "Lemon Grass",
+        "Lemon Thyme",
+        "Lemon Verbena",
+        "Lime Leaves",
+        "Marjoram",
+        "Mint",
+        "Oregano",
+        "Parsley Curly Bunch",
+        "Parsley Continental Bunch",
+        "Pesto Basil",
+        "Rau Ram",
+        "Rosemary",
+        "Sage",
+        "Tarragon",
+        "Thai Basil",
+        "Thyme"
+      ]
+    },
+    {
+      "name": "Baby Herbs",
+      "slug": "baby-herbs",
+      "items": [
+        "Baby Herb Basil",
+        "Baby Herb Celery",
+        "Baby Herb Chervil",
+        "Baby Herb Coriander",
+        "Baby Herb Garnet",
+        "Baby Herb Greens",
+        "Baby Herb Lemon Balm",
+        "Baby Herb Masche",
+        "Baby Herb Parsley",
+        "Baby Herb Radish",
+        "Baby Herb Red Basil",
+        "Baby Herb Reds",
+        "Baby Herb Shiso",
+        "Baby Herb Watercress"
+      ]
+    },
+    {
+      "name": "Apples",
+      "slug": "apples",
+      "items": [
+        "Apple Red Delicious",
+        "Apple Golden Delicious",
+        "Apple Fuji",
+        "Apple Gala",
+        "Apple Granny Smith",
+        "Apple Jonathon",
+        "Apple Pink Lady",
+        "Apple Juicing"
+      ]
+    },
+    {
+      "name": "Pears",
+      "slug": "pears",
+      "items": [
+        "Pear Bosche",
+        "Pear Corella",
+        "Pear Packham",
+        "Pear Red Sensation",
+        "Pear Nashi",
+        "Pear Juicing"
+      ]
+    },
+    {
+      "name": "Citrus",
+      "slug": "citrus",
+      "items": [
+        "Orange Blood",
+        "Orange Naval",
+        "Orange Valencia",
+        "Orange Juicing",
+        "Orange 3kg Bags",
+        "Lemon",
+        "Lime",
+        "Grapefruit Ruby",
+        "Grapefruit Yellow",
+        "Mandarin",
+        "Cumquats"
+      ]
+    },
+    {
+      "name": "Stone Fruit",
+      "slug": "stone-fruit",
+      "items": [
+        "Apricots",
+        "Peach Yellow",
+        "Peach White",
+        "Nectarine White",
+        "Peacherine",
+        "Plum Blood",
+        "Plum Dark",
+        "Plum Yellow",
+        "Cherries"
+      ]
+    },
+    {
+      "name": "Tropical Fruit",
+      "slug": "tropical",
+      "items": [
+        "Avocado",
+        "Banana Large",
+        "Banana Medium",
+        "Banana Lady Fingers",
+        "Banana Cooking",
+        "Banana Leaves",
+        "Coconut Young",
+        "Figs",
+        "Kiwi Fruit Second",
+        "Mango Green",
+        "Mango",
+        "Passion Fruit",
+        "Paw Paw Green",
+        "Paw Paw Red",
+        "Paw Paw Yellow",
+        "Persimmons",
+        "Pineapple Gold",
+        "Pomegranates",
+        "Star Fruit"
+      ]
+    },
+    {
+      "name": "Grapes & Berries",
+      "slug": "grapes-berries",
+      "items": [
+        "Grape Red",
+        "Grape White",
+        "Strawberry Large",
+        "Strawberry Medium",
+        "Strawberry Jam",
+        "Blackberry",
+        "Blueberry",
+        "Raspberry"
+      ]
+    },
+    {
+      "name": "Melons",
+      "slug": "melons",
+      "items": [
+        "Honey Dew",
+        "Rockmelon",
+        "Watermelon"
+      ]
+    },
+    {
+      "name": "Eggs",
+      "slug": "eggs",
+      "items": [
+        "Eggs Carton 15 Dozen",
+        "Eggs 700g",
+        "Eggs Free Range"
+      ]
+    },
+    {
+      "name": "Specialty & Other",
+      "slug": "specialty",
+      "items": [
+        "Chestnuts",
+        "Dates",
+        "Galangal",
+        "Salsify",
+        "Sugar Cane",
+        "Flowers",
+        "Oil",
+        "Extras",
+        "Petite Bouche Pkt"
+      ]
+    },
+    {
+      "name": "Processed — Carrot",
+      "slug": "processed-carrot",
+      "items": [
+        "Carrot Diced",
+        "Carrot 1/4 Cut",
+        "Carrot Battons",
+        "Carrot Whole",
+        "Carrot Shredded"
+      ]
+    },
+    {
+      "name": "Processed — Potato",
+      "slug": "processed-potato",
+      "items": [
+        "Potato Peeled",
+        "Potato Scallop",
+        "Potato Diced"
+      ]
+    },
+    {
+      "name": "Processed — Pumpkin",
+      "slug": "processed-pumpkin",
+      "items": [
+        "Pumpkin Peeled",
+        "Pumpkin Diced",
+        "Pumpkin 1/4 Cut"
+      ]
+    },
+    {
+      "name": "Processed — Onion",
+      "slug": "processed-onion",
+      "items": [
+        "Onion Peeled",
+        "Onion Sliced",
+        "Onion Diced",
+        "Red Peel Onions"
+      ]
+    },
+    {
+      "name": "Processed — Sweet Potato",
+      "slug": "processed-sweet-potato",
+      "items": [
+        "Sweet Potato Whole Peeled",
+        "Sweet Potato Diced",
+        "Sweet Potato Shredded"
+      ]
+    },
+    {
+      "name": "Processed — Other",
+      "slug": "processed-other",
+      "items": [
+        "Soup Vegetables",
+        "Coleslaw"
+      ]
+    }
+  ]
+}
