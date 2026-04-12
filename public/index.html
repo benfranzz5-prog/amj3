@@ -1647,7 +1647,30 @@
       align-items: start;
     }
 
-    .contact-info { display: flex; flex-direction: column; gap: 2rem; }
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .contact-margy {
+      position: absolute;
+      bottom: -2rem;
+      left: -1rem;
+      right: -1rem;
+      height: 80%;
+      object-fit: cover;
+      object-position: center 20%;
+      z-index: 0;
+      border-radius: var(--radius-sm);
+      opacity: 0.22;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 55%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 55%);
+      pointer-events: none;
+    }
+
+    .contact-detail { position: relative; z-index: 1; }
 
     .contact-detail {
       display: flex;
@@ -2738,6 +2761,8 @@
 
           <!-- Contact Info -->
           <div class="contact-info reveal">
+
+            <img src="/images/margy.jpg" alt="" class="contact-margy" aria-hidden="true" loading="lazy">
 
             <div class="contact-detail">
               <div class="contact-detail-icon" aria-hidden="true">
